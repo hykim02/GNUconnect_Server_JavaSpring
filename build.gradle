@@ -28,6 +28,7 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	compileOnly 'javax:javaee-api:8.0.1'
 }
 
 tasks.named('test') {
