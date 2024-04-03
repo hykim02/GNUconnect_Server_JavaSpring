@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 @Entity
 @Getter
 @Setter
-@Table(name = "it-category")
+@Table(name = "")
 public class ItCategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,4 +17,8 @@ public class ItCategoryEntity {
 
     @Column(name = "department_id")
     private int departmentId;
+
+    public static String generateTableName(String college) {
+        return college + "-category";
+    }
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class NoticeController {
 
     private static final Logger logger = LoggerFactory.getLogger(NoticeController.class);
+
     @PostMapping("/department-notice")
     public String handleRequest(@RequestBody NoticeRequestDto noticeRequestDto) {
         String userId = noticeRequestDto.getUserRequest().getUser().getId();
