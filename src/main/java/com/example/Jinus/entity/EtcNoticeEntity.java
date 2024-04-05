@@ -6,16 +6,23 @@ import lombok.Setter;
 
 import javax.persistence.Entity;
 
-// it 공과대학
+// 건설환경공과대학
 @Entity
 @Getter
 @Setter
-@Table(name = "it-category")
-public class ItCategoryEntity {
+@Table(name = "etc-notice")
+public class EtcNoticeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
     @Column(name = "department_id")
     private int departmentId;
+
+    @Column(name = "category_id")
+    private int categoryId;
+
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "created_at")
+    private String createdAt;
 }

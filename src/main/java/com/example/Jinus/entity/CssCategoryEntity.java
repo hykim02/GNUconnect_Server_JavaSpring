@@ -6,12 +6,12 @@ import lombok.Setter;
 
 import javax.persistence.Entity;
 
-// it 공과대학
+// 사회과학대학
 @Entity
 @Getter
 @Setter
-@Table(name = "it-category")
-public class ItCategoryEntity {
+@Table(name = "css-category")
+public class CssCategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
