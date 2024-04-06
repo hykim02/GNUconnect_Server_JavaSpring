@@ -24,7 +24,7 @@ public class UserService {
 
         // userId를 사용해 UserRepository에서 UserEntity 조회
         UserEntity userEntity = userRepository.findById(userId).orElse(null);
-        logger.info(String.valueOf(userEntity));
+        logger.info("userEntity {}", userEntity);
 
         // 사용자가 존재하는 경우
         if (userEntity != null) {

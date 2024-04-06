@@ -22,7 +22,7 @@ public class DepartmentService {
     public int getCollegeId(int departmentId) {
         logger.info("getCollegeId 실행");
         DepartmentEntity departmentEntity = departmentRepository.findById(departmentId).orElse(null);
-        logger.info(String.valueOf(departmentEntity));
+        logger.info("departmentEntity {}", departmentEntity);
         // 학과 찾기
         if (departmentEntity != null) {
             return departmentEntity.getCollegeId(); // 단과대학 id 리턴
