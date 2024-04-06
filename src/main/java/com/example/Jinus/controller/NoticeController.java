@@ -44,7 +44,7 @@ public class NoticeController {
     public String handleRequest(@RequestBody NoticeRequestDto noticeRequestDto) {
         String userId = noticeRequestDto.getUserRequest().getUser().getId();
         logger.info("handleRequest 실행");
-        logger.info("userId {}", userId);
+        logger.info("userId: {}", userId);
 
         List<Integer> categoryIdList = new ArrayList<>();
         List<String> categoryTypeList = new ArrayList<>();
