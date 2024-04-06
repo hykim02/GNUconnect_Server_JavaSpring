@@ -16,6 +16,9 @@ public class CssCategoryEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(name = "category")
+    private String category;
+
     @Column(name = "department_id")
     private int departmentId;
 }

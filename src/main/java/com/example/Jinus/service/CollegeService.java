@@ -16,7 +16,7 @@ public class CollegeService {
         CollegeEntity collegeEntity = collegeRepository.findById(collegeId).orElse(null);
 
         if (collegeEntity != null) {
-            return collegeEntity.getCollegeEng(); // 학과 영어 이름 리턴
+            return collegeEntity.getCollegeEng(); // 학과 영어 이름 리턴(테이블 찾기 위함)
         } else {
             return null;
         }
