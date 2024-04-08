@@ -11,7 +11,6 @@ import lombok.Setter;
 @Table(name = "cns-category")
 public class CnsCategoryEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "category")

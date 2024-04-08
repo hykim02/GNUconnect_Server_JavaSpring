@@ -12,7 +12,6 @@ import lombok.Setter;
 @Table(name = "inmun-notice")
 public class InmunNoticeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "department_id")
     private int departmentId;
 

@@ -1,6 +1,7 @@
 package com.example.Jinus.controller;
 
 import com.example.Jinus.dto.request.NoticeRequestDto;
+import com.example.Jinus.dto.response.NoticeResponseDto;
 import com.example.Jinus.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,13 +51,14 @@ public class NoticeController {
         List<String> categoryTypeList = new ArrayList<>();
         Map<Integer, Map<String, String>> noticeMap = new HashMap<>();
 
-        int departmentId = userService.getDepartmentId(userId); // 학과 찾기
+//        int departmentId = userService.getDepartmentId(userId); // 학과 찾기
+        int departmentId = 58;
         int collegeId = departmentService.getCollegeId(departmentId); // 단과대학 찾기
         String collegeEng = collegeService.getCollegeName(collegeId); // 영문명 찾기(테이블 조회 위함)
 
-        logger.info("departmentId: {}", departmentId);
-        logger.info("collegeId: {}", collegeId);
-        logger.info("collegeEng: {}", collegeEng);
+        logger.info("departmentId: {}", departmentId); // 학과id
+        logger.info("collegeId: {}", collegeId); // 단과대학id
+        logger.info("collegeEng: {}", collegeEng); // 단과대학 영문명
 
         Map<Integer, String> categories = categoryService.getCategory(departmentId, collegeEng); // 카테고리 찾기
 
@@ -75,6 +77,9 @@ public class NoticeController {
             noticeMap = noticeService.getNotice(departmentId, categoryId, collegeEng);
             logger.info("noticeMap:{}", noticeMap);
         }
+
+        // response 형식에 데이터 넣기
+        List<NoticeResponseDto.TemplateDTO.CarouselItemDTO> carouselItems = new ArrayList<>();
 
         return userId;
     }

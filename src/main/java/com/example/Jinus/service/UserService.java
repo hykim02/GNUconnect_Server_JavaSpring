@@ -1,12 +1,13 @@
 package com.example.Jinus.service;
 
-import com.example.Jinus.controller.NoticeController;
 import com.example.Jinus.entity.UserEntity;
 import com.example.Jinus.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserService {
@@ -33,5 +34,9 @@ public class UserService {
             logger.error("UserService: user를 찾을 수 없습니다.");
             return -1;
         }
+    }
+
+    public List<UserEntity> findAllUsers() {
+        return userRepository.findAll();
     }
 }

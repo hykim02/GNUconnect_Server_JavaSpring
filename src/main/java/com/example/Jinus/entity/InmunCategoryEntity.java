@@ -12,7 +12,6 @@ import lombok.Setter;
 @Table(name = "inmun-category")
 public class InmunCategoryEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "category")

@@ -12,7 +12,6 @@ import lombok.Setter;
 @Table(name = "css-notice")
 public class CssNoticeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "department_id")
     private int departmentId;
 

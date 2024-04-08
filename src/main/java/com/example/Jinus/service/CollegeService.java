@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CollegeService {
     private static final Logger logger = LoggerFactory.getLogger(CollegeService.class);
@@ -19,7 +21,7 @@ public class CollegeService {
     public String getCollegeName(int collegeId) {
         logger.info("getCollegeName 실행");
         CollegeEntity collegeEntity = collegeRepository.findById(collegeId).orElse(null);
-        logger.info("collegeEntity {}", collegeEntity);
+        logger.info("collegeEntity: {}", collegeEntity);
 
         if (collegeEntity != null) {
             logger.info("collegeEng: {}", collegeEntity.getCollegeEng());
@@ -28,5 +30,9 @@ public class CollegeService {
             logger.error("CollegeService: collge를 찾을 수 없습니다.");
             return null;
         }
+    }
+
+    public List<String> findAllUsers() {
+        return collegeRepository.findCollegeEn();
     }
 }

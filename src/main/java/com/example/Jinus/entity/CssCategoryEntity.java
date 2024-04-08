@@ -11,7 +11,6 @@ import lombok.Setter;
 @Table(name = "css-category")
 public class CssCategoryEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "category")

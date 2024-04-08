@@ -12,7 +12,6 @@ import lombok.Setter;
 @Table(name = "etc-category")
 public class EtcCategoryEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "category")

@@ -11,7 +11,6 @@ import lombok.Setter;
 @Table(name = "marsci-category")
 public class MarsciCategoryEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "category")

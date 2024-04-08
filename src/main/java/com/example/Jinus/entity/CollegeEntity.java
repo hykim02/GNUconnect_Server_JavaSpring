@@ -10,7 +10,7 @@ import lombok.Setter;
 @Table(name = "college")
 public class CollegeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
 
     @Column(name = "college_en")

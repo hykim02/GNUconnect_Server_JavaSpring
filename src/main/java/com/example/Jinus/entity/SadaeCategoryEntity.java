@@ -12,7 +12,6 @@ import lombok.Setter;
 @Table(name = "sadae-category")
 public class SadaeCategoryEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "category")

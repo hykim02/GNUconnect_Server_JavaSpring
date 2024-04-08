@@ -11,7 +11,6 @@ import lombok.Setter;
 @Table(name = "ce-notice")
 public class CeNoticeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "department_id")
     private int departmentId;
 

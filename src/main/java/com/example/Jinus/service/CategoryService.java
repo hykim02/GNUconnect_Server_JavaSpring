@@ -51,7 +51,7 @@ public class CategoryService {
 
     public Map<Integer, String> getCategory(int departmentId, String collegeEng) {
         logger.info("getCategory 실행");
-        logger.info(collegeEng);
+        logger.info("collegeEng: {}", collegeEng);
         // 결과를 담을 해시맵 생성
         Map<Integer, String> categoryMap = new HashMap<>();
 
@@ -59,7 +59,7 @@ public class CategoryService {
             case "biz" -> {
                 // bizCategoryRepository에서 departmentId에 해당하는 모든 행을 조회
                 List<BizCategoryEntity> bizCategoryEntities = bizCategoryRepository.findByDepartmentId(departmentId);
-                logger.info(bizCategoryEntities.toString());
+                logger.info("biz: {}", bizCategoryEntities.toString());
 
                 // 리스트에서 각 행을 순회하면서 id와 category를 해시맵에 저장
                 for (BizCategoryEntity entity : bizCategoryEntities) {
@@ -68,7 +68,7 @@ public class CategoryService {
             }
             case "cals" -> {
                 List<CalsCategoryEntity> calsCategoryEntities = calsCategoryRepository.findByDepartmentId(departmentId);
-                logger.info(calsCategoryEntities.toString());
+                logger.info("cals: {}", calsCategoryEntities.toString());
 
                 for (CalsCategoryEntity entity : calsCategoryEntities) {
                     categoryMap.put(entity.getId(), entity.getCategory());
@@ -76,7 +76,7 @@ public class CategoryService {
             }
             case "ce" -> {
                 List<CeCategoryEntity> ceCategoryEntities = ceCategoryRepository.findByDepartmentId(departmentId);
-                logger.info(ceCategoryEntities.toString());
+                logger.info("ce: {}", ceCategoryEntities.toString());
 
                 for (CeCategoryEntity entity : ceCategoryEntities) {
                     categoryMap.put(entity.getId(), entity.getCategory());
@@ -84,7 +84,7 @@ public class CategoryService {
             }
             case "cns" -> {
                 List<CnsCategoryEntity> cnsCategoryEntities = cnsCategoryRepository.findByDepartmentId(departmentId);
-                logger.info(cnsCategoryEntities.toString());
+                logger.info("cns: {}", cnsCategoryEntities.toString());
 
                 for (CnsCategoryEntity entity : cnsCategoryEntities) {
                     categoryMap.put(entity.getId(), entity.getCategory());
@@ -92,7 +92,7 @@ public class CategoryService {
             }
             case "css" -> {
                 List<CssCategoryEntity> cssCategoryEntities = cssCategoryRepository.findByDepartmentId(departmentId);
-                logger.info(cssCategoryEntities.toString());
+                logger.info("css: {}", cssCategoryEntities.toString());
 
                 for (CssCategoryEntity entity : cssCategoryEntities) {
                     categoryMap.put(entity.getId(), entity.getCategory());
@@ -100,7 +100,7 @@ public class CategoryService {
             }
             case "etc" -> {
                 List<EtcCategoryEntity> etcCategoryEntities = etcCategoryRepository.findByDepartmentId(departmentId);
-                logger.info(etcCategoryEntities.toString());
+                logger.info("etc: {}", etcCategoryEntities.toString());
 
                 for (EtcCategoryEntity entity : etcCategoryEntities) {
                     categoryMap.put(entity.getId(), entity.getCategory());
@@ -108,7 +108,7 @@ public class CategoryService {
             }
             case "inmun" -> {
                 List<InmunCategoryEntity> inmunCategoryEntities = inmunCategoryRepository.findByDepartmentId(departmentId);
-                logger.info(inmunCategoryEntities.toString());
+                logger.info("inmun: {}", inmunCategoryEntities.toString());
 
                 for (InmunCategoryEntity entity : inmunCategoryEntities) {
                     categoryMap.put(entity.getId(), entity.getCategory());
@@ -116,16 +116,17 @@ public class CategoryService {
             }
             case "it" -> {
                 List<ItCategoryEntity> itCategoryEntities = itCategoryRepository.findByDepartmentId(departmentId);
-                logger.info(itCategoryEntities.toString());
+                logger.info("it: {}", itCategoryEntities.toString());
 
                 for (ItCategoryEntity entity : itCategoryEntities) {
+                    logger.info("entity.getId():{}", entity.getId());
+                    logger.info("entity.getCategory():{}", entity.getCategory());
                     categoryMap.put(entity.getId(), entity.getCategory());
                 }
-                logger.info(categoryMap.toString());
             }
             case "marsci" -> {
                 List<MarsciCategoryEntity> marsciCategoryEntities = marsciCategoryRepository.findByDepartmentId(departmentId);
-                logger.info(marsciCategoryEntities.toString());
+                logger.info("marsci: {}", marsciCategoryEntities.toString());
 
                 for (MarsciCategoryEntity entity : marsciCategoryEntities) {
                     categoryMap.put(entity.getId(), entity.getCategory());
@@ -133,7 +134,7 @@ public class CategoryService {
             }
             case "sadae" -> {
                 List<SadaeCategoryEntity> sadaeCategoryEntities = sadaeCategoryRepository.findByDepartmentId(departmentId);
-                logger.info(sadaeCategoryEntities.toString());
+                logger.info("sadae: {}", sadaeCategoryEntities.toString());
 
                 for (SadaeCategoryEntity entity : sadaeCategoryEntities) {
                     categoryMap.put(entity.getId(), entity.getCategory());
@@ -142,7 +143,7 @@ public class CategoryService {
             default -> logger.error("CategoryService: category를 찾을 수 없습니다.");
         }
 
-        logger.info(categoryMap.toString());
+        logger.info("categoryMap: {}", categoryMap.toString());
         // 해시맵 반환
         return categoryMap;
     }

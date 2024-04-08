@@ -12,7 +12,6 @@ import lombok.Setter;
 @Table(name = "marsci-notice")
 public class MarsciNoticeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "department_id")
     private int departmentId;
 
