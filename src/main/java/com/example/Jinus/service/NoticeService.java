@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,10 +51,10 @@ public class NoticeService {
     }
 
     // 공지 가져오기
-    public Map<Integer, Map<String, String>> getNotice(int departmentId, int categoryId, String collegeEng) {
+    public Map<Integer, List<Map<String, String>>> getNotice(int departmentId, int categoryId, String collegeEng) {
         logger.info("getNotice 실행");
         logger.info("collegeEng:{}", collegeEng);
-        Map<Integer, Map<String, String>> noticesMap = new HashMap<>();
+        Map<Integer, List<Map<String, String>>> noticesMap = new HashMap<>();
 
         switch(collegeEng) {
             case "biz" -> {
@@ -62,12 +63,12 @@ public class NoticeService {
                 logger.info("biz-notices:{}", notices);
 
                 // 조회된 공지들을 해시맵에 저장
-                for (BizNoticeEntity notice : notices) {
-                    Map<String, String> noticeInfo = new HashMap<>();
-                    noticeInfo.put("title", notice.getTitle());
-                    noticeInfo.put("created_at", notice.getCreatedAt());
-                    noticesMap.put(notice.getCategoryId(), noticeInfo);
-                }
+//                for (BizNoticeEntity notice : notices) {
+//                    Map<String, String> noticeInfo = new HashMap<>();
+//                    noticeInfo.put("title", notice.getTitle());
+//                    noticeInfo.put("created_at", notice.getCreatedAt());
+//                    noticesMap.put(notice.getCategoryId(), noticeInfo);
+//                }
                 logger.info("biz-noticeInfo:{}", notices);
             }
             case "cals" -> {
@@ -76,12 +77,12 @@ public class NoticeService {
                 logger.info("cals-notices:{}", notices);
 
                 // 조회된 공지들을 해시맵에 저장
-                for (CalsNoticeEntity notice : notices) {
-                    Map<String, String> noticeInfo = new HashMap<>();
-                    noticeInfo.put("title", notice.getTitle());
-                    noticeInfo.put("created_at", notice.getCreatedAt());
-                    noticesMap.put(notice.getCategoryId(), noticeInfo);
-                }
+//                for (CalsNoticeEntity notice : notices) {
+//                    Map<String, String> noticeInfo = new HashMap<>();
+//                    noticeInfo.put("title", notice.getTitle());
+//                    noticeInfo.put("created_at", notice.getCreatedAt());
+//                    noticesMap.put(notice.getCategoryId(), noticeInfo);
+//                }
                 logger.info("cals-noticeInfo:{}", notices);
             }
             case "ce" -> {
@@ -90,12 +91,12 @@ public class NoticeService {
                 logger.info("ce-notices:{}", notices);
 
                 // 조회된 공지들을 해시맵에 저장
-                for (CeNoticeEntity notice : notices) {
-                    Map<String, String> noticeInfo = new HashMap<>();
-                    noticeInfo.put("title", notice.getTitle());
-                    noticeInfo.put("created_at", notice.getCreatedAt());
-                    noticesMap.put(notice.getCategoryId(), noticeInfo);
-                }
+//                for (CeNoticeEntity notice : notices) {
+//                    Map<String, String> noticeInfo = new HashMap<>();
+//                    noticeInfo.put("title", notice.getTitle());
+//                    noticeInfo.put("created_at", notice.getCreatedAt());
+//                    noticesMap.put(notice.getCategoryId(), noticeInfo);
+//                }
                 logger.info("ce-noticeInfo:{}", notices);
             }
             case "cns" -> {
@@ -104,12 +105,12 @@ public class NoticeService {
                 logger.info("cns-notices:{}", notices);
 
                 // 조회된 공지들을 해시맵에 저장
-                for (CnsNoticeEntity notice : notices) {
-                    Map<String, String> noticeInfo = new HashMap<>();
-                    noticeInfo.put("title", notice.getTitle());
-                    noticeInfo.put("created_at", notice.getCreatedAt());
-                    noticesMap.put(notice.getCategoryId(), noticeInfo);
-                }
+//                for (CnsNoticeEntity notice : notices) {
+//                    Map<String, String> noticeInfo = new HashMap<>();
+//                    noticeInfo.put("title", notice.getTitle());
+//                    noticeInfo.put("created_at", notice.getCreatedAt());
+//                    noticesMap.put(notice.getCategoryId(), noticeInfo);
+//                }
                 logger.info("cns-noticeInfo:{}", notices);
             }
             case "css" -> {
@@ -118,12 +119,12 @@ public class NoticeService {
                 logger.info("css-notices:{}", notices);
 
                 // 조회된 공지들을 해시맵에 저장
-                for (CssNoticeEntity notice : notices) {
-                    Map<String, String> noticeInfo = new HashMap<>();
-                    noticeInfo.put("title", notice.getTitle());
-                    noticeInfo.put("created_at", notice.getCreatedAt());
-                    noticesMap.put(notice.getCategoryId(), noticeInfo);
-                }
+//                for (CssNoticeEntity notice : notices) {
+//                    Map<String, String> noticeInfo = new HashMap<>();
+//                    noticeInfo.put("title", notice.getTitle());
+//                    noticeInfo.put("created_at", notice.getCreatedAt());
+//                    noticesMap.put(notice.getCategoryId(), noticeInfo);
+//                }
                 logger.info("css-noticeInfo:{}", notices);
             }
             case "etc" -> {
@@ -132,12 +133,12 @@ public class NoticeService {
                 logger.info("etc-notices:{}", notices);
 
                 // 조회된 공지들을 해시맵에 저장
-                for (EtcNoticeEntity notice : notices) {
-                    Map<String, String> noticeInfo = new HashMap<>();
-                    noticeInfo.put("title", notice.getTitle());
-                    noticeInfo.put("created_at", notice.getCreatedAt());
-                    noticesMap.put(notice.getCategoryId(), noticeInfo);
-                }
+//                for (EtcNoticeEntity notice : notices) {
+//                    Map<String, String> noticeInfo = new HashMap<>();
+//                    noticeInfo.put("title", notice.getTitle());
+//                    noticeInfo.put("created_at", notice.getCreatedAt());
+//                    noticesMap.put(notice.getCategoryId(), noticeInfo);
+//                }
                 logger.info("etc-noticeInfo:{}", notices);
             }
             case "inmun" -> {
@@ -146,27 +147,37 @@ public class NoticeService {
                 logger.info("inmun-notices:{}", notices);
 
                 // 조회된 공지들을 해시맵에 저장
-                for (InmunNoticeEntity notice : notices) {
-                    Map<String, String> noticeInfo = new HashMap<>();
-                    noticeInfo.put("title", notice.getTitle());
-                    noticeInfo.put("created_at", notice.getCreatedAt());
-                    noticesMap.put(notice.getCategoryId(), noticeInfo);
-                }
+//                for (InmunNoticeEntity notice : notices) {
+//                    Map<String, String> noticeInfo = new HashMap<>();
+//                    noticeInfo.put("title", notice.getTitle());
+//                    noticeInfo.put("created_at", notice.getCreatedAt());
+//                    noticesMap.put(notice.getCategoryId(), noticeInfo);
+//                }
                 logger.info("inmun-noticeInfo:{}", notices);
             }
             case "it" -> {
                 // categoryId와 departmentId가 모두 일치하는 공지를 조회
-                List<ItNoticeEntity> notices = itNoticeRepository.findByDepartmentIdAndCategoryId(departmentId, categoryId);
+//                List<ItNoticeEntity> notices = itNoticeRepository.findByDepartmentIdAndCategoryId(departmentId, categoryId);
+                List<ItNoticeEntity> notices = itNoticeRepository.findByCategoryId(categoryId);
+                logger.info("categoryId:{}", categoryId);
                 logger.info("it-notices:{}", notices);
+                logger.info("it-notices 개수:{}", notices.size());
 
+                int i = 0;
+                List<Map<String, String>> noticeList = new ArrayList<>(); // 공지 리스트
                 // 조회된 공지들을 해시맵에 저장
                 for (ItNoticeEntity notice : notices) {
-                    Map<String, String> noticeInfo = new HashMap<>();
+                    ++i;
+                    logger.info("notice:{}", i);
+                    logger.info("it-notice:{}", notice);
+                    Map<String, String> noticeInfo = new HashMap<>(); // 공지 객체 하나
                     noticeInfo.put("title", notice.getTitle());
                     noticeInfo.put("created_at", notice.getCreatedAt());
-                    noticesMap.put(notice.getCategoryId(), noticeInfo);
+                    noticeList.add(noticeInfo);
+                    logger.info("it-noticeInfo:{}", noticeInfo);
+                    noticesMap.put(notice.getCategoryId(), noticeList);
                 }
-                logger.info("it-noticeInfo:{}", notices);
+                logger.info("it-noticeList:{}", noticeList);
             }
             case "marsci" -> {
                 // categoryId와 departmentId가 모두 일치하는 공지를 조회
@@ -174,12 +185,12 @@ public class NoticeService {
                 logger.info("marsci-notices:{}", notices);
 
                 // 조회된 공지들을 해시맵에 저장
-                for (MarsciNoticeEntity notice : notices) {
-                    Map<String, String> noticeInfo = new HashMap<>();
-                    noticeInfo.put("title", notice.getTitle());
-                    noticeInfo.put("created_at", notice.getCreatedAt());
-                    noticesMap.put(notice.getCategoryId(), noticeInfo);
-                }
+//                for (MarsciNoticeEntity notice : notices) {
+//                    Map<String, String> noticeInfo = new HashMap<>();
+//                    noticeInfo.put("title", notice.getTitle());
+//                    noticeInfo.put("created_at", notice.getCreatedAt());
+//                    noticesMap.put(notice.getCategoryId(), noticeList);
+//                }
                 logger.info("marsci-noticeInfo:{}", notices);
             }
             case "sadae" -> {
@@ -188,17 +199,16 @@ public class NoticeService {
                 logger.info("sadae-notices:{}", notices);
 
                 // 조회된 공지들을 해시맵에 저장
-                for (SadaeNoticeEntity notice : notices) {
-                    Map<String, String> noticeInfo = new HashMap<>();
-                    noticeInfo.put("title", notice.getTitle());
-                    noticeInfo.put("created_at", notice.getCreatedAt());
-                    noticesMap.put(notice.getCategoryId(), noticeInfo);
-                }
+//                for (SadaeNoticeEntity notice : notices) {
+//                    Map<String, String> noticeInfo = new HashMap<>();
+//                    noticeInfo.put("title", notice.getTitle());
+//                    noticeInfo.put("created_at", notice.getCreatedAt());
+//                    noticesMap.put(notice.getCategoryId(), noticeInfo);
+//                }
                 logger.info("sadae-noticeInfo:{}", notices);
             }
             default -> logger.error("NoticeService: 공지를 찾을 수 없습니다.");
         }
-        logger.info("noticesMap:{}", noticesMap);
         return noticesMap;
     }
 }

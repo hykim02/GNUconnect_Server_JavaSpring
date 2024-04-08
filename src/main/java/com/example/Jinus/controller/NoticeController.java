@@ -1,6 +1,7 @@
 package com.example.Jinus.controller;
 
 import com.example.Jinus.dto.request.NoticeRequestDto;
+import com.example.Jinus.dto.request.*;
 import com.example.Jinus.dto.response.NoticeResponseDto;
 import com.example.Jinus.service.*;
 import org.slf4j.Logger;
@@ -49,7 +50,7 @@ public class NoticeController {
 
         List<Integer> categoryIdList = new ArrayList<>();
         List<String> categoryTypeList = new ArrayList<>();
-        Map<Integer, Map<String, String>> noticeMap = new HashMap<>();
+        Map<Integer, List<Map<String, String>>> noticeMap = new HashMap<>();
 
 //        int departmentId = userService.getDepartmentId(userId); // 학과 찾기
         int departmentId = 58;
@@ -77,9 +78,6 @@ public class NoticeController {
             noticeMap = noticeService.getNotice(departmentId, categoryId, collegeEng);
             logger.info("noticeMap:{}", noticeMap);
         }
-
-        // response 형식에 데이터 넣기
-        List<NoticeResponseDto.TemplateDTO.CarouselItemDTO> carouselItems = new ArrayList<>();
 
         return userId;
     }

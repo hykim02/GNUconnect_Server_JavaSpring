@@ -7,5 +7,5 @@ import java.util.List;
 
 @Repository
 public interface ItNoticeRepository extends JpaRepository<ItNoticeEntity, Integer> {
-    List<ItNoticeEntity> findByDepartmentIdAndCategoryId(int departmentId, int categoryId);
+    List<ItNoticeEntity> findByCategoryId(int categoryId);
 }

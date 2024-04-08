@@ -11,6 +11,9 @@ import lombok.Setter;
 @Table(name = "it-notice")
 public class ItNoticeEntity {
     @Id
+    @Column(name = "id")
+    private int id;
+
     @Column(name = "department_id")
     private int departmentId;
 
