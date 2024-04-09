@@ -1,8 +1,7 @@
 package com.example.Jinus.controller;
 
-import com.example.Jinus.dto.request.NoticeRequestDto;
-import com.example.Jinus.dto.request.*;
-import com.example.Jinus.dto.response.NoticeResponseDto;
+import com.example.Jinus.dto.request.RequestDto;
+import com.example.Jinus.dto.response.ResponseDto;
 import com.example.Jinus.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +42,13 @@ public class NoticeController {
 
 
     @PostMapping("/department-notice")
-    public String handleRequest(@RequestBody NoticeRequestDto noticeRequestDto) {
+    public void handleRequest(@RequestBody RequestDto noticeRequestDto) {
+        findNotice(noticeRequestDto);
+
+
+    }
+
+    public void findNotice(@RequestBody RequestDto noticeRequestDto) {
         String userId = noticeRequestDto.getUserRequest().getUser().getId();
         logger.info("handleRequest 실행");
         logger.info("userId: {}", userId);
@@ -82,7 +87,5 @@ public class NoticeController {
             noticeMap = noticeService.getNotice(departmentId, categoryId, collegeEng);
             logger.info("noticeMap:{}", noticeMap);
         }
-
-        return userId;
     }
 }

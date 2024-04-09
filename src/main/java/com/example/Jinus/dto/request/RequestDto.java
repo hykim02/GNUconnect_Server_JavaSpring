@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class NoticeRequestDto {
+public class RequestDto {
     private UserRequest userRequest;
 
     // UserRequest와 User 클래스를 public으로 선언
