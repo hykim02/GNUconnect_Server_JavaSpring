@@ -25,4 +25,7 @@ public class ItNoticeEntity {
 
     @Column(name = "created_at")
     private String createdAt;
+
+    @Column(name = "ntt_sn")
+    private Long nttSn;
 }

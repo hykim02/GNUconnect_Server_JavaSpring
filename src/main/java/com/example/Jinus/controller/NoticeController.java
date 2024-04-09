@@ -52,8 +52,7 @@ public class NoticeController {
         List<String> categoryTypeList = new ArrayList<>();
         Map<Integer, List<Map<String, String>>> noticeMap = new HashMap<>();
 
-//        int departmentId = userService.getDepartmentId(userId); // 학과 찾기
-        int departmentId = 58;
+        int departmentId = userService.getDepartmentId(userId); // 학과 찾기
         int collegeId = departmentService.getCollegeId(departmentId); // 단과대학 찾기
         String collegeEng = collegeService.getCollegeName(collegeId); // 영문명 찾기(테이블 조회 위함)
 
@@ -61,13 +60,18 @@ public class NoticeController {
         logger.info("collegeId: {}", collegeId); // 단과대학id
         logger.info("collegeEng: {}", collegeEng); // 단과대학 영문명
 
-        Map<Integer, String> categories = categoryService.getCategory(departmentId, collegeEng); // 카테고리 찾기
+        Map<Integer, Map<String, String>> categories = categoryService.getCategory(departmentId, collegeEng); // 카테고리 찾기
 
         // 카테고리 id 추출
         categories.forEach((key, value) -> {
             // key와 value를 사용하여 작업 수행
             categoryIdList.add(key);
-            categoryTypeList.add(value);
+
+            value.forEach((key2, value2) -> {
+                if(key2.equals("category")) {
+                    categoryTypeList.add(value2);
+                }
+            });
         });
 
         logger.info("categoryIdList: {}", categoryIdList);

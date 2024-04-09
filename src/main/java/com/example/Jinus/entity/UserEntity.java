@@ -7,10 +7,10 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "user")
+@Table(name = "kakao-user")
 public class UserEntity {
     @Id
-    @Column(name = "kakao_id")
+    @Column(name = "id")
     private String kakaoId;
 
     @Column(name = "department_id")

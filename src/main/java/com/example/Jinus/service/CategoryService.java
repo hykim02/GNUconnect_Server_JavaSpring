@@ -49,11 +49,11 @@ public class CategoryService {
         logger.info("CategoryService 실행");
     }
 
-    public Map<Integer, String> getCategory(int departmentId, String collegeEng) {
+    public Map<Integer, Map<String, String>> getCategory(int departmentId, String collegeEng) {
         logger.info("getCategory 실행");
         logger.info("collegeEng: {}", collegeEng);
         // 결과를 담을 해시맵 생성
-        Map<Integer, String> categoryMap = new HashMap<>();
+        Map<Integer, Map<String, String>> categoryMap = new HashMap<>();
 
         switch(collegeEng) {
             case "biz" -> {
@@ -62,88 +62,94 @@ public class CategoryService {
                 logger.info("biz: {}", bizCategoryEntities.toString());
 
                 // 리스트에서 각 행을 순회하면서 id와 category를 해시맵에 저장
-                for (BizCategoryEntity entity : bizCategoryEntities) {
-                    categoryMap.put(entity.getId(), entity.getCategory());
-                }
+//                for (BizCategoryEntity entity : bizCategoryEntities) {
+//                    categoryMap.put(entity.getId(), entity.getCategory());
+//                }
             }
             case "cals" -> {
                 List<CalsCategoryEntity> calsCategoryEntities = calsCategoryRepository.findByDepartmentId(departmentId);
                 logger.info("cals: {}", calsCategoryEntities.toString());
 
-                for (CalsCategoryEntity entity : calsCategoryEntities) {
-                    categoryMap.put(entity.getId(), entity.getCategory());
-                }
+//                for (CalsCategoryEntity entity : calsCategoryEntities) {
+//                    categoryMap.put(entity.getId(), entity.getCategory());
+//                }
             }
             case "ce" -> {
                 List<CeCategoryEntity> ceCategoryEntities = ceCategoryRepository.findByDepartmentId(departmentId);
                 logger.info("ce: {}", ceCategoryEntities.toString());
 
-                for (CeCategoryEntity entity : ceCategoryEntities) {
-                    categoryMap.put(entity.getId(), entity.getCategory());
-                }
+//                for (CeCategoryEntity entity : ceCategoryEntities) {
+//                    categoryMap.put(entity.getId(), entity.getCategory());
+//                }
             }
             case "cns" -> {
                 List<CnsCategoryEntity> cnsCategoryEntities = cnsCategoryRepository.findByDepartmentId(departmentId);
                 logger.info("cns: {}", cnsCategoryEntities.toString());
 
-                for (CnsCategoryEntity entity : cnsCategoryEntities) {
-                    categoryMap.put(entity.getId(), entity.getCategory());
-                }
+//                for (CnsCategoryEntity entity : cnsCategoryEntities) {
+//                    categoryMap.put(entity.getId(), entity.getCategory());
+//                }
             }
             case "css" -> {
                 List<CssCategoryEntity> cssCategoryEntities = cssCategoryRepository.findByDepartmentId(departmentId);
                 logger.info("css: {}", cssCategoryEntities.toString());
 
-                for (CssCategoryEntity entity : cssCategoryEntities) {
-                    categoryMap.put(entity.getId(), entity.getCategory());
-                }
+//                for (CssCategoryEntity entity : cssCategoryEntities) {
+//                    categoryMap.put(entity.getId(), entity.getCategory());
+//                }
             }
             case "etc" -> {
                 List<EtcCategoryEntity> etcCategoryEntities = etcCategoryRepository.findByDepartmentId(departmentId);
                 logger.info("etc: {}", etcCategoryEntities.toString());
 
-                for (EtcCategoryEntity entity : etcCategoryEntities) {
-                    categoryMap.put(entity.getId(), entity.getCategory());
-                }
+//                for (EtcCategoryEntity entity : etcCategoryEntities) {
+//                    categoryMap.put(entity.getId(), entity.getCategory());
+//                }
             }
             case "inmun" -> {
                 List<InmunCategoryEntity> inmunCategoryEntities = inmunCategoryRepository.findByDepartmentId(departmentId);
                 logger.info("inmun: {}", inmunCategoryEntities.toString());
 
-                for (InmunCategoryEntity entity : inmunCategoryEntities) {
-                    categoryMap.put(entity.getId(), entity.getCategory());
-                }
+//                for (InmunCategoryEntity entity : inmunCategoryEntities) {
+//                    categoryMap.put(entity.getId(), entity.getCategory());
+//                }
             }
             case "it" -> {
                 List<ItCategoryEntity> itCategoryEntities = itCategoryRepository.findByDepartmentId(departmentId);
                 logger.info("it: {}", itCategoryEntities.toString());
 
                 for (ItCategoryEntity entity : itCategoryEntities) {
+                    Map<String, String> map = new HashMap<>();
                     logger.info("entity.getId():{}", entity.getId());
                     logger.info("entity.getCategory():{}", entity.getCategory());
-                    categoryMap.put(entity.getId(), entity.getCategory());
+                    logger.info("entity.getMi():{}", entity.getMi());
+                    logger.info("entity.getBbsId():{}", entity.getBbsId());
+                    map.put("category", entity.getCategory());
+                    map.put("mi", String.valueOf(entity.getMi()));
+                    map.put("bbs_id", String.valueOf(entity.getBbsId()));
+                    categoryMap.put(entity.getId(), map);
                 }
             }
             case "marsci" -> {
                 List<MarsciCategoryEntity> marsciCategoryEntities = marsciCategoryRepository.findByDepartmentId(departmentId);
                 logger.info("marsci: {}", marsciCategoryEntities.toString());
 
-                for (MarsciCategoryEntity entity : marsciCategoryEntities) {
-                    categoryMap.put(entity.getId(), entity.getCategory());
-                }
+//                for (MarsciCategoryEntity entity : marsciCategoryEntities) {
+//                    categoryMap.put(entity.getId(), entity.getCategory());
+//                }
             }
             case "sadae" -> {
                 List<SadaeCategoryEntity> sadaeCategoryEntities = sadaeCategoryRepository.findByDepartmentId(departmentId);
                 logger.info("sadae: {}", sadaeCategoryEntities.toString());
 
-                for (SadaeCategoryEntity entity : sadaeCategoryEntities) {
-                    categoryMap.put(entity.getId(), entity.getCategory());
-                }
+//                for (SadaeCategoryEntity entity : sadaeCategoryEntities) {
+//                    categoryMap.put(entity.getId(), entity.getCategory());
+//                }
             }
             default -> logger.error("CategoryService: category를 찾을 수 없습니다.");
         }
 
-        logger.info("categoryMap: {}", categoryMap.toString());
+        logger.info("categoryMap: {}", categoryMap);
         // 해시맵 반환
         return categoryMap;
     }
