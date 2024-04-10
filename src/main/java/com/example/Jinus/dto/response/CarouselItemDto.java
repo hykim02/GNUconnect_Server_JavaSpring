@@ -7,12 +7,12 @@ import java.util.List;
 
 @Getter
 @Setter
-public class CardItemDto {
+public class CarouselItemDto {
     private HeaderDto header;
     private List<ListItemDto> items;
     private List<ButtonDto> buttons;
 
-    public CardItemDto(HeaderDto header, List<ListItemDto> items, List<ButtonDto> buttons) {
+    public CarouselItemDto(HeaderDto header, List<ListItemDto> items, List<ButtonDto> buttons) {
         this.header = header;
         this.items = items;
         this.buttons = buttons;

@@ -19,9 +19,9 @@ public class ResponseDto {
     @Getter
     @Setter
     public static class TemplateDTO {
-        private List<CardTypeDto> outputs;
+        private List<ComponentDto> outputs;
 
-        public TemplateDTO(List<CardTypeDto> outputs) {
+        public TemplateDTO(List<ComponentDto> outputs) {
             this.outputs = outputs;
         }
     }

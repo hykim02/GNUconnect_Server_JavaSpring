@@ -7,20 +7,20 @@ import java.util.List;
 
 @Getter
 @Setter
-public class CardTypeDto {
-    private CarouselDto carousel;
+public class ComponentDto {
+    private CarouselDto component;
 
-    public CardTypeDto(CarouselDto carousel) {
-        this.carousel = carousel;
+    public ComponentDto(CarouselDto component) {
+        this.component = component;
     }
 
     @Getter
     @Setter
     public static class CarouselDto {
         private String type;
-        private List<CardItemDto> items;
+        private List<CarouselItemDto> items;
 
-        public CarouselDto(String type, List<CardItemDto> items) {
+        public CarouselDto(String type, List<CarouselItemDto> items) {
             this.type = type;
             this.items = items;
         }

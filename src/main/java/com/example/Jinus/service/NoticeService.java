@@ -51,10 +51,10 @@ public class NoticeService {
     }
 
     // 공지 가져오기
-    public Map<Integer, List<Map<String, String>>> getNotice(int departmentId, int categoryId, String collegeEng) {
+    public List<Map<String, String>> getNotice(int departmentId, int categoryId, String collegeEng) {
         logger.info("getNotice 실행");
         logger.info("collegeEng:{}", collegeEng);
-        Map<Integer, List<Map<String, String>>> noticesMap = new HashMap<>();
+        List<Map<String, String>> noticeList = new ArrayList<>(); // 공지 리스트
 
         switch(collegeEng) {
             case "biz" -> {
@@ -164,7 +164,6 @@ public class NoticeService {
                 logger.info("it-notices 개수:{}", notices.size());
 
                 int i = 0;
-                List<Map<String, String>> noticeList = new ArrayList<>(); // 공지 리스트
                 // 조회된 공지들을 해시맵에 저장
                 for (ItNoticeEntity notice : notices) {
                     ++i;
@@ -176,7 +175,7 @@ public class NoticeService {
                     noticeInfo.put("ntt_sn", String.valueOf(notice.getNttSn()));
                     noticeList.add(noticeInfo);
                     logger.info("it-noticeInfo:{}", noticeInfo);
-                    noticesMap.put(notice.getCategoryId(), noticeList);
+//                    noticesMap.put(notice.getCategoryId(), noticeList);
                 }
                 logger.info("it-noticeList:{}", noticeList);
             }
@@ -210,6 +209,6 @@ public class NoticeService {
             }
             default -> logger.error("NoticeService: 공지를 찾을 수 없습니다.");
         }
-        return noticesMap;
+        return noticeList;
     }
 }

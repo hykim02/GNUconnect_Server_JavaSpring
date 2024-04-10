@@ -18,6 +18,10 @@ public class CollegeService {
         logger.info("CollegeService 실행");
     }
 
+    public List<String> findAllUsers() {
+        return collegeRepository.findCollegeEn();
+    }
+
     public String getCollegeName(int collegeId) {
         logger.info("getCollegeName 실행");
         CollegeEntity collegeEntity = collegeRepository.findById(collegeId).orElse(null);
@@ -32,7 +36,5 @@ public class CollegeService {
         }
     }
 
-    public List<String> findAllUsers() {
-        return collegeRepository.findCollegeEn();
-    }
+
 }

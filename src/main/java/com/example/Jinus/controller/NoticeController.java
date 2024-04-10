@@ -1,7 +1,7 @@
 package com.example.Jinus.controller;
 
 import com.example.Jinus.dto.request.RequestDto;
-import com.example.Jinus.dto.response.ResponseDto;
+import com.example.Jinus.dto.response.*;
 import com.example.Jinus.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +43,6 @@ public class NoticeController {
 
     @PostMapping("/department-notice")
     public void handleRequest(@RequestBody RequestDto noticeRequestDto) {
-        findNotice(noticeRequestDto);
 
 
     }
@@ -55,6 +54,7 @@ public class NoticeController {
 
         List<Integer> categoryIdList = new ArrayList<>();
         List<String> categoryTypeList = new ArrayList<>();
+        List<Map<String, String>> noticeList;
         Map<Integer, List<Map<String, String>>> noticeMap = new HashMap<>();
 
         int departmentId = userService.getDepartmentId(userId); // 학과 찾기
@@ -84,8 +84,41 @@ public class NoticeController {
 
         // 공지 가져오기
         for (int categoryId : categoryIdList) {
-            noticeMap = noticeService.getNotice(departmentId, categoryId, collegeEng);
-            logger.info("noticeMap:{}", noticeMap);
+            noticeList = noticeService.getNotice(departmentId, categoryId, collegeEng);
+            noticeMap.put(categoryId, noticeList);
         }
+        logger.info("noticeMap: {}", noticeMap);
+
+    }
+
+
+    public void noticeResponse(Map<Integer, List<Map<String, String>>> noticeMap) {
+        // response
+        String version;
+        ResponseDto.TemplateDTO template;
+        List<ComponentDto> outputs;
+
+        // component type
+        ComponentDto cardTypeDto;
+        String carouselType;
+        List<CarouselItemDto> carouselItems; // 카테고리 개수만큼 생성
+
+        // carousel items
+        CarouselItemDto.HeaderDto header;
+        List<ListItemDto> listItems; // 공지 4개씩
+        List<ButtonDto> buttonDto;
+
+        // listcard item
+        String title;
+        String description;
+        ListItemDto.LinkItemDto link;
+
+        // link
+        String web;
+
+        // button
+        String label;
+        String action;
+        String webLinkUrl;
     }
 }

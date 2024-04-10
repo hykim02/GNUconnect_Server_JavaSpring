@@ -6,7 +6,9 @@ import com.example.Jinus.service.CollegeService;
 import com.example.Jinus.service.DepartmentService;
 import com.example.Jinus.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -14,8 +16,8 @@ import java.util.List;
 @RestController
 public class TestController {
 
-    private final UserService userService;
     private final CollegeService collegeService;
+    private final UserService userService;
     private final DepartmentService departmentService;
 
     @Autowired
@@ -27,15 +29,18 @@ public class TestController {
         this.departmentService = departmentService;
     }
 
+    @GetMapping("/colleges")
+    public List<String> getAllColleges() {
+        return collegeService.findAllUsers();
+    }
+
+
     @GetMapping("/users")
     public List<UserEntity> getAllUsers() {
         return userService.findAllUsers();
     }
 
-    @GetMapping("/colleges")
-    public List<String> getAllColleges() {
-        return collegeService.findAllUsers();
-    }
+
 
     @GetMapping("/departments")
     public List<DepartmentEntity> getAllDepartments() {
