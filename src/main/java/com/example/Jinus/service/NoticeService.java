@@ -6,10 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class NoticeService {
@@ -51,7 +50,7 @@ public class NoticeService {
     }
 
     // 공지 가져오기
-    public List<Map<String, String>> getNotice(int departmentId, int categoryId, String collegeEng) {
+    public List<Map<String, String>> getNotice(int departmentId, int categoryId, String collegeEng) throws ParseException {
         logger.info("getNotice 실행");
         logger.info("collegeEng:{}", collegeEng);
         List<Map<String, String>> noticeList = new ArrayList<>(); // 공지 리스트
@@ -177,7 +176,10 @@ public class NoticeService {
                     logger.info("it-noticeInfo:{}", noticeInfo);
 //                    noticesMap.put(notice.getCategoryId(), noticeList);
                 }
+                List<Map<String, String>> sortedNoticeList = sortDates(noticeList);
                 logger.info("it-noticeList:{}", noticeList);
+                logger.info("it-sortedNoticeList:{}", sortedNoticeList);
+
             }
             case "marsci" -> {
                 // categoryId와 departmentId가 모두 일치하는 공지를 조회
@@ -209,6 +211,12 @@ public class NoticeService {
             }
             default -> logger.error("NoticeService: 공지를 찾을 수 없습니다.");
         }
+        return noticeList;
+    }
+
+    public static List<Map<String, String>> sortDates(List<Map<String, String>> noticeList) {
+        // ntt_sn 값을 큰 값부터 작은 값 순으로 데이터를 정렬
+        noticeList.sort(Comparator.comparingInt((Map<String, String> o) -> Integer.parseInt(o.get("ntt_sn"))).reversed());
         return noticeList;
     }
 }

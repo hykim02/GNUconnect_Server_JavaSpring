@@ -15,14 +15,4 @@ public class ListItemDto {
         this.description = description;
         this.link = link;
     }
-
-    @Getter
-    @Setter
-    public static class LinkItemDto {
-        private String web;
-
-        public LinkItemDto(String web) {
-            this.web = web;
-        }
-    }
 }

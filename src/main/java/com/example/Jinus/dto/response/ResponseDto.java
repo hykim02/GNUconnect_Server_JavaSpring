@@ -9,20 +9,10 @@ import java.util.List;
 @Setter
 public class ResponseDto {
     private String version;
-    private TemplateDTO template;
+    private TemplateDto template;
 
-    public ResponseDto(String version, TemplateDTO template) {
+    public ResponseDto(String version, TemplateDto template) {
         this.version = version;
         this.template = template;
-    }
-
-    @Getter
-    @Setter
-    public static class TemplateDTO {
-        private List<ComponentDto> outputs;
-
-        public TemplateDTO(List<ComponentDto> outputs) {
-            this.outputs = outputs;
-        }
     }
 }

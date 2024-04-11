@@ -17,14 +17,4 @@ public class CarouselItemDto {
         this.items = items;
         this.buttons = buttons;
     }
-
-    @Getter
-    @Setter
-    public static class HeaderDto {
-        private String title;
-
-        public HeaderDto(String title) {
-            this.title = title;
-        }
-    }
 }
