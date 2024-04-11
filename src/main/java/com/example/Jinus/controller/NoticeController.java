@@ -13,10 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 public class NoticeController {
@@ -89,68 +86,76 @@ public class NoticeController {
 
     public String noticeResponse(Map<Integer, List<Map<String, String>>> noticeMap,
                                  Map<Integer, Map<String, String>> categories) {
-        // response
-        List<ComponentDto> outputs = new ArrayList<>();
         // component type
         List<CarouselItemDto> carouselItems = new ArrayList<>(); // 카테고리 개수만큼 생성
-        // carousel items
-        List<ListItemDto> listItems = new ArrayList<>(); // 공지 4개씩
-        List<ButtonDto> buttonDto = new ArrayList<>();
+        String jsonResponse;
 
-        final String[] jsonResponse = new String[1];
-
+        logger.info("categories.forEach문 시작");
         // 카테고리 생성
         categories.forEach((categoryId, type) -> {
             // 카테고리 제목 생성
+            logger.info("categoryId: {}", categoryId);
+            logger.info("type: {}", type);
             String categoryType = type.get("category");
             String mi = type.get("mi");
             String bbsId = type.get("bbs_id");
             HeaderDto header = new HeaderDto(categoryType);
 
-            // 공지 리스트 생성
-            noticeMap.forEach((id, noticeList) -> {
-                if(categoryId.equals(id)) {
-                    noticeList.stream().limit(4).forEach(notice -> {
-                        String title = notice.get("title");
-                        String createdAt = notice.get("created_at");
-                        String nttSn = notice.get("ntt_sn");
-                        LinkItemDto detailLink = new LinkItemDto(noticeDetailUrl(mi, bbsId, nttSn)); // 링크 객체 생성
-                        ListItemDto noticeListItem = new ListItemDto(title, createdAt, detailLink);
-                        listItems.add(noticeListItem);
-                    });
-                }
-            });
+            logger.info("if문 시작");
+            // 동일한 카테고리 id가 존재한다면
+            if(noticeMap.containsKey(categoryId)) {
+                List<Map<String, String>> noticeList = noticeMap.get(categoryId);
+                logger.info("noticeList: {}", noticeList);
+                List<ListItemDto> listItems = new ArrayList<>(); // 공지 4개씩
+                // 공지 리스트 생성
+                noticeList.stream().limit(4).forEach(notice -> {
+                    logger.info("notice: {}", notice);
+                    String title = notice.get("title");
+                    String createdAt = notice.get("created_at");
+                    String nttSn = notice.get("ntt_sn");
+                    LinkItemDto detailLink = new LinkItemDto(noticeDetailUrl(mi, bbsId, nttSn)); // 링크 객체 생성
+                    ListItemDto noticeListItem = new ListItemDto(title, createdAt, detailLink);
+                    listItems.add(noticeListItem);
+                });
+                logger.info("listItems: {}", listItems);
 
-            // 공지 버튼 생성
-            ButtonDto button = new ButtonDto("더보기", "webLink", noticeCategoryUrl(mi, bbsId));
-            buttonDto.add(button); // 버튼 1개
+                List<ButtonDto> buttonDto = new ArrayList<>();
+                // 공지 버튼 생성
+                ButtonDto button = new ButtonDto("더보기", "webLink", noticeCategoryUrl(mi, bbsId));
+                buttonDto.add(button); // 버튼 1개
 
-            // 캐로셀 아이템
-            CarouselItemDto carouselItem = new CarouselItemDto(header, listItems, buttonDto);
-            carouselItems.add(carouselItem);
-
-            // 캐로셀 컴포넌트
-            CarouselDto carouselComponent = new CarouselDto("listCard", carouselItems);
-            ComponentDto cardTypeDto = new ComponentDto(carouselComponent);
-            outputs.add(cardTypeDto);
-            TemplateDto template = new TemplateDto(outputs);
-            ResponseDto responseDto = new ResponseDto("2.0", template);
-
-            // ObjectMapper를 사용하여 ResponseDto 객체를 JSON 문자열로 변환
-            ObjectMapper objectMapper = new ObjectMapper();
-
-            try {
-                jsonResponse[0] = objectMapper.writeValueAsString(responseDto);
-            } catch (JsonProcessingException e) {
-                // JSON 변환 중 오류가 발생한 경우 처리
-                e.printStackTrace();
-                jsonResponse[0] = "{}"; // 빈 JSON 응답 반환
+                // 캐로셀 아이템
+                CarouselItemDto carouselItem = new CarouselItemDto(header, listItems, buttonDto);
+                carouselItems.add(carouselItem);
             }
-
-            // jsonResponse를 클라이언트로 보내는 코드
-            System.out.println(jsonResponse[0]);
+            logger.info("if문 끝");
         });
-        return jsonResponse[0];
+        logger.info("categories.forEach문 끝");
+
+        List<ComponentDto> outputs = new ArrayList<>();
+
+        // 캐로셀 컴포넌트
+        CarouselDto carouselComponent = new CarouselDto("listCard", carouselItems);
+        ComponentDto cardTypeDto = new ComponentDto(carouselComponent);
+        outputs.add(cardTypeDto);
+
+        TemplateDto template = new TemplateDto(outputs);
+        ResponseDto responseDto = new ResponseDto("2.0", template);
+
+        // ObjectMapper를 사용하여 ResponseDto 객체를 JSON 문자열로 변환
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            jsonResponse = objectMapper.writeValueAsString(responseDto);
+        } catch (JsonProcessingException e) {
+            // JSON 변환 중 오류가 발생한 경우 처리
+            e.printStackTrace();
+            jsonResponse = "{}"; // 빈 JSON 응답 반환(오류 메시지 출력하기)
+        }
+
+        // jsonResponse를 클라이언트로 보내는 코드
+        System.out.println(jsonResponse);
+        return jsonResponse;
     }
 
     public String noticeDetailUrl(String mi, String bbsId, String nttSn) {

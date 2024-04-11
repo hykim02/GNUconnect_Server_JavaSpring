@@ -178,8 +178,6 @@ public class NoticeService {
                 }
                 List<Map<String, String>> sortedNoticeList = sortDates(noticeList);
                 logger.info("it-noticeList:{}", noticeList);
-                logger.info("it-sortedNoticeList:{}", sortedNoticeList);
-
             }
             case "marsci" -> {
                 // categoryId와 departmentId가 모두 일치하는 공지를 조회
