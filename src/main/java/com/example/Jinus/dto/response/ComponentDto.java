@@ -8,10 +8,10 @@ import java.util.List;
 @Getter
 @Setter
 public class ComponentDto {
-    private CarouselDto component;
+    private CarouselDto carousel;
 
-    public ComponentDto(CarouselDto component) {
-        this.component = component;
+    public ComponentDto(CarouselDto carousel) {
+        this.carousel = carousel;
     }
 
     @Getter
