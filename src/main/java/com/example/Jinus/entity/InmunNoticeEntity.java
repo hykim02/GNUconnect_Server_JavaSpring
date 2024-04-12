@@ -12,6 +12,9 @@ import lombok.Setter;
 @Table(name = "inmun-notice")
 public class InmunNoticeEntity {
     @Id
+    @Column(name = "id")
+    private int id;
+
     @Column(name = "department_id")
     private int departmentId;
 
@@ -23,4 +26,7 @@ public class InmunNoticeEntity {
 
     @Column(name = "created_at")
     private String createdAt;
+
+    @Column(name = "ntt_sn")
+    private Long nttSn;
 }

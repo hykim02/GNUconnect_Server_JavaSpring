@@ -11,6 +11,9 @@ import lombok.Setter;
 @Table(name = "ce-notice")
 public class CeNoticeEntity {
     @Id
+    @Column(name = "id")
+    private int id;
+
     @Column(name = "department_id")
     private int departmentId;
 
@@ -22,4 +25,7 @@ public class CeNoticeEntity {
 
     @Column(name = "created_at")
     private String createdAt;
+
+    @Column(name = "ntt_sn")
+    private Long nttSn;
 }

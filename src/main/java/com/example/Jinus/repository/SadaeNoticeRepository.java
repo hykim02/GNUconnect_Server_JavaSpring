@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface SadaeNoticeRepository extends JpaRepository<SadaeNoticeEntity, Integer> {
-    List<SadaeNoticeEntity> findByDepartmentIdAndCategoryId(int departmentId, int categoryId);
+    List<SadaeNoticeEntity> findByCategoryId(int categoryId);
 }

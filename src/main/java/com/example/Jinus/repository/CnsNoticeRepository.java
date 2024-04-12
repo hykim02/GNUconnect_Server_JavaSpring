@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface CnsNoticeRepository extends JpaRepository<CnsNoticeEntity, Integer> {
-    List<CnsNoticeEntity> findByDepartmentIdAndCategoryId(int departmentId, int categoryId);
+    List<CnsNoticeEntity> findByCategoryId(int categoryId);
 }

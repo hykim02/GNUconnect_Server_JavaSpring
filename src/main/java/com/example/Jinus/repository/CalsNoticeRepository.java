@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface CalsNoticeRepository extends JpaRepository<CalsNoticeEntity, Integer> {
-    List<CalsNoticeEntity> findByDepartmentIdAndCategoryId(int departmentId, int categoryId);
+    List<CalsNoticeEntity> findByCategoryId(int categoryId);
 }

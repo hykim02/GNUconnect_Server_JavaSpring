@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface InmunNoticeRepository extends JpaRepository<InmunNoticeEntity, Integer> {
-    List<InmunNoticeEntity> findByDepartmentIdAndCategoryId(int departmentId, int categoryId);
+    List<InmunNoticeEntity> findByCategoryId(int categoryId);
 }

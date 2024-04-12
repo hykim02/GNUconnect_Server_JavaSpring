@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface EtcNoticeRepository extends JpaRepository<EtcNoticeEntity, Integer> {
-    List<EtcNoticeEntity> findByDepartmentIdAndCategoryId(int departmentId, int categoryId);
+    List<EtcNoticeEntity> findByCategoryId(int categoryId);
 }

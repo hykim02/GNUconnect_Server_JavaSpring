@@ -18,4 +18,10 @@ public class CeCategoryEntity {
 
     @Column(name = "department_id")
     private int departmentId;
+
+    @Column(name = "mi")
+    private int mi;
+
+    @Column(name = "bbs_id")
+    private int bbsId;
 }

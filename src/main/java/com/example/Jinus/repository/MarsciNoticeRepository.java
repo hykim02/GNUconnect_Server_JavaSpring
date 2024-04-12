@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface MarsciNoticeRepository extends JpaRepository<MarsciNoticeEntity, Integer> {
-    List<MarsciNoticeEntity> findByDepartmentIdAndCategoryId(int departmentId, int categoryId);
+    List<MarsciNoticeEntity> findByCategoryId(int categoryId);
 }

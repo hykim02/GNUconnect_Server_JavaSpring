@@ -57,62 +57,116 @@ public class CategoryService {
 
         switch(collegeEng) {
             case "biz" -> {
-                // bizCategoryRepository에서 departmentId에 해당하는 모든 행을 조회
                 List<BizCategoryEntity> bizCategoryEntities = bizCategoryRepository.findByDepartmentId(departmentId);
                 logger.info("biz: {}", bizCategoryEntities.toString());
 
-                // 리스트에서 각 행을 순회하면서 id와 category를 해시맵에 저장
-//                for (BizCategoryEntity entity : bizCategoryEntities) {
-//                    categoryMap.put(entity.getId(), entity.getCategory());
-//                }
+                for (BizCategoryEntity entity : bizCategoryEntities) {
+                    Map<String, String> map = new HashMap<>();
+                    logger.info("entity.getId():{}", entity.getId());
+                    logger.info("entity.getCategory():{}", entity.getCategory());
+                    logger.info("entity.getMi():{}", entity.getMi());
+                    logger.info("entity.getBbsId():{}", entity.getBbsId());
+                    map.put("category", entity.getCategory());
+                    map.put("mi", String.valueOf(entity.getMi()));
+                    map.put("bbs_id", String.valueOf(entity.getBbsId()));
+                    categoryMap.put(entity.getId(), map);
+                }
             }
             case "cals" -> {
                 List<CalsCategoryEntity> calsCategoryEntities = calsCategoryRepository.findByDepartmentId(departmentId);
                 logger.info("cals: {}", calsCategoryEntities.toString());
 
-//                for (CalsCategoryEntity entity : calsCategoryEntities) {
-//                    categoryMap.put(entity.getId(), entity.getCategory());
-//                }
+                for (CalsCategoryEntity entity : calsCategoryEntities) {
+                    Map<String, String> map = new HashMap<>();
+                    logger.info("entity.getId():{}", entity.getId());
+                    logger.info("entity.getCategory():{}", entity.getCategory());
+                    logger.info("entity.getMi():{}", entity.getMi());
+                    logger.info("entity.getBbsId():{}", entity.getBbsId());
+                    map.put("category", entity.getCategory());
+                    map.put("mi", String.valueOf(entity.getMi()));
+                    map.put("bbs_id", String.valueOf(entity.getBbsId()));
+                    categoryMap.put(entity.getId(), map);
+                }
             }
             case "ce" -> {
                 List<CeCategoryEntity> ceCategoryEntities = ceCategoryRepository.findByDepartmentId(departmentId);
                 logger.info("ce: {}", ceCategoryEntities.toString());
 
-//                for (CeCategoryEntity entity : ceCategoryEntities) {
-//                    categoryMap.put(entity.getId(), entity.getCategory());
-//                }
+                for (CeCategoryEntity entity : ceCategoryEntities) {
+                    Map<String, String> map = new HashMap<>();
+                    logger.info("entity.getId():{}", entity.getId());
+                    logger.info("entity.getCategory():{}", entity.getCategory());
+                    logger.info("entity.getMi():{}", entity.getMi());
+                    logger.info("entity.getBbsId():{}", entity.getBbsId());
+                    map.put("category", entity.getCategory());
+                    map.put("mi", String.valueOf(entity.getMi()));
+                    map.put("bbs_id", String.valueOf(entity.getBbsId()));
+                    categoryMap.put(entity.getId(), map);
+                }
             }
             case "cns" -> {
                 List<CnsCategoryEntity> cnsCategoryEntities = cnsCategoryRepository.findByDepartmentId(departmentId);
                 logger.info("cns: {}", cnsCategoryEntities.toString());
 
-//                for (CnsCategoryEntity entity : cnsCategoryEntities) {
-//                    categoryMap.put(entity.getId(), entity.getCategory());
-//                }
+                for (CnsCategoryEntity entity : cnsCategoryEntities) {
+                    Map<String, String> map = new HashMap<>();
+                    logger.info("entity.getId():{}", entity.getId());
+                    logger.info("entity.getCategory():{}", entity.getCategory());
+                    logger.info("entity.getMi():{}", entity.getMi());
+                    logger.info("entity.getBbsId():{}", entity.getBbsId());
+                    map.put("category", entity.getCategory());
+                    map.put("mi", String.valueOf(entity.getMi()));
+                    map.put("bbs_id", String.valueOf(entity.getBbsId()));
+                    categoryMap.put(entity.getId(), map);
+                }
             }
             case "css" -> {
                 List<CssCategoryEntity> cssCategoryEntities = cssCategoryRepository.findByDepartmentId(departmentId);
                 logger.info("css: {}", cssCategoryEntities.toString());
 
-//                for (CssCategoryEntity entity : cssCategoryEntities) {
-//                    categoryMap.put(entity.getId(), entity.getCategory());
-//                }
+                for (CssCategoryEntity entity : cssCategoryEntities) {
+                    Map<String, String> map = new HashMap<>();
+                    logger.info("entity.getId():{}", entity.getId());
+                    logger.info("entity.getCategory():{}", entity.getCategory());
+                    logger.info("entity.getMi():{}", entity.getMi());
+                    logger.info("entity.getBbsId():{}", entity.getBbsId());
+                    map.put("category", entity.getCategory());
+                    map.put("mi", String.valueOf(entity.getMi()));
+                    map.put("bbs_id", String.valueOf(entity.getBbsId()));
+                    categoryMap.put(entity.getId(), map);
+                }
             }
             case "etc" -> {
                 List<EtcCategoryEntity> etcCategoryEntities = etcCategoryRepository.findByDepartmentId(departmentId);
                 logger.info("etc: {}", etcCategoryEntities.toString());
 
-//                for (EtcCategoryEntity entity : etcCategoryEntities) {
-//                    categoryMap.put(entity.getId(), entity.getCategory());
-//                }
+                for (EtcCategoryEntity entity : etcCategoryEntities) {
+                    Map<String, String> map = new HashMap<>();
+                    logger.info("entity.getId():{}", entity.getId());
+                    logger.info("entity.getCategory():{}", entity.getCategory());
+                    logger.info("entity.getMi():{}", entity.getMi());
+                    logger.info("entity.getBbsId():{}", entity.getBbsId());
+                    map.put("category", entity.getCategory());
+                    map.put("mi", String.valueOf(entity.getMi()));
+                    map.put("bbs_id", String.valueOf(entity.getBbsId()));
+                    categoryMap.put(entity.getId(), map);
+                }
             }
             case "inmun" -> {
                 List<InmunCategoryEntity> inmunCategoryEntities = inmunCategoryRepository.findByDepartmentId(departmentId);
                 logger.info("inmun: {}", inmunCategoryEntities.toString());
 
-//                for (InmunCategoryEntity entity : inmunCategoryEntities) {
-//                    categoryMap.put(entity.getId(), entity.getCategory());
-//                }
+                for (InmunCategoryEntity entity : inmunCategoryEntities) {
+                    Map<String, String> map = new HashMap<>();
+                    logger.info("entity.getId():{}", entity.getId());
+                    logger.info("entity.getCategory():{}", entity.getCategory());
+                    logger.info("entity.getMi():{}", entity.getMi());
+                    logger.info("entity.getBbsId():{}", entity.getBbsId());
+                    map.put("category", entity.getCategory());
+                    map.put("mi", String.valueOf(entity.getMi()));
+                    map.put("bbs_id", String.valueOf(entity.getBbsId()));
+                    categoryMap.put(entity.getId(), map);
+                }
             }
             case "it" -> {
                 List<ItCategoryEntity> itCategoryEntities = itCategoryRepository.findByDepartmentId(departmentId);
@@ -134,17 +188,33 @@ public class CategoryService {
                 List<MarsciCategoryEntity> marsciCategoryEntities = marsciCategoryRepository.findByDepartmentId(departmentId);
                 logger.info("marsci: {}", marsciCategoryEntities.toString());
 
-//                for (MarsciCategoryEntity entity : marsciCategoryEntities) {
-//                    categoryMap.put(entity.getId(), entity.getCategory());
-//                }
+                for (MarsciCategoryEntity entity : marsciCategoryEntities) {
+                    Map<String, String> map = new HashMap<>();
+                    logger.info("entity.getId():{}", entity.getId());
+                    logger.info("entity.getCategory():{}", entity.getCategory());
+                    logger.info("entity.getMi():{}", entity.getMi());
+                    logger.info("entity.getBbsId():{}", entity.getBbsId());
+                    map.put("category", entity.getCategory());
+                    map.put("mi", String.valueOf(entity.getMi()));
+                    map.put("bbs_id", String.valueOf(entity.getBbsId()));
+                    categoryMap.put(entity.getId(), map);
+                }
             }
             case "sadae" -> {
                 List<SadaeCategoryEntity> sadaeCategoryEntities = sadaeCategoryRepository.findByDepartmentId(departmentId);
                 logger.info("sadae: {}", sadaeCategoryEntities.toString());
 
-//                for (SadaeCategoryEntity entity : sadaeCategoryEntities) {
-//                    categoryMap.put(entity.getId(), entity.getCategory());
-//                }
+                for (SadaeCategoryEntity entity : sadaeCategoryEntities) {
+                    Map<String, String> map = new HashMap<>();
+                    logger.info("entity.getId():{}", entity.getId());
+                    logger.info("entity.getCategory():{}", entity.getCategory());
+                    logger.info("entity.getMi():{}", entity.getMi());
+                    logger.info("entity.getBbsId():{}", entity.getBbsId());
+                    map.put("category", entity.getCategory());
+                    map.put("mi", String.valueOf(entity.getMi()));
+                    map.put("bbs_id", String.valueOf(entity.getBbsId()));
+                    categoryMap.put(entity.getId(), map);
+                }
             }
             default -> logger.error("CategoryService: category를 찾을 수 없습니다.");
         }
