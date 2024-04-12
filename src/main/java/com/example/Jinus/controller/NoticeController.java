@@ -57,6 +57,7 @@ public class NoticeController {
 
         int departmentId = userService.getDepartmentId(userId); // 학과 찾기
         int collegeId = departmentService.getCollegeId(departmentId); // 단과대학 찾기
+        String departmentEng = departmentService.getDepartmentEng(departmentId); // 학과 영문명 찾기(url 생성 위함)
         String collegeEng = collegeService.getCollegeName(collegeId); // 영문명 찾기(테이블 조회 위함)
 
         logger.info("departmentId: {}", departmentId); // 학과id
@@ -80,12 +81,13 @@ public class NoticeController {
             noticeMap.put(categoryId, noticeList);
         }
         logger.info("noticeMap: {}", noticeMap);
-        return noticeResponse(noticeMap, categories);
+        return noticeResponse(noticeMap, categories, departmentEng);
     }
 
 
     public String noticeResponse(Map<Integer, List<Map<String, String>>> noticeMap,
-                                 Map<Integer, Map<String, String>> categories) {
+                                 Map<Integer, Map<String, String>> categories,
+                                 String departmentEng) {
         // component type
         List<CarouselItemDto> carouselItems = new ArrayList<>(); // 카테고리 개수만큼 생성
         String jsonResponse;
@@ -113,7 +115,7 @@ public class NoticeController {
                     String title = notice.get("title");
                     String createdAt = notice.get("created_at");
                     String nttSn = notice.get("ntt_sn");
-                    LinkItemDto detailLink = new LinkItemDto(noticeDetailUrl(mi, bbsId, nttSn)); // 링크 객체 생성
+                    LinkItemDto detailLink = new LinkItemDto(noticeDetailUrl(departmentEng, mi, bbsId, nttSn)); // 링크 객체 생성
                     ListItemDto noticeListItem = new ListItemDto(title, createdAt, detailLink);
                     listItems.add(noticeListItem);
                 });
@@ -121,7 +123,7 @@ public class NoticeController {
 
                 List<ButtonDto> buttonDto = new ArrayList<>();
                 // 공지 버튼 생성
-                ButtonDto button = new ButtonDto("더보기", "webLink", noticeCategoryUrl(mi, bbsId));
+                ButtonDto button = new ButtonDto("더보기", "webLink", noticeCategoryUrl(departmentEng, mi, bbsId));
                 buttonDto.add(button); // 버튼 1개
 
                 // 캐로셀 아이템
@@ -158,13 +160,15 @@ public class NoticeController {
         return jsonResponse;
     }
 
-    public String noticeDetailUrl(String mi, String bbsId, String nttSn) {
-        String baseUrl = "https://www.gnu.ac.kr/cse/na/ntt/selectNttInfo.do?";
+    // 공지 상세페이지 주소
+    public String noticeDetailUrl(String departmentEng, String mi, String bbsId, String nttSn) {
+        String baseUrl = "https://www.gnu.ac.kr/" + departmentEng + "/na/ntt/selectNttInfo.do?";
         return baseUrl + "mi=" + mi + "&bbsId=" + bbsId + "&nttSn=" + nttSn;
     }
 
-    public String noticeCategoryUrl(String mi, String bbsId) {
-        String baseUrl = "https://www.gnu.ac.kr/cse/na/ntt/selectNttList.do?";
+    // 공지 카테고리 주소
+    public String noticeCategoryUrl(String departmentEng, String mi, String bbsId) {
+        String baseUrl = "https://www.gnu.ac.kr/" + departmentEng + "/na/ntt/selectNttList.do?";
         return baseUrl + "mi=" + mi + "&bbsId=" + bbsId;
     }
 }

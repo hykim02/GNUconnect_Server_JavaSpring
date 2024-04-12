@@ -15,4 +15,7 @@ public class DepartmentEntity {
 
     @Column(name = "college_id")
     private int collegeId;
+
+    @Column(name = "department_en")
+    private String departmentEn;
 }
