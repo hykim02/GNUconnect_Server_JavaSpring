@@ -6,9 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class CategoryService {
@@ -221,6 +219,27 @@ public class CategoryService {
 
         logger.info("categoryMap: {}", categoryMap);
         // 해시맵 반환
-        return categoryMap;
+        return sortCategories(categoryMap);
+    }
+
+    // 공지 카테고리 가나다순 정렬
+    public Map<Integer, Map<String, String>> sortCategories(Map<Integer, Map<String, String>> categoryMap) {
+        // 엔트리셋을 리스트로 변환
+        List<Map.Entry<Integer, Map<String, String>>> entryList = new ArrayList<>(categoryMap.entrySet());
+
+        // 정렬
+        Collections.sort(entryList, Comparator.comparing(e -> e.getValue().get("category")));
+
+        // 정렬된 결과를 담을 맵 생성
+        Map<Integer, Map<String, String>> sortedCategories = new LinkedHashMap<>();
+
+        // 정렬된 결과를 맵에 추가
+        for (Map.Entry<Integer, Map<String, String>> entry : entryList) {
+            sortedCategories.put(entry.getKey(), entry.getValue());
+        }
+
+        logger.info("sortedCategories: {}", sortedCategories);
+        // 정렬된 맵 반환
+        return sortedCategories;
     }
 }

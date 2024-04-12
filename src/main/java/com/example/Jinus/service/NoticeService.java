@@ -278,7 +278,7 @@ public class NoticeService {
             }
             default -> logger.error("NoticeService: 공지를 찾을 수 없습니다.");
         }
-        return noticeList;
+        return sortDates(noticeList);
     }
 
     public static List<Map<String, String>> sortDates(List<Map<String, String>> noticeList) {

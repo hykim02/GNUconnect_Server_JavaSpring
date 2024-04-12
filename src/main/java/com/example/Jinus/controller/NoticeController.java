@@ -81,6 +81,7 @@ public class NoticeController {
             noticeMap.put(categoryId, noticeList);
         }
         logger.info("noticeMap: {}", noticeMap);
+
         return noticeResponse(noticeMap, categories, departmentEng);
     }
 
@@ -114,9 +115,10 @@ public class NoticeController {
                     logger.info("notice: {}", notice);
                     String title = notice.get("title");
                     String createdAt = notice.get("created_at");
+                    String spltCreatedAt = createdAt.substring(0, 10);
                     String nttSn = notice.get("ntt_sn");
                     LinkItemDto detailLink = new LinkItemDto(noticeDetailUrl(departmentEng, mi, bbsId, nttSn)); // 링크 객체 생성
-                    ListItemDto noticeListItem = new ListItemDto(title, createdAt, detailLink);
+                    ListItemDto noticeListItem = new ListItemDto(title, spltCreatedAt, detailLink);
                     listItems.add(noticeListItem);
                 });
                 logger.info("listItems: {}", listItems);
