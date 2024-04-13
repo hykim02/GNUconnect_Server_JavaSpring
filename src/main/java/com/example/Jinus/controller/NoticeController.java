@@ -1,6 +1,6 @@
 package com.example.Jinus.controller;
 
-import com.example.Jinus.dto.request.RequestDto;
+import com.example.Jinus.dto.request.UserRequestDto;
 import com.example.Jinus.dto.response.*;
 import com.example.Jinus.service.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.awt.*;
 import java.text.ParseException;
 import java.util.*;
 import java.util.List;
@@ -44,11 +43,11 @@ public class NoticeController {
 
 
     @PostMapping("/department-notice")
-    public String handleRequest(@RequestBody RequestDto noticeRequestDto) throws ParseException {
+    public String handleRequest(@RequestBody UserRequestDto noticeRequestDto) throws ParseException {
         return findNotice(noticeRequestDto);
     }
 
-    public String findNotice(@RequestBody RequestDto noticeRequestDto) throws ParseException {
+    public String findNotice(@RequestBody UserRequestDto noticeRequestDto) throws ParseException {
         String userId = noticeRequestDto.getUserRequest().getUser().getId();
         logger.info("handleRequest 실행");
         logger.info("userId: {}", userId);
