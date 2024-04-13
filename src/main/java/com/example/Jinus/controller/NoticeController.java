@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.awt.*;
 import java.text.ParseException;
 import java.util.*;
+import java.util.List;
 
 @RestController
 public class NoticeController {
@@ -104,7 +106,6 @@ public class NoticeController {
             String bbsId = type.get("bbs_id");
             HeaderDto header = new HeaderDto(categoryType);
 
-            logger.info("if문 시작");
             // 동일한 카테고리 id가 존재한다면
             if(noticeMap.containsKey(categoryId)) {
                 List<Map<String, String>> noticeList = noticeMap.get(categoryId);
@@ -115,7 +116,7 @@ public class NoticeController {
                     logger.info("notice: {}", notice);
                     String title = notice.get("title");
                     String createdAt = notice.get("created_at");
-                    String spltCreatedAt = createdAt.substring(0, 10);
+                    String spltCreatedAt = createdAt.substring(0, 10); // 날짜 문자열 자르기
                     String nttSn = notice.get("ntt_sn");
                     LinkItemDto detailLink = new LinkItemDto(noticeDetailUrl(departmentEng, mi, bbsId, nttSn)); // 링크 객체 생성
                     ListItemDto noticeListItem = new ListItemDto(title, spltCreatedAt, detailLink);
@@ -132,9 +133,7 @@ public class NoticeController {
                 CarouselItemDto carouselItem = new CarouselItemDto(header, listItems, buttonDto);
                 carouselItems.add(carouselItem);
             }
-            logger.info("if문 끝");
         });
-        logger.info("categories.forEach문 끝");
 
         List<ComponentDto> outputs = new ArrayList<>();
 
