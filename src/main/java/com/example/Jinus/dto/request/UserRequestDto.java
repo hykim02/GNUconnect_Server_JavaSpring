@@ -8,20 +8,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserRequestDto {
-    private UserRequest userRequest;
-
-    // UserRequest와 User 클래스를 public으로 선언
-    @Getter
-    @Setter
-    public static class UserRequest {
-        private User user;
-
-        // User 클래스를 public으로 선언
-        @Getter
-        @Setter
-        public static class User {
-            private String id; // 사용자 bot id
-        }
-    }
+    private String timezone;
+    private UserParamsDto params;
+    private BlockDto block;
+    private String utterance;
+    private String lang;
+    private UserDto user;
 }
 

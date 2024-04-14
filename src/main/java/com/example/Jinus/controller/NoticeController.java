@@ -1,5 +1,8 @@
 package com.example.Jinus.controller;
 
+import com.example.Jinus.dto.request.ActionDto;
+import com.example.Jinus.dto.request.RequestDto;
+import com.example.Jinus.dto.request.UserDto;
 import com.example.Jinus.dto.request.UserRequestDto;
 import com.example.Jinus.dto.response.*;
 import com.example.Jinus.service.*;
@@ -8,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,14 +45,21 @@ public class NoticeController {
         this.noticeService = noticeService;
     }
 
-
-    @PostMapping("/department-notice")
-    public String handleRequest(@RequestBody UserRequestDto noticeRequestDto) throws ParseException {
-        return findNotice(noticeRequestDto);
+    @GetMapping("/chatbot-webhook")
+    public String handleWebhook(String jsonRequest) {
+        // 여기서는 전달된 JSON 요청을 그대로 반환합니다.
+        // 웹 페이지에서 요청 내용을 확인할 수 있습니다.
+        return jsonRequest;
     }
 
-    public String findNotice(@RequestBody UserRequestDto noticeRequestDto) throws ParseException {
-        String userId = noticeRequestDto.getUserRequest().getUser().getId();
+    @PostMapping("/department-notice")
+    public String handleRequest(@RequestBody String jsonRequest) throws ParseException {
+//        return findNotice(requestDto);
+        return jsonRequest;
+    }
+
+    public String findNotice(@RequestBody RequestDto requestDto) throws ParseException {
+        String userId = requestDto.getUserRequest().getUser().getId();
         logger.info("handleRequest 실행");
         logger.info("userId: {}", userId);
 
