@@ -3,6 +3,7 @@ package com.example.Jinus.controller;
 import com.example.Jinus.dto.request.RequestDto;
 import com.example.Jinus.dto.response.*;
 import com.example.Jinus.service.*;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -102,17 +103,19 @@ public class NoticeController {
         return noticeResponse(noticeMap, categories, departmentEng);
     }
 
-    // userId 존재하지 않는 경우 텍스트 메시지 리턴
+    // userId 존재하지 않는 경우 텍스트 메시지 리턴(예외처리)
     public String simpleTextResponse() {
-        List<ComponentTextCardDto> componentDtoList = new ArrayList<>();
+        List<ComponentDto> componentDtoList = new ArrayList<>();
         List<ButtonDto> buttonList = new ArrayList<>();
+        // 블록 버튼 생성
         ButtonDto buttonDto = new ButtonDto("학과 인증하기", "block", null,"6623de277e38b92310022cd8");
         buttonList.add(buttonDto);
-        TextCardDto simpleTextDto = new TextCardDto("학과 인증을 진행해주세요.", buttonList);
-        ComponentTextCardDto componentDto = new ComponentTextCardDto(simpleTextDto);
+
+        TextCardDto textCardDto = new TextCardDto("학과 인증을 진행해주세요.", buttonList);
+        ComponentDto componentDto = new ComponentDto(textCardDto);
         componentDtoList.add(componentDto);
-        TemplateTextCardDto templateDto = new TemplateTextCardDto(componentDtoList);
-        ResponseDto2 responseDto = new ResponseDto2("2.0", templateDto);
+        TemplateDto templateDto = new TemplateDto(componentDtoList);
+        ResponseDto responseDto = new ResponseDto("2.0", templateDto);
 
         return toJsonResponse(responseDto);
     }
@@ -164,14 +167,14 @@ public class NoticeController {
             }
         });
 
-        List<ComponentCarouselDto> outputs = new ArrayList<>();
+        List<ComponentDto> outputs = new ArrayList<>();
 
         // 캐로셀 컴포넌트
         CarouselDto carouselComponent = new CarouselDto("listCard", carouselItems);
-        ComponentCarouselDto cardTypeDto = new ComponentCarouselDto(carouselComponent);
+        ComponentDto cardTypeDto = new ComponentDto(carouselComponent);
         outputs.add(cardTypeDto);
 
-        TemplateCarouselDto template = new TemplateCarouselDto(outputs);
+        TemplateDto template = new TemplateDto(outputs);
         ResponseDto responseDto = new ResponseDto("2.0", template);
 
         return toJsonResponse(responseDto);
@@ -182,23 +185,8 @@ public class NoticeController {
         String jsonResponse;
         ObjectMapper objectMapper = new ObjectMapper();
 
-        try {
-            jsonResponse = objectMapper.writeValueAsString(responseDto);
-        } catch (JsonProcessingException e) {
-            // JSON 변환 중 오류가 발생한 경우 처리
-            e.printStackTrace();
-            jsonResponse = "{}"; // 빈 JSON 응답 반환(오류 메시지 출력하기)
-        }
-
-        // jsonResponse를 클라이언트로 보내는 코드
-        System.out.println(jsonResponse);
-        return jsonResponse;
-    }
-
-    // ObjectMapper를 사용하여 ResponseDto 객체를 JSON 문자열로 변환
-    public String toJsonResponse(ResponseDto2 responseDto) {
-        String jsonResponse;
-        ObjectMapper objectMapper = new ObjectMapper();
+        // null 값 무시 설정
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
         try {
             jsonResponse = objectMapper.writeValueAsString(responseDto);

@@ -7,9 +7,9 @@ import lombok.Setter;
 @Setter
 public class ResponseDto {
     private String version;
-    private TemplateCarouselDto template;
+    private TemplateDto template;
 
-    public ResponseDto(String version, TemplateCarouselDto template) {
+    public ResponseDto(String version, TemplateDto template) {
         this.version = version;
         this.template = template;
     }
