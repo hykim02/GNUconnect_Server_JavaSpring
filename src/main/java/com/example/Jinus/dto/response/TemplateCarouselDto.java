@@ -7,10 +7,10 @@ import java.util.List;
 
 @Getter
 @Setter
-public class TemplateDto {
-    private List<ComponentDto> outputs;
+public class TemplateCarouselDto {
+    private List<ComponentCarouselDto> outputs;
 
-    public TemplateDto(List<ComponentDto> outputs) {
+    public TemplateCarouselDto(List<ComponentCarouselDto> outputs) {
         this.outputs = outputs;
     }
 }

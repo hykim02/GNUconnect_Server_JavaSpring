@@ -5,11 +5,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ResponseDto {
+public class ResponseDto2 {
     private String version;
-    private TemplateCarouselDto template;
+    private TemplateTextCardDto template;
 
-    public ResponseDto(String version, TemplateCarouselDto template) {
+    public ResponseDto2(String version, TemplateTextCardDto template) {
         this.version = version;
         this.template = template;
     }

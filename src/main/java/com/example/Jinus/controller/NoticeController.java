@@ -1,9 +1,6 @@
 package com.example.Jinus.controller;
 
-import com.example.Jinus.dto.request.ActionDto;
 import com.example.Jinus.dto.request.RequestDto;
-import com.example.Jinus.dto.request.UserDto;
-import com.example.Jinus.dto.request.UserRequestDto;
 import com.example.Jinus.dto.response.*;
 import com.example.Jinus.service.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -11,10 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.util.*;
@@ -53,21 +47,32 @@ public class NoticeController {
     }
 
     @PostMapping("/department-notice")
-    public String handleRequest(@RequestBody String jsonRequest) throws ParseException {
-//        return findNotice(requestDto);
-        return jsonRequest;
+    public String handleRequest(@RequestBody RequestDto requestDto) throws ParseException {
+        logger.info("handleRequest 실행");
+        return findUserId(requestDto);
     }
 
-    public String findNotice(@RequestBody RequestDto requestDto) throws ParseException {
+    public String findUserId(@RequestBody RequestDto requestDto) throws ParseException {
+        logger.info("findUserId 실행");
         String userId = requestDto.getUserRequest().getUser().getId();
-        logger.info("handleRequest 실행");
-        logger.info("userId: {}", userId);
+        int departmentId = userService.getDepartmentId(userId); // 학과 찾기(userId가 null인 경우 -1 리턴)
 
+        // 학과 인증 메시지 리턴
+        if (departmentId == -1) {
+            logger.info("userId: null");
+            return simpleTextResponse();
+        } else {
+            logger.info("userId: {}", userId);
+            return findNotice(departmentId);
+        }
+    }
+
+    public String findNotice(int departmentId) throws ParseException {
+        logger.info("findNotice 실행");
         List<Integer> categoryIdList = new ArrayList<>();
         List<Map<String, String>> noticeList;
         Map<Integer, List<Map<String, String>>> noticeMap = new HashMap<>();
 
-        int departmentId = userService.getDepartmentId(userId); // 학과 찾기
         int collegeId = departmentService.getCollegeId(departmentId); // 단과대학 찾기
         String departmentEng = departmentService.getDepartmentEng(departmentId); // 학과 영문명 찾기(url 생성 위함)
         String collegeEng = collegeService.getCollegeName(collegeId); // 영문명 찾기(테이블 조회 위함)
@@ -97,13 +102,27 @@ public class NoticeController {
         return noticeResponse(noticeMap, categories, departmentEng);
     }
 
+    // userId 존재하지 않는 경우 텍스트 메시지 리턴
+    public String simpleTextResponse() {
+        List<ComponentTextCardDto> componentDtoList = new ArrayList<>();
+        List<ButtonDto> buttonList = new ArrayList<>();
+        ButtonDto buttonDto = new ButtonDto("학과 인증하기", "block", null,"6623de277e38b92310022cd8");
+        buttonList.add(buttonDto);
+        TextCardDto simpleTextDto = new TextCardDto("학과 인증을 진행해주세요.", buttonList);
+        ComponentTextCardDto componentDto = new ComponentTextCardDto(simpleTextDto);
+        componentDtoList.add(componentDto);
+        TemplateTextCardDto templateDto = new TemplateTextCardDto(componentDtoList);
+        ResponseDto2 responseDto = new ResponseDto2("2.0", templateDto);
 
+        return toJsonResponse(responseDto);
+    }
+
+    // userId 존재하는 경우
     public String noticeResponse(Map<Integer, List<Map<String, String>>> noticeMap,
                                  Map<Integer, Map<String, String>> categories,
                                  String departmentEng) {
         // component type
         List<CarouselItemDto> carouselItems = new ArrayList<>(); // 카테고리 개수만큼 생성
-        String jsonResponse;
 
         logger.info("categories.forEach문 시작");
         // 카테고리 생성
@@ -136,7 +155,7 @@ public class NoticeController {
 
                 List<ButtonDto> buttonDto = new ArrayList<>();
                 // 공지 버튼 생성
-                ButtonDto button = new ButtonDto("더보기", "webLink", noticeCategoryUrl(departmentEng, mi, bbsId));
+                ButtonDto button = new ButtonDto("더보기", "webLink", noticeCategoryUrl(departmentEng, mi, bbsId), null);
                 buttonDto.add(button); // 버튼 1개
 
                 // 캐로셀 아이템
@@ -145,17 +164,40 @@ public class NoticeController {
             }
         });
 
-        List<ComponentDto> outputs = new ArrayList<>();
+        List<ComponentCarouselDto> outputs = new ArrayList<>();
 
         // 캐로셀 컴포넌트
         CarouselDto carouselComponent = new CarouselDto("listCard", carouselItems);
-        ComponentDto cardTypeDto = new ComponentDto(carouselComponent);
+        ComponentCarouselDto cardTypeDto = new ComponentCarouselDto(carouselComponent);
         outputs.add(cardTypeDto);
 
-        TemplateDto template = new TemplateDto(outputs);
+        TemplateCarouselDto template = new TemplateCarouselDto(outputs);
         ResponseDto responseDto = new ResponseDto("2.0", template);
 
-        // ObjectMapper를 사용하여 ResponseDto 객체를 JSON 문자열로 변환
+        return toJsonResponse(responseDto);
+    }
+
+    // ObjectMapper를 사용하여 ResponseDto 객체를 JSON 문자열로 변환
+    public String toJsonResponse(ResponseDto responseDto) {
+        String jsonResponse;
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            jsonResponse = objectMapper.writeValueAsString(responseDto);
+        } catch (JsonProcessingException e) {
+            // JSON 변환 중 오류가 발생한 경우 처리
+            e.printStackTrace();
+            jsonResponse = "{}"; // 빈 JSON 응답 반환(오류 메시지 출력하기)
+        }
+
+        // jsonResponse를 클라이언트로 보내는 코드
+        System.out.println(jsonResponse);
+        return jsonResponse;
+    }
+
+    // ObjectMapper를 사용하여 ResponseDto 객체를 JSON 문자열로 변환
+    public String toJsonResponse(ResponseDto2 responseDto) {
+        String jsonResponse;
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {

@@ -15,9 +15,10 @@ public class ButtonDto {
     private String blockId;
     private Map<String, Any> extra;
 
-    public ButtonDto(String label, String action, String webLinkUrl) {
+    public ButtonDto(String label, String action, String webLinkUrl, String blockId) {
         this.label = label;
         this.action = action;
         this.webLinkUrl = webLinkUrl;
+        this.blockId = blockId;
     }
 }
