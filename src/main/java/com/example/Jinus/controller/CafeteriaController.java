@@ -19,11 +19,16 @@ import java.util.Map;
 public class CafeteriaController {
     private static final Logger logger = LoggerFactory.getLogger(NoticeController.class);
 
-    @PostMapping("/cafeteria")
-    public void handleRequest(@RequestBody String jsonPayload) {
-        // jsonPayload를 출력하여 확인
-        System.out.println("Received JSON Payload: " + jsonPayload);
+//    @PostMapping("/cafeteria")
+//    public void handleRequest(@RequestBody String jsonPayload) {
+//        // jsonPayload를 출력하여 확인
+//        System.out.println("Received JSON Payload: " + jsonPayload);
+//    }
 
+    @PostMapping("/cafeteria")
+    public void handleRequest(@RequestBody RequestDto requestDto) {
+        String userId = requestDto.getUserRequest().getUser().getId();
+        logger.info("userId: {}", userId);
     }
 
 }
