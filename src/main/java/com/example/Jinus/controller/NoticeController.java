@@ -1,5 +1,6 @@
 package com.example.Jinus.controller;
 
+import com.example.Jinus.component.ProcessMonitor;
 import com.example.Jinus.dto.request.RequestDto;
 import com.example.Jinus.dto.response.*;
 import com.example.Jinus.service.*;
@@ -24,6 +25,8 @@ public class NoticeController {
     private final DepartmentService departmentService;
     private final CategoryService categoryService;
     private final NoticeService noticeService;
+    private final ProcessMonitor processMonitor;
+
 
     @Autowired
     public NoticeController(
@@ -31,28 +34,26 @@ public class NoticeController {
             CollegeService collegeService,
             DepartmentService departmentService,
             CategoryService categoryService,
-            NoticeService noticeService
+            NoticeService noticeService, ProcessMonitor processMonitor
     ) {
         this.userService = userService;
         this.collegeService = collegeService;
         this.departmentService = departmentService;
         this.categoryService = categoryService;
         this.noticeService = noticeService;
-    }
-
-    @GetMapping("/chatbot-webhook")
-    public String handleWebhook(String jsonRequest) {
-        // 여기서는 전달된 JSON 요청을 그대로 반환합니다.
-        // 웹 페이지에서 요청 내용을 확인할 수 있습니다.
-        return jsonRequest;
+        this.processMonitor = processMonitor;
     }
 
     @PostMapping("/department-notice")
     public String handleRequest(@RequestBody RequestDto requestDto) throws ParseException {
         logger.info("handleRequest 실행");
+        // 사용자 요청을 감지하여 프로세스 종료 스케줄링을 취소
+//        processMonitor.onRequestReceived();
+//        processMonitor.startProcessShutdownTimer();
         return findUserId(requestDto);
     }
 
+    // userId 존재 여부 확인
     public String findUserId(@RequestBody RequestDto requestDto) throws ParseException {
         logger.info("findUserId 실행");
         String userId = requestDto.getUserRequest().getUser().getId();
@@ -68,6 +69,7 @@ public class NoticeController {
         }
     }
 
+    // userId 존재하는 경우 공지 찾기
     public String findNotice(int departmentId) throws ParseException {
         logger.info("findNotice 실행");
         List<Integer> categoryIdList = new ArrayList<>();
@@ -103,7 +105,7 @@ public class NoticeController {
         return noticeResponse(noticeMap, categories, departmentEng);
     }
 
-    // userId 존재하지 않는 경우 텍스트 메시지 리턴(예외처리)
+    // userId 존재하지 않는 경우 학과인증 블록 리턴(예외처리)
     public String simpleTextResponse() {
         List<ComponentDto> componentDtoList = new ArrayList<>();
         List<ButtonDto> buttonList = new ArrayList<>();
