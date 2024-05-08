@@ -1,6 +1,6 @@
 package com.example.Jinus.service;
 
-import com.example.Jinus.entity.CollegeEntity;
+import com.example.Jinus.entity.notice.CollegeEntity;
 import com.example.Jinus.repository.CollegeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

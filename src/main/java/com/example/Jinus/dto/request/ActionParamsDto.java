@@ -8,5 +8,8 @@ import java.util.Map;
 @Getter
 @Setter
 public class ActionParamsDto {
-    private Map<String, String> paramName;
+    private String sys_date;
+    private String sys_cafeteria_name;
+    private String sys_campus_name;
+    private String sys_time_period;
 }

@@ -4,6 +4,8 @@ import com.example.Jinus.component.ProcessMonitor;
 import com.example.Jinus.dto.request.RequestDto;
 import com.example.Jinus.dto.response.*;
 import com.example.Jinus.service.*;
+import com.example.Jinus.service.notice.CategoryService;
+import com.example.Jinus.service.notice.NoticeService;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
