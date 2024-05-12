@@ -48,6 +48,7 @@ public class NoticeController {
 
     @PostMapping("/department-notice")
     public String handleRequest(@RequestBody RequestDto requestDto) throws ParseException {
+        logger.info("NoticeController 실행");
         logger.info("handleRequest 실행");
         // 사용자 요청을 감지하여 프로세스 종료 스케줄링을 취소
 //        processMonitor.onRequestReceived();

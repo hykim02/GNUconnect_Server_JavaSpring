@@ -1,4 +1,4 @@
-package com.example.Jinus.entity.notice;
+package com.example.Jinus.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -15,4 +15,7 @@ public class CollegeEntity {
 
     @Column(name = "college_en")
     private String collegeEng;
+
+    @Column(name = "campus_id")
+    private int campusId;
 }

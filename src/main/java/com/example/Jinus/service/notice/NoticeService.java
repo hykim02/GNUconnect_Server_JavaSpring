@@ -1,6 +1,7 @@
 package com.example.Jinus.service.notice;
 
 import com.example.Jinus.entity.notice.*;
+import com.example.Jinus.repository.notice.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

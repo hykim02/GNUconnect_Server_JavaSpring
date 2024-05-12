@@ -1,12 +1,10 @@
 package com.example.Jinus.service;
 
-import com.example.Jinus.entity.notice.CollegeEntity;
+import com.example.Jinus.entity.CollegeEntity;
 import com.example.Jinus.repository.CollegeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class CollegeService {
@@ -16,10 +14,6 @@ public class CollegeService {
     public CollegeService(CollegeRepository collegeRepository) {
         this.collegeRepository = collegeRepository;
         logger.info("CollegeService 실행");
-    }
-
-    public List<String> findAllUsers() {
-        return collegeRepository.findCollegeEn();
     }
 
     public String getCollegeName(int collegeId) {
@@ -34,6 +28,15 @@ public class CollegeService {
             logger.error("CollegeService: collge를 찾을 수 없습니다.");
             return null;
         }
+    }
+
+    // collegeId에 해당하는 campusId 찾기
+    public int getCampusId(int collegeId) {
+        logger.info("getCampusId 실행");
+        int campusId = collegeRepository.findCampusId(collegeId);
+        logger.info("campusId: {}", campusId);
+
+        return campusId;
     }
 
 
