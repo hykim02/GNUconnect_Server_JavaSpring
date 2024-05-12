@@ -8,6 +8,7 @@ import lombok.Setter;
 public class ComponentDto {
     private CarouselDto carousel;
     private TextCardDto textCard;
+    private BasicCardDto basicCardDto;
 
     public ComponentDto(CarouselDto carousel) {
         this.carousel = carousel;
@@ -15,5 +16,9 @@ public class ComponentDto {
 
     public ComponentDto(TextCardDto textCard) {
         this.textCard = textCard;
+    }
+
+    public ComponentDto(BasicCardDto basicCardDto) {
+        this.basicCardDto = basicCardDto;
     }
 }

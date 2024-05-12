@@ -50,16 +50,19 @@ public class CafeteriaController {
         String paramsCafeteriaName = requestDto.getAction().getParams().getSys_cafeteria_name();
         logger.info("paramsCafeteriaName: {}", paramsCafeteriaName);
 
-        int cafeteriaId;
+        int cafeteriaId = 0;
 
         // 식당 이름 중복되는 경우 campusId 필요
         if (paramsCafeteriaName.equals("학생식당") || paramsCafeteriaName.equals("교직원식당")) {
             int campusId = getUserId(requestDto);
-            cafeteriaId = cafeteriaService.getCafeteriaIdByCampusId(paramsCafeteriaName, campusId);
+            if (campusId == 0) { // user 존재하지 않는 경우
+//                return simpleTextResponse(); // 캠퍼스 블록 리턴
+            } else { // user 존재하는 경우
+                cafeteriaId = cafeteriaService.getCafeteriaIdByCampusId(paramsCafeteriaName, campusId);
+            }
         } else { // 나머지는 campusId 필요 없음
             cafeteriaId = cafeteriaService.getCafeteriaIdByName(paramsCafeteriaName);
         }
-
         logger.info("cafeteriaId: {}", cafeteriaId);
     }
 
@@ -68,19 +71,19 @@ public class CafeteriaController {
         String userId = requestDto.getUserRequest().getUser().getId();
         int departmentId = userService.getDepartmentId(userId);
         logger.info("departmentId: {}", departmentId);
-        int campusId = 0;
+
         // user 없는 경우
         if (departmentId == -1) {
             logger.info("존재하지 않는 user");
-            simpleTextResponse(); // 캠퍼스 선택 블록 리턴
+            return 0;
         } else { // user 존재하는 경우
             logger.info("userId: {}", userId);
             int collegeId = departmentService.getCollegeId(departmentId); // 단과대학 찾기
-            campusId = collegeService.getCampusId(collegeId);
+            int campusId = collegeService.getCampusId(collegeId);
             logger.info("collegeId: {}", collegeId);
+            logger.info("campusId: {}", campusId);
+            return campusId;
         }
-        logger.info("campusId: {}", campusId);
-        return campusId;
     }
 
     // userId 존재하지 않는 경우 캠퍼스 블록 리턴(예외처리)
