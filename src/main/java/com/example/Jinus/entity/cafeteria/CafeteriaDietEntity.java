@@ -13,6 +13,9 @@ import lombok.Setter;
 @Table(name = "cafeteria-diet")
 public class CafeteriaDietEntity {
     @Id
+    @Column(name = "diet_id")
+    private int dietId;
+
     @Column(name = "date")
     private String date;
 
@@ -22,6 +25,9 @@ public class CafeteriaDietEntity {
     @Column(name = "time")
     private String time;
 
+    @Column(name = "dish_category")
+    private String dishCategory;
+
     @Column(name = "dish_type")
     private String dishType;
 
@@ -30,5 +36,4 @@ public class CafeteriaDietEntity {
 
     @Column(name = "cafeteria_id")
     private String cafeteriaId;
-
 }

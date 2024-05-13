@@ -10,9 +10,17 @@ import java.util.List;
 
 @Repository
 public interface CafeteriaRepository extends JpaRepository<CafeteriaEntity, Integer> {
-    @Query("SELECT c.id FROM CafeteriaEntity c WHERE c.cafeteriaNameKo = :name")
+    @Query(
+            "SELECT c.id " +
+            "FROM CafeteriaEntity c " +
+            "WHERE c.cafeteriaNameKo = :name"
+    )
     int findIdByName(@Param("name") String name);
 
-    @Query("SELECT c.id FROM CafeteriaEntity c WHERE c.cafeteriaNameKo = :name and c.campusId = :campusId")
+    @Query(
+            "SELECT c.id " +
+            "FROM CafeteriaEntity c " +
+            "WHERE c.cafeteriaNameKo = :name and c.campusId = :campusId"
+    )
     int findIdByNameAndCampusId(@Param("name") String name, @Param("campusId") int campusId);
 }

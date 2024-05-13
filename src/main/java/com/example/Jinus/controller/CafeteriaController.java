@@ -5,6 +5,7 @@ import com.example.Jinus.dto.response.*;
 import com.example.Jinus.service.CollegeService;
 import com.example.Jinus.service.DepartmentService;
 import com.example.Jinus.service.UserService;
+import com.example.Jinus.service.cafeteria.CafeteriaDietService;
 import com.example.Jinus.service.cafeteria.CafeteriaService;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -15,7 +16,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -25,6 +30,7 @@ public class CafeteriaController {
     private final UserService userService;
     private final DepartmentService departmentService;
     private final CollegeService collegeService;
+    private final CafeteriaDietService cafeteriaDietService;
 
 //    @PostMapping("/cafeteria")
 //    public void handleRequest(@RequestBody String jsonPayload) {
@@ -36,25 +42,41 @@ public class CafeteriaController {
             CafeteriaService cafeteriaService,
             UserService userService,
             DepartmentService departmentService,
-            CollegeService collegeService) {
+            CollegeService collegeService,
+            CafeteriaDietService cafeteriaDietService) {
         this.cafeteriaService = cafeteriaService;
         this.userService = userService;
         this.departmentService = departmentService;
         this.collegeService = collegeService;
+        this.cafeteriaDietService = cafeteriaDietService;
     }
 
     @PostMapping("/cafeteria")
     public void handleRequest(@RequestBody RequestDto requestDto) {
         logger.info("CafeteriaController 실행");
         logger.info("handleRequest 실행");
+
+        // 식당 이름
         String paramsCafeteriaName = requestDto.getAction().getParams().getSys_cafeteria_name();
-        logger.info("paramsCafeteriaName: {}", paramsCafeteriaName);
+        logger.info("paramsCafeteriaName: {}", paramsCafeteriaName); // 가좌본관식당
+
+        // 현재 날짜 시간
+        String currentDate = getCurrentDate(); // 2024-05-13
+        String currentDateParam = currentDate + " 00:00:00.000000 +09:00";
+        String currentTime = getCurrentTime(); // 16:43:12
+        logger.info("currentDate: {}", currentDate);
+        logger.info("currentTime: {}", currentTime);
+
+        // 현재 식사 시기
+        String currentPeriod = getPeriodOfDay(currentTime);
+        logger.info("currentPeriod: {}", currentPeriod);
 
         int cafeteriaId = 0;
 
         // 식당 이름 중복되는 경우 campusId 필요
         if (paramsCafeteriaName.equals("학생식당") || paramsCafeteriaName.equals("교직원식당")) {
             int campusId = getUserId(requestDto);
+
             if (campusId == 0) { // user 존재하지 않는 경우
 //                return simpleTextResponse(); // 캠퍼스 블록 리턴
             } else { // user 존재하는 경우
@@ -62,12 +84,16 @@ public class CafeteriaController {
             }
         } else { // 나머지는 campusId 필요 없음
             cafeteriaId = cafeteriaService.getCafeteriaIdByName(paramsCafeteriaName);
+            List<String> cafeteriaMenu =
+                    cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), currentPeriod, cafeteriaId);
         }
         logger.info("cafeteriaId: {}", cafeteriaId);
     }
 
+
     // user 테이블에 userId 존재 여부 확인
     public int getUserId(@RequestBody RequestDto requestDto) {
+        logger.info("getUserId 실행");
         String userId = requestDto.getUserRequest().getUser().getId();
         int departmentId = userService.getDepartmentId(userId);
         logger.info("departmentId: {}", departmentId);
@@ -86,8 +112,73 @@ public class CafeteriaController {
         }
     }
 
+    // 현재 날짜 출력 함수
+    public String getCurrentDate() {
+        logger.info("getCurrentDate 실행");
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        String[] dateTimeParts = currentDateTime.toString().split("T"); // 2024-05-13
+        String[] dateSplt = dateTimeParts[0].split("-");
+        logger.info("dateSplt: {}", (Object) dateSplt);
+
+        String currentDay = getDay(dateTimeParts[1]);
+        logger.info("currentDay: {}", currentDay);
+
+        if (currentDay.equals("오늘")) {
+            return dateTimeParts[0];
+        } else { // 내일
+            int day = Integer.parseInt(dateSplt[2]);
+            int tomorrow = day + 1;
+            logger.info("tomorrow: {}", tomorrow);
+            return dateSplt[0] + "-" + dateSplt[1] + "-" + tomorrow;
+        }
+    }
+
+    // 현재 시간 출력 함수
+    public String getCurrentTime() {
+        logger.info("getCurrentTime 실행");
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        String[] dateTimeParts = currentDateTime.toString().split("T");
+
+        String timePart = dateTimeParts[1]; // 시간 부분
+        String[] timeSplt = timePart.split("\\.");
+
+        return timeSplt[0];
+    }
+
+    // 시간 범위에 따라 오늘, 내일 판별하는 함수
+    public static String getDay(String currentTime) {
+        logger.info("getDay 실행");
+        LocalTime time = LocalTime.parse(currentTime);
+
+        if (time.isAfter(LocalTime.parse("00:00:00")) && time.isBefore(LocalTime.parse("18:59:00"))) {
+            return "오늘";
+        } else {
+            return "내일";
+        }
+    }
+
+    // 시간 범위에 따라 아침, 점심, 저녁을 판별하는 함수
+    public static String getPeriodOfDay(String currentTime) {
+        logger.info("getPeriodOfDay 실행");
+
+        // 현재 시간을 LocalTime 객체로 변환
+        LocalTime time = LocalTime.parse(currentTime);
+
+        if (time.isAfter(LocalTime.parse("00:00:00")) && time.isBefore(LocalTime.parse("09:00:00"))) {
+            return "아침";
+        } else if (time.isAfter(LocalTime.parse("09:00:00")) && time.isBefore(LocalTime.parse("14:00:00"))) {
+            return "점심";
+        } else if (time.isAfter(LocalTime.parse("14:00:00")) && time.isBefore(LocalTime.parse("19:00:00"))) {
+            return "저녁";
+        } else {
+            return "아침";
+        }
+    }
+
     // userId 존재하지 않는 경우 캠퍼스 블록 리턴(예외처리)
     public String simpleTextResponse() {
+        logger.info("simpleTextResponse 실행");
+
         List<ComponentDto> componentDtoList = new ArrayList<>();
         List<ButtonDto> buttonList = new ArrayList<>();
         // 블록 버튼 생성
@@ -105,6 +196,8 @@ public class CafeteriaController {
 
     // ObjectMapper를 사용하여 ResponseDto 객체를 JSON 문자열로 변환
     public String toJsonResponse(ResponseDto responseDto) {
+        logger.info("toJsonResponse 실행");
+
         String jsonResponse;
         ObjectMapper objectMapper = new ObjectMapper();
 
