@@ -1,23 +1,22 @@
 package com.example.Jinus.entity.cafeteria;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalTime;
 
 @Entity
 @Getter
 @Setter
-@Table(name = "cafeteria-diet")
+@Table(name = "cafeteria_diet")
 public class CafeteriaDietEntity {
     @Id
     @Column(name = "diet_id")
     private int dietId;
 
     @Column(name = "date")
-    private String date;
+    private LocalTime date;
 
     @Column(name = "day")
     private String day;
@@ -35,5 +34,5 @@ public class CafeteriaDietEntity {
     private String dishName;
 
     @Column(name = "cafeteria_id")
-    private String cafeteriaId;
+    private int cafeteriaId;
 }

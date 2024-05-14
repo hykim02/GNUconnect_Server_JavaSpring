@@ -100,7 +100,7 @@ public class NoticeController {
 
         // 공지 가져오기
         for (int categoryId : categoryIdList) {
-            noticeList = noticeService.getNotice(departmentId, categoryId, collegeEng);
+            noticeList = noticeService.getNotice(categoryId, collegeEng);
             noticeMap.put(categoryId, noticeList);
         }
         logger.info("noticeMap: {}", noticeMap);

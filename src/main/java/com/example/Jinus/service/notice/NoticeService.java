@@ -49,7 +49,7 @@ public class NoticeService {
     }
 
     // 공지 가져오기
-    public List<Map<String, String>> getNotice(int departmentId, int categoryId, String collegeEng) throws ParseException {
+    public List<Map<String, String>> getNotice(int categoryId, String collegeEng) throws ParseException {
         logger.info("getNotice 실행");
         logger.info("collegeEng:{}", collegeEng);
         List<Map<String, String>> noticeList = new ArrayList<>(); // 공지 리스트

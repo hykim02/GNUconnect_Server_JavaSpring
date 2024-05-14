@@ -2,6 +2,7 @@ package com.example.Jinus.controller;
 
 import com.example.Jinus.dto.request.RequestDto;
 import com.example.Jinus.dto.response.*;
+import com.example.Jinus.entity.cafeteria.CafeteriaDietEntity;
 import com.example.Jinus.service.CollegeService;
 import com.example.Jinus.service.DepartmentService;
 import com.example.Jinus.service.UserService;
@@ -22,6 +23,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class CafeteriaController {
@@ -84,8 +86,7 @@ public class CafeteriaController {
             }
         } else { // 나머지는 campusId 필요 없음
             cafeteriaId = cafeteriaService.getCafeteriaIdByName(paramsCafeteriaName);
-            List<String> cafeteriaMenu =
-                    cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), currentPeriod, cafeteriaId);
+            cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), currentPeriod, cafeteriaId);
         }
         logger.info("cafeteriaId: {}", cafeteriaId);
     }
