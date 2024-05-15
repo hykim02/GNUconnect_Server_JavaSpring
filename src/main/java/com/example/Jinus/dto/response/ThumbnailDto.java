@@ -7,4 +7,8 @@ import lombok.Setter;
 @Setter
 public class ThumbnailDto {
     private String imageUrl;
+
+    public ThumbnailDto(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }

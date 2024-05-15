@@ -54,9 +54,12 @@ public class CafeteriaController {
     }
 
     @PostMapping("/cafeteria")
-    public void handleRequest(@RequestBody RequestDto requestDto) {
+    public String handleRequest(@RequestBody RequestDto requestDto) {
         logger.info("CafeteriaController 실행");
         logger.info("handleRequest 실행");
+
+        String paramsCampusName = requestDto.getAction().getParams().getSys_campus_name();
+        logger.info("paramsCampusName: {}", paramsCampusName); // 가좌캠퍼스
 
         // 식당 이름
         String paramsCafeteriaName = requestDto.getAction().getParams().getSys_cafeteria_name();
@@ -64,37 +67,93 @@ public class CafeteriaController {
 
         // 현재 날짜 시간
         String currentDate = getCurrentDate(); // 2024-05-13
-        String currentDateParam = currentDate + " 00:00:00.000000 +09:00";
         String currentTime = getCurrentTime(); // 16:43:12
         logger.info("currentDate: {}", currentDate);
         logger.info("currentTime: {}", currentTime);
 
+        String currentDay = getDay(currentTime); // 오늘, 내일
+
         // 현재 식사 시기
-        String currentPeriod = getPeriodOfDay(currentTime);
+        String currentPeriod = getPeriodOfDay(currentTime); // 아침, 점심, 저녁
         logger.info("currentPeriod: {}", currentPeriod);
 
         int cafeteriaId = 0;
+        HashMap<String, List<String>> categoryMenuMap; // 식단 map
 
         // 식당 이름 중복되는 경우 campusId 필요
         if (paramsCafeteriaName.equals("학생식당") || paramsCafeteriaName.equals("교직원식당")) {
             int campusId = getUserId(requestDto);
 
             if (campusId == 0) { // user 존재하지 않는 경우
-//                return simpleTextResponse(); // 캠퍼스 블록 리턴
+                return simpleTextResponse(); // 캠퍼스 블록 리턴
             } else { // user 존재하는 경우
                 cafeteriaId = cafeteriaService.getCafeteriaIdByCampusId(paramsCafeteriaName, campusId);
+                categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), currentPeriod, cafeteriaId);
+                return responseMapping(categoryMenuMap, paramsCafeteriaName,
+                        paramsCampusName, currentDay, currentPeriod);
             }
         } else { // 나머지는 campusId 필요 없음
             cafeteriaId = cafeteriaService.getCafeteriaIdByName(paramsCafeteriaName);
-            cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), currentPeriod, cafeteriaId);
+            categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), currentPeriod, cafeteriaId);
+            return responseMapping(categoryMenuMap, paramsCafeteriaName,
+                    paramsCampusName, currentDay, currentPeriod);
         }
-        logger.info("cafeteriaId: {}", cafeteriaId);
+    }
+
+    public String responseMapping(HashMap<String, List<String>> categoryMenuMap,
+                                  String cafeteriaName, String campus, String day, String period) {
+        logger.info("resonseMapping 실행");
+        ThumbnailDto thumbnailDto = new ThumbnailDto("https://t1.kakaocdn.net/openbuilder/sample/lj3JUcmrzC53YIjNDkqbWK.jpg");
+
+        String title = cafeteriaName + " 메뉴";
+        String description = handleCafeteriaDiet(categoryMenuMap, campus, day, period);
+
+        BasicCardDto basicCardDto = new BasicCardDto(title, description, thumbnailDto);
+        ComponentDto componentDto = new ComponentDto(basicCardDto);
+
+        List<ComponentDto> componentDtoList = new ArrayList<>();
+        componentDtoList.add(componentDto);
+
+        TemplateDto templateDto = new TemplateDto(componentDtoList);
+        ResponseDto responseDto = new ResponseDto("2.0", templateDto);
+
+        return toJsonResponse(responseDto);
+    }
+
+    public String handleCafeteriaDiet(HashMap<String, List<String>> categoryMenuMap, String campus, String day, String period) {
+        logger.info("handleCafeteriaDiet 실행");
+
+        String menuDescription = campus + " " + day + " " + period + " 메뉴 기준\n\n";
+
+        for (Map.Entry<String, List<String>> entry : categoryMenuMap.entrySet()) {
+            String categoryName = entry.getKey();
+            List<String> cafeteriaDishes = entry.getValue();
+            logger.info("categoryName: {}", categoryName);
+            logger.info("cafeteriaDietNames: {}", cafeteriaDishes);
+
+            menuDescription = joinAllMenus(cafeteriaDishes, categoryName, menuDescription);
+        }
+        logger.info("menuDescription: {}", menuDescription);
+        return menuDescription;
+    }
+
+    public String joinAllMenus(List<String> cafeteriaDishes, String categoryName, String menuDescription) {
+        logger.info("joinAllMenus 실행");
+
+        String coveredCategory = "[" + categoryName + "]"; // 카테고리 괄호로 감싸기
+        logger.info("coveredCategory: {}", coveredCategory);
+
+        String joinedMenu = String.join(",", cafeteriaDishes); // 메뉴들 컴마로 연결
+        logger.info("joinedMenu: {}", joinedMenu);
+
+        return menuDescription + coveredCategory + "\n" + joinedMenu;
     }
 
 
     // user 테이블에 userId 존재 여부 확인
     public int getUserId(@RequestBody RequestDto requestDto) {
         logger.info("getUserId 실행");
+
         String userId = requestDto.getUserRequest().getUser().getId();
         int departmentId = userService.getDepartmentId(userId);
         logger.info("departmentId: {}", departmentId);
