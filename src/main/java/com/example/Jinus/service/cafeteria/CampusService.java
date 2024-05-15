@@ -19,4 +19,12 @@ public class CampusService {
         logger.info("CampusService 실행");
     }
 
+    public String getCampusName(int campusId) {
+        logger.info("getCampusName 실행");
+
+        String campusName = campusRepository.findCampusNameById(campusId);
+        logger.info("campusName: {}", campusName);
+        return campusName;
+    }
+
 }

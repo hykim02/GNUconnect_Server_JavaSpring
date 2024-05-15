@@ -8,6 +8,7 @@ import com.example.Jinus.service.DepartmentService;
 import com.example.Jinus.service.UserService;
 import com.example.Jinus.service.cafeteria.CafeteriaDietService;
 import com.example.Jinus.service.cafeteria.CafeteriaService;
+import com.example.Jinus.service.cafeteria.CampusService;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,6 +34,7 @@ public class CafeteriaController {
     private final DepartmentService departmentService;
     private final CollegeService collegeService;
     private final CafeteriaDietService cafeteriaDietService;
+    private final CampusService campusService;
 
 //    @PostMapping("/cafeteria")
 //    public void handleRequest(@RequestBody String jsonPayload) {
@@ -45,12 +47,13 @@ public class CafeteriaController {
             UserService userService,
             DepartmentService departmentService,
             CollegeService collegeService,
-            CafeteriaDietService cafeteriaDietService) {
+            CafeteriaDietService cafeteriaDietService, CampusService campusService) {
         this.cafeteriaService = cafeteriaService;
         this.userService = userService;
         this.departmentService = departmentService;
         this.collegeService = collegeService;
         this.cafeteriaDietService = cafeteriaDietService;
+        this.campusService = campusService;
     }
 
     @PostMapping("/cafeteria")
@@ -86,11 +89,12 @@ public class CafeteriaController {
 
             if (campusId == 0) { // user 존재하지 않는 경우
                 return simpleTextResponse(); // 캠퍼스 블록 리턴
-            } else { // user 존재하는 경우
+            } else { // user 존재하는 경우 (캠퍼스 이름도 필요)
+                String campusName = campusService.getCampusName(campusId);
                 cafeteriaId = cafeteriaService.getCafeteriaIdByCampusId(paramsCafeteriaName, campusId);
                 categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), currentPeriod, cafeteriaId);
                 return responseMapping(categoryMenuMap, paramsCafeteriaName,
-                        paramsCampusName, currentDay, currentPeriod);
+                        campusName, currentDay, currentPeriod);
             }
         } else { // 나머지는 campusId 필요 없음
             cafeteriaId = cafeteriaService.getCafeteriaIdByName(paramsCafeteriaName);
@@ -125,16 +129,20 @@ public class CafeteriaController {
 
         String menuDescription = campus + " " + day + " " + period + " 메뉴 기준\n\n";
 
-        for (Map.Entry<String, List<String>> entry : categoryMenuMap.entrySet()) {
-            String categoryName = entry.getKey();
-            List<String> cafeteriaDishes = entry.getValue();
-            logger.info("categoryName: {}", categoryName);
-            logger.info("cafeteriaDietNames: {}", cafeteriaDishes);
+        if (categoryMenuMap.isEmpty()) { // 메뉴가 존재하지 않는다면
+            return menuDescription + "메뉴가 존재하지 않습니다.";
+        } else { // 메뉴가 존재한다면
+            for (Map.Entry<String, List<String>> entry : categoryMenuMap.entrySet()) {
+                String categoryName = entry.getKey();
+                List<String> cafeteriaDishes = entry.getValue();
+                logger.info("categoryName: {}", categoryName);
+                logger.info("cafeteriaDietNames: {}", cafeteriaDishes);
 
-            menuDescription = joinAllMenus(cafeteriaDishes, categoryName, menuDescription);
+                menuDescription = joinAllMenus(cafeteriaDishes, categoryName, menuDescription);
+            }
+            logger.info("menuDescription: {}", menuDescription);
+            return menuDescription;
         }
-        logger.info("menuDescription: {}", menuDescription);
-        return menuDescription;
     }
 
     public String joinAllMenus(List<String> cafeteriaDishes, String categoryName, String menuDescription) {
@@ -145,6 +153,7 @@ public class CafeteriaController {
 
         String joinedMenu = String.join(",", cafeteriaDishes); // 메뉴들 컴마로 연결
         logger.info("joinedMenu: {}", joinedMenu);
+
 
         return menuDescription + coveredCategory + "\n" + joinedMenu;
     }
