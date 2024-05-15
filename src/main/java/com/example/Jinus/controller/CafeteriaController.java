@@ -165,11 +165,11 @@ public class CafeteriaController {
         // 현재 시간을 LocalTime 객체로 변환
         LocalTime time = LocalTime.parse(currentTime);
 
-        if (time.isAfter(LocalTime.parse("00:00:00")) && time.isBefore(LocalTime.parse("09:00:00"))) {
+        if (time.isAfter(LocalTime.parse("00:00:00")) && time.isBefore(LocalTime.parse("09:30:00"))) {
             return "아침";
-        } else if (time.isAfter(LocalTime.parse("09:00:00")) && time.isBefore(LocalTime.parse("14:00:00"))) {
+        } else if (time.isAfter(LocalTime.parse("09:30:00")) && time.isBefore(LocalTime.parse("14:30:00"))) {
             return "점심";
-        } else if (time.isAfter(LocalTime.parse("14:00:00")) && time.isBefore(LocalTime.parse("19:00:00"))) {
+        } else if (time.isAfter(LocalTime.parse("14:30:00")) && time.isBefore(LocalTime.parse("19:00:00"))) {
             return "저녁";
         } else {
             return "아침";

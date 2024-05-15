@@ -37,30 +37,76 @@ public class CafeteriaDietService {
 
             logger.info("dish_category: {}", dish.getDishCategory());
             logger.info("dish_type: {}", dish.getDishType());
-            logger.info("dish_name: {}", dish.getDishName());
 
             if (dish.getDishCategory() != null) {
                 if (!categoryCheckList.contains(dish.getDishCategory())) {
                     categoryCheckList.add(dish.getDishCategory());
+                    // 식단 가져오기
+                    menuList = getDishNameByCategory(dishCategory, menuList, dish.getDishCategory());
+                    logger.info("menuList: {}", menuList);
+                    // 카테고리 & 식단 매핑
+                    CategoryMenuMap.put(dish.getDishCategory(), menuList);
+                    logger.info("CategoryMenuMap: {}", CategoryMenuMap);
                 }
-                menuList.add(dish.getDishName());
                 break;
             } else if (dish.getDishType() != null) {
                 if (!categoryCheckList.contains(dish.getDishType())) {
                     categoryCheckList.add(dish.getDishType());
+                    menuList = getDishNameByType(dishCategory, menuList, dish.getDishType());
+                    logger.info("menuList: {}", menuList);
+                    CategoryMenuMap.put(dish.getDishType(), menuList);
+                    logger.info("CategoryMenuMap: {}", CategoryMenuMap);
                 }
-                menuList.add(dish.getDishName());
             } else {
                 categoryCheckList.add("menu");
+                menuList = getDishNameByExtra(dishCategory, menuList);
+                logger.info("menuList: {}", menuList);
+                CategoryMenuMap.put("menu", menuList);
+                logger.info("CategoryMenuMap: {}", CategoryMenuMap);
             }
         }
     }
 
-    public List<String> getDishName(List<CafeteriaDietEntity> dishCategory, List<String> menuList, String category) {
+    // 카테고리별 식단 리스트 반환 (카테고리인 경우)
+    public List<String> getDishNameByCategory(List<CafeteriaDietEntity> dishCategory, List<String> menuList, String category) {
+        logger.info("getDishNameByCategory 실행");
+
         for ( CafeteriaDietEntity dish : dishCategory) {
             if (dish.getDishCategory().equals(category)) {
-
+                logger.info("dish_category: {}", dish.getDishCategory());
+                logger.info("dish_name: {}", dish.getDishName());
+                menuList.add(dish.getDishName());
             }
         }
+        return menuList;
     }
+
+    // 카테고리별 식단 리스트 반환 (타입인 경우)
+    public List<String> getDishNameByType(List<CafeteriaDietEntity> dishCategory, List<String> menuList, String type) {
+        logger.info("getDishNameByType 실행");
+
+        for ( CafeteriaDietEntity dish : dishCategory) {
+            if (dish.getDishCategory().equals(type)) {
+                logger.info("dish_type: {}", dish.getDishType());
+                logger.info("dish_name: {}", dish.getDishName());
+                menuList.add(dish.getDishName());
+            }
+        }
+        return menuList;
+    }
+
+    // 카테고리별 식단 리스트 반환 (타입인 경우)
+    public List<String> getDishNameByExtra(List<CafeteriaDietEntity> dishCategory, List<String> menuList) {
+        logger.info("getDishNameByExtra 실행");
+
+        for ( CafeteriaDietEntity dish : dishCategory) {
+            logger.info("dish_category: {}", dish.getDishCategory()); // null
+            logger.info("dish_type: {}", dish.getDishType()); // null
+            logger.info("dish_name: {}", dish.getDishName());
+            menuList.add(dish.getDishName());
+        }
+        return menuList;
+    }
+
+
 }
