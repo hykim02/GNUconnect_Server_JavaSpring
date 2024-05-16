@@ -48,7 +48,6 @@ public class CafeteriaDietService {
                     categoryMenuMap.put(dish.getDishCategory(), menuList);
                     logger.info("CategoryMenuMap: {}", categoryMenuMap);
                 }
-                break;
             } else if (dish.getDishType() != null) {
                 if (!categoryCheckList.contains(dish.getDishType())) {
                     categoryCheckList.add(dish.getDishType());
@@ -64,7 +63,9 @@ public class CafeteriaDietService {
                 categoryMenuMap.put("menu", menuList);
                 logger.info("CategoryMenuMap: {}", categoryMenuMap);
             }
+            logger.info("if-else문 break");
         }
+        logger.info("for문 break");
         return categoryMenuMap;
     }
 
@@ -72,11 +73,14 @@ public class CafeteriaDietService {
     public List<String> getDishNameByCategory(List<CafeteriaDietEntity> dishCategory, List<String> menuList, String category) {
         logger.info("getDishNameByCategory 실행");
 
-        for ( CafeteriaDietEntity dish : dishCategory) {
+        for (CafeteriaDietEntity dish : dishCategory) {
             if (dish.getDishCategory().equals(category)) {
                 logger.info("dish_category: {}", dish.getDishCategory());
                 logger.info("dish_name: {}", dish.getDishName());
                 menuList.add(dish.getDishName());
+                break;
+            } else {
+                logger.info("해당 카테고리의 메뉴가 없습니다.");
             }
         }
         return menuList;

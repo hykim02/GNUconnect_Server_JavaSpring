@@ -61,13 +61,20 @@ public class CafeteriaController {
         logger.info("CafeteriaController 실행");
         logger.info("handleRequest 실행");
 
+        // params 받아오기
+        String paramsDate = requestDto.getAction().getParams().getSys_date();
+        logger.info("paramsDate: {}", paramsDate);
+        // 캠퍼스 이름 (자동)
         String paramsCampusName = requestDto.getAction().getParams().getSys_campus_name();
         logger.info("paramsCampusName: {}", paramsCampusName); // 가좌캠퍼스
-
         // 식당 이름
         String paramsCafeteriaName = requestDto.getAction().getParams().getSys_cafeteria_name();
         logger.info("paramsCafeteriaName: {}", paramsCafeteriaName); // 가좌본관식당
+        // period 파라미터 받아오는 경우(자동)
+        String paramsPeriod = requestDto.getAction().getParams().getSys_time_period(); // 아침, 점심, 저녁
+        logger.info("paramsPeriod: {}", paramsPeriod);
 
+        //params 없는 경우 수동으로 계산
         // 현재 날짜 시간
         String currentDate = getCurrentDate(); // 2024-05-13
         String currentTime = getCurrentTime(); // 16:43:12
@@ -76,9 +83,10 @@ public class CafeteriaController {
 
         String currentDay = getDay(currentTime); // 오늘, 내일
 
-        // 현재 식사 시기
+        // 현재 식사 시기(수동)
         String currentPeriod = getPeriodOfDay(currentTime); // 아침, 점심, 저녁
         logger.info("currentPeriod: {}", currentPeriod);
+
 
         int cafeteriaId = 0;
         HashMap<String, List<String>> categoryMenuMap; // 식단 map
@@ -90,17 +98,32 @@ public class CafeteriaController {
             if (campusId == 0) { // user 존재하지 않는 경우
                 return simpleTextResponse(); // 캠퍼스 블록 리턴
             } else { // user 존재하는 경우 (캠퍼스 이름도 필요)
-                String campusName = campusService.getCampusName(campusId);
+                String campusName = campusService.getCampusName(campusId); // (수동)
                 cafeteriaId = cafeteriaService.getCafeteriaIdByCampusId(paramsCafeteriaName, campusId);
-                categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), currentPeriod, cafeteriaId);
-                return responseMapping(categoryMenuMap, paramsCafeteriaName,
-                        campusName, currentDay, currentPeriod);
+
+                if (paramsPeriod == null) { // 유저가 period 지정하지 않은 경우
+                    categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), currentPeriod, cafeteriaId);
+                    return responseMapping(categoryMenuMap, paramsCafeteriaName,
+                            campusName, currentDay, currentPeriod);
+                } else { // 유저가 period 지정한 경우
+                    categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), paramsPeriod, cafeteriaId);
+                    return responseMapping(categoryMenuMap, paramsCafeteriaName,
+                            campusName, currentDay, paramsPeriod);
+                }
+
             }
         } else { // 나머지는 campusId 필요 없음
             cafeteriaId = cafeteriaService.getCafeteriaIdByName(paramsCafeteriaName);
-            categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), currentPeriod, cafeteriaId);
-            return responseMapping(categoryMenuMap, paramsCafeteriaName,
-                    paramsCampusName, currentDay, currentPeriod);
+
+            if (paramsPeriod == null) { // 유저가 period 지정하지 않은 경우
+                categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), currentPeriod, cafeteriaId);
+                return responseMapping(categoryMenuMap, paramsCafeteriaName,
+                        paramsCampusName, currentDay, currentPeriod);
+            } else { // 유저가 period 지정한 경우
+                categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), paramsPeriod, cafeteriaId);
+                return responseMapping(categoryMenuMap, paramsCafeteriaName,
+                        paramsCampusName, currentDay, paramsPeriod);
+            }
         }
     }
 
