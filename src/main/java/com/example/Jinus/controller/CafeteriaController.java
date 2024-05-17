@@ -68,21 +68,47 @@ public class CafeteriaController {
         String paramsCampusName = requestDto.getAction().getParams().getSys_campus_name();
         logger.info("paramsCampusName: {}", paramsCampusName); // 가좌캠퍼스
 
+        // 식당 이름 (동의어 사용)
+        String paramsCafeteriaName = requestDto.getAction().getParams().getSys_cafeteria_name();
+        logger.info("paramsCafeteriaName: {}", paramsCafeteriaName); // 가좌본관식당
+
         int campusId = getUserId(requestDto);
+        int cafeteriaId = cafeteriaService.getCafeteriaIdByCampusId(paramsCafeteriaName, campusId);
         // 캠퍼스 값이 존재하는 경우
         if (paramsCampusName != null) {
             logger.info("campusId 변경");
             campusId = campusService.getCampusId(paramsCampusName);
-        } else if (paramsCampusName == null && campusId != 0) { // 캠퍼스 값이 없는 경우 & 학과 인증된 경우
+
+            logger.info("cafeteriaId 변경");
+            cafeteriaId = cafeteriaService.getCafeteriaIdByCampusId(paramsCafeteriaName, campusId);
+        } else if (campusId != 0) { // 캠퍼스 값이 없는 경우 & 학과 인증된 경우
+            logger.info("paramsCampusName 변경");
             paramsCampusName = campusService.getCampusName(campusId);
-            logger.info("paramsCampusName: {}", paramsCampusName);
-        } else {
+        }
+        // 학과 인증 하지않은 경우
+        else if (paramsCafeteriaName.equals("교직원식당") || paramsCafeteriaName.equals("학생식당")) { // 식당 중복된 경우
             return responseSimpleTextExp("캠퍼스와 함께 다시 입력해주세요!");
+        } else {
+            logger.info("cafeteriaId 변경");
+            cafeteriaId = cafeteriaService.getCafeteriaIdByName(paramsCafeteriaName);
+
+            logger.info("campusId 변경");
+            campusId = cafeteriaService.getCampusIdByName(paramsCafeteriaName);
+
+            logger.info("paramsCampusName 변경");
+            paramsCampusName = campusService.getCampusName(campusId);
         }
 
-        // 식당 이름 (동의어 사용)
-        String paramsCafeteriaName = requestDto.getAction().getParams().getSys_cafeteria_name();
-        logger.info("paramsCafeteriaName: {}", paramsCafeteriaName); // 가좌본관식당
+        logger.info("cafeteriaId: {}", cafeteriaId);
+        logger.info("campusId: {}", campusId);
+        logger.info("paramsCampusName: {}", paramsCampusName);
+
+        // 캠퍼스에 해당 식당이 존재하지 않는 경우 예외처리
+        if (cafeteriaId == 0) {
+            return responseSimpleTextExp(paramsCampusName + "에 " + paramsCafeteriaName +"이 존재하지 않습니다." +
+                    " 다시 입력해주세요!");
+        }
+
         // 시점 (아침, 점심, 저녁)
         String paramsPeriod = requestDto.getAction().getParams().getSys_time_period();
         logger.info("paramsPeriod: {}", paramsPeriod);
@@ -116,24 +142,17 @@ public class CafeteriaController {
             logger.info("detailParamsPeriod: {}", detailParamsPeriod);
         }
 
-        int cafeteriaId = cafeteriaService.getCafeteriaIdByCampusId(paramsCafeteriaName, campusId);
-        if (cafeteriaId == 0) { // 캠퍼스에 해당 식당이 존재하지 않는 경우 예외처리
-            return responseSimpleTextExp(paramsCampusName + "에 " + paramsCafeteriaName +"이 존재하지 않습니다." +
-                    " 다시 입력해주세요!");
-        }
-
-        String responseCafeteriaData = getCafeteriaData(detailParamsDate, detailParamsPeriod, currentDate,
-                paramsPeriod, cafeteriaId, paramsCafeteriaName, paramsCampusName, currentDay, paramsDate);
-
-        return responseCafeteriaData;
+        return getCafeteriaData(detailParamsDate, detailParamsPeriod, currentDate,
+                paramsPeriod, cafeteriaId, paramsCafeteriaName, paramsCampusName, currentDay);
     }
+
 
 
     // 식단 데이터 조회
     public String getCafeteriaData(String detailParamsDate, String detailParamsPeriod,
                                    String currentDate, String paramsPeriod, int cafeteriaId,
                                    String paramsCafeteriaName, String paramsCampusName,
-                                   String currentDay, String paramsDate) {
+                                   String currentDay) {
 
         HashMap<String, List<String>> categoryMenuMap; // 식단 map
 
@@ -157,7 +176,7 @@ public class CafeteriaController {
             } else { // period 값만 입력된 경우
                 categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), detailParamsPeriod, cafeteriaId);
                 return responseMapping(categoryMenuMap, paramsCafeteriaName,
-                        paramsCampusName, paramsDate, detailParamsPeriod);
+                        paramsCampusName, currentDay, detailParamsPeriod);
             }
         }
     }
@@ -211,7 +230,6 @@ public class CafeteriaController {
 
         String joinedMenu = String.join(",", cafeteriaDishes); // 메뉴들 컴마로 연결
         logger.info("joinedMenu: {}", joinedMenu);
-
 
         return menuDescription + coveredCategory + "\n" + joinedMenu;
     }

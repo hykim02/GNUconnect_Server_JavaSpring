@@ -23,4 +23,7 @@ public interface CafeteriaRepository extends JpaRepository<CafeteriaEntity, Inte
             "WHERE c.cafeteriaNameKo = :name and c.campusId = :campusId"
     )
     Integer findIdByNameAndCampusId(@Param("name") String name, @Param("campusId") int campusId);
+
+    @Query("SELECT c.campusId FROM CafeteriaEntity c WHERE c.cafeteriaNameKo = :cafeteriaName")
+    int findCampusId(@Param("cafeteriaName") String cafeteriaName);
 }

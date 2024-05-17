@@ -42,4 +42,14 @@ public class CafeteriaService {
             return 0;
         }
     }
+
+    // 식당 이름으로 캠퍼스 id 찾기 (학과 인증하지 않은 경우)
+    public int getCampusIdByName(String cafeteriaName) {
+        logger.info("getCampusIdByName 실행");
+
+        int campusId = cafeteriaRepository.findIdByName(cafeteriaName);
+        logger.info("campusId : {}", campusId);
+
+        return campusId;
+    }
 }

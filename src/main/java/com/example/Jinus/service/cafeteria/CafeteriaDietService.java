@@ -57,11 +57,13 @@ public class CafeteriaDietService {
                     logger.info("CategoryMenuMap: {}", categoryMenuMap);
                 }
             } else {
-                categoryCheckList.add("menu");
-                menuList = getDishNameByExtra(dishCategory, menuList);
-                logger.info("menuList: {}", menuList);
-                categoryMenuMap.put("menu", menuList);
-                logger.info("CategoryMenuMap: {}", categoryMenuMap);
+                if (!categoryCheckList.contains("메뉴")) {
+                    categoryCheckList.add("메뉴");
+                    menuList = getDishNameByExtra(dishCategory, menuList);
+                    logger.info("menuList: {}", menuList);
+                    categoryMenuMap.put("메뉴", menuList);
+                    logger.info("CategoryMenuMap: {}", categoryMenuMap);
+                }
             }
             logger.info("if-else문 break");
         }
@@ -104,10 +106,12 @@ public class CafeteriaDietService {
         logger.info("getDishNameByExtra 실행");
 
         for ( CafeteriaDietEntity dish : dishCategory) {
-            logger.info("dish_category: {}", dish.getDishCategory()); // null
-            logger.info("dish_type: {}", dish.getDishType()); // null
-            logger.info("dish_name: {}", dish.getDishName());
-            menuList.add(dish.getDishName());
+            if (dish.getDishCategory() == null && dish.getDishType() == null) {
+                logger.info("dish_category: {}", dish.getDishCategory()); // null
+                logger.info("dish_type: {}", dish.getDishType()); // null
+                logger.info("dish_name: {}", dish.getDishName());
+                menuList.add(dish.getDishName());
+            }
         }
         return menuList;
     }
