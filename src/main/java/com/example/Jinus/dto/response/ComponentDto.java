@@ -9,6 +9,7 @@ public class ComponentDto {
     private CarouselDto carousel;
     private TextCardDto textCard;
     private BasicCardDto basicCard;
+    private SimpleTextDto simpleText;
 
     public ComponentDto(CarouselDto carousel) {
         this.carousel = carousel;
@@ -20,5 +21,9 @@ public class ComponentDto {
 
     public ComponentDto(BasicCardDto basicCard) {
         this.basicCard = basicCard;
+    }
+
+    public ComponentDto(SimpleTextDto simpleText) {
+        this.simpleText = simpleText;
     }
 }

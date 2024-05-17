@@ -2,7 +2,6 @@ package com.example.Jinus.controller;
 
 import com.example.Jinus.dto.request.RequestDto;
 import com.example.Jinus.dto.response.*;
-import com.example.Jinus.entity.cafeteria.CafeteriaDietEntity;
 import com.example.Jinus.service.CollegeService;
 import com.example.Jinus.service.DepartmentService;
 import com.example.Jinus.service.UserService;
@@ -62,19 +61,33 @@ public class CafeteriaController {
         logger.info("handleRequest 실행");
 
         // params 받아오기
+        // 날짜 (오늘, 내일)
         String paramsDate = requestDto.getAction().getParams().getSys_date();
         logger.info("paramsDate: {}", paramsDate);
-        // 캠퍼스 이름 (자동)
+        // 캠퍼스 이름 (동의어 사용)
         String paramsCampusName = requestDto.getAction().getParams().getSys_campus_name();
         logger.info("paramsCampusName: {}", paramsCampusName); // 가좌캠퍼스
-        // 식당 이름
+
+        int campusId = getUserId(requestDto);
+        // 캠퍼스 값이 존재하는 경우
+        if (paramsCampusName != null) {
+            logger.info("campusId 변경");
+            campusId = campusService.getCampusId(paramsCampusName);
+        } else if (paramsCampusName == null && campusId != 0) { // 캠퍼스 값이 없는 경우 & 학과 인증된 경우
+            paramsCampusName = campusService.getCampusName(campusId);
+            logger.info("paramsCampusName: {}", paramsCampusName);
+        } else {
+            return responseSimpleTextExp("캠퍼스와 함께 다시 입력해주세요!");
+        }
+
+        // 식당 이름 (동의어 사용)
         String paramsCafeteriaName = requestDto.getAction().getParams().getSys_cafeteria_name();
         logger.info("paramsCafeteriaName: {}", paramsCafeteriaName); // 가좌본관식당
-        // period 파라미터 받아오는 경우(자동)
-        String paramsPeriod = requestDto.getAction().getParams().getSys_time_period(); // 아침, 점심, 저녁
+        // 시점 (아침, 점심, 저녁)
+        String paramsPeriod = requestDto.getAction().getParams().getSys_time_period();
         logger.info("paramsPeriod: {}", paramsPeriod);
 
-        //params 없는 경우 수동으로 계산
+        // 때에 맞는 식단 조회를 위한 시간 및 날짜 조회
         // 현재 날짜 시간
         String currentDate = getCurrentDate(); // 2024-05-13
         String currentTime = getCurrentTime(); // 16:43:12
@@ -83,46 +96,68 @@ public class CafeteriaController {
 
         String currentDay = getDay(currentTime); // 오늘, 내일
 
-        // 현재 식사 시기(수동)
-        String currentPeriod = getPeriodOfDay(currentTime); // 아침, 점심, 저녁
-        logger.info("currentPeriod: {}", currentPeriod);
+        // 현재 식사 시기(사용자가 입력하지 않았을 경우)
+        if (paramsPeriod == null) {
+            paramsPeriod = getPeriodOfDay(currentTime); // 아침, 점심, 저녁
+            logger.info("paramsPeriod: {}", paramsPeriod);
+        }
+
+        // 사용자의 입력값이 존재하는 경우
+        // 날짜
+        String detailParamsDate = "";
+        if (paramsDate.equals("sys.date")) {
+            detailParamsDate = requestDto.getAction().getDetailParams().getSys_date().getOrigin();
+            logger.info("detailParamsDate: {}", detailParamsDate);
+        }
+        // 식사 시기
+        String detailParamsPeriod = "";
+        if (paramsPeriod.equals("sys.time.period")) {
+            detailParamsPeriod = requestDto.getAction().getDetailParams().getSys_time_period().getOrigin();
+            logger.info("detailParamsPeriod: {}", detailParamsPeriod);
+        }
+
+        int cafeteriaId = cafeteriaService.getCafeteriaIdByCampusId(paramsCafeteriaName, campusId);
+        if (cafeteriaId == 0) { // 캠퍼스에 해당 식당이 존재하지 않는 경우 예외처리
+            return responseSimpleTextExp(paramsCampusName + "에 " + paramsCafeteriaName +"이 존재하지 않습니다." +
+                    " 다시 입력해주세요!");
+        }
+
+        String responseCafeteriaData = getCafeteriaData(detailParamsDate, detailParamsPeriod, currentDate,
+                paramsPeriod, cafeteriaId, paramsCafeteriaName, paramsCampusName, currentDay, paramsDate);
+
+        return responseCafeteriaData;
+    }
 
 
-        int cafeteriaId = 0;
+    // 식단 데이터 조회
+    public String getCafeteriaData(String detailParamsDate, String detailParamsPeriod,
+                                   String currentDate, String paramsPeriod, int cafeteriaId,
+                                   String paramsCafeteriaName, String paramsCampusName,
+                                   String currentDay, String paramsDate) {
+
         HashMap<String, List<String>> categoryMenuMap; // 식단 map
 
-        // 식당 이름 중복되는 경우 campusId 필요
-        if (paramsCafeteriaName.equals("학생식당") || paramsCafeteriaName.equals("교직원식당")) {
-            int campusId = getUserId(requestDto);
-
-            if (campusId == 0) { // user 존재하지 않는 경우
-                return simpleTextResponse(); // 캠퍼스 블록 리턴
-            } else { // user 존재하는 경우 (캠퍼스 이름도 필요)
-                String campusName = campusService.getCampusName(campusId); // (수동)
-                cafeteriaId = cafeteriaService.getCafeteriaIdByCampusId(paramsCafeteriaName, campusId);
-
-                if (paramsPeriod == null) { // 유저가 period 지정하지 않은 경우
-                    categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), currentPeriod, cafeteriaId);
-                    return responseMapping(categoryMenuMap, paramsCafeteriaName,
-                            campusName, currentDay, currentPeriod);
-                } else { // 유저가 period 지정한 경우
-                    categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), paramsPeriod, cafeteriaId);
-                    return responseMapping(categoryMenuMap, paramsCafeteriaName,
-                            campusName, currentDay, paramsPeriod);
-                }
-
-            }
-        } else { // 나머지는 campusId 필요 없음
-            cafeteriaId = cafeteriaService.getCafeteriaIdByName(paramsCafeteriaName);
-
-            if (paramsPeriod == null) { // 유저가 period 지정하지 않은 경우
-                categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), currentPeriod, cafeteriaId);
+        // 사용자의 입력값 없는 경우(식당 블록 리턴하는 경우) -> paramsCampus 값은 항상 존재
+        if (detailParamsDate.isEmpty() && detailParamsPeriod.isEmpty()) {
+            categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), paramsPeriod, cafeteriaId);
+            return responseMapping(categoryMenuMap, paramsCafeteriaName,
+                    paramsCampusName, currentDay, paramsPeriod);
+        } else { // 사용자의 입력값 있는 경우(직접 입력하는 경우)
+            // date값이 오늘이나 내일이 아닌 경우 -> 예외처리
+            if (!detailParamsDate.isEmpty() && !(detailParamsDate.equals("오늘") || detailParamsDate.equals("내일"))) {
+                return responseSimpleTextExp("오늘과 내일의 식단만 조회할 수 있습니다.");
+            } else if (!detailParamsDate.isEmpty() && !detailParamsPeriod.isEmpty()) { // 둘 다 입력된 경우
+                categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), detailParamsPeriod, cafeteriaId);
                 return responseMapping(categoryMenuMap, paramsCafeteriaName,
-                        paramsCampusName, currentDay, currentPeriod);
-            } else { // 유저가 period 지정한 경우
+                        paramsCampusName, detailParamsDate, detailParamsPeriod);
+            } else if (!detailParamsDate.isEmpty()) { // date값만 입력된 경우
                 categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), paramsPeriod, cafeteriaId);
                 return responseMapping(categoryMenuMap, paramsCafeteriaName,
-                        paramsCampusName, currentDay, paramsPeriod);
+                        paramsCampusName, detailParamsDate, paramsPeriod);
+            } else { // period 값만 입력된 경우
+                categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), detailParamsPeriod, cafeteriaId);
+                return responseMapping(categoryMenuMap, paramsCafeteriaName,
+                        paramsCampusName, paramsDate, detailParamsPeriod);
             }
         }
     }
@@ -182,6 +217,21 @@ public class CafeteriaController {
     }
 
 
+    // simpleText 예외처리
+    public String responseSimpleTextExp(String text) {
+        SimpleTextDto simpleTextDto = new SimpleTextDto(text);
+        ComponentDto componentDto = new ComponentDto(simpleTextDto);
+
+        List<ComponentDto> componentDtoList = new ArrayList<>();
+        componentDtoList.add(componentDto);
+
+        TemplateDto templateDto = new TemplateDto(componentDtoList);
+        ResponseDto responseDto = new ResponseDto("2.0", templateDto);
+
+        return toJsonResponse(responseDto);
+    }
+
+
     // user 테이블에 userId 존재 여부 확인
     public int getUserId(@RequestBody RequestDto requestDto) {
         logger.info("getUserId 실행");
@@ -204,7 +254,7 @@ public class CafeteriaController {
         }
     }
 
-    // 현재 날짜 출력 함수
+    // 조회할 날짜 찾는 함수
     public String getCurrentDate() {
         logger.info("getCurrentDate 실행");
         LocalDateTime currentDateTime = LocalDateTime.now();

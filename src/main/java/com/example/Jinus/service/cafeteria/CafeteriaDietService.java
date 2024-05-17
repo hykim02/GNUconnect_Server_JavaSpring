@@ -78,7 +78,6 @@ public class CafeteriaDietService {
                 logger.info("dish_category: {}", dish.getDishCategory());
                 logger.info("dish_name: {}", dish.getDishName());
                 menuList.add(dish.getDishName());
-                break;
             } else {
                 logger.info("해당 카테고리의 메뉴가 없습니다.");
             }

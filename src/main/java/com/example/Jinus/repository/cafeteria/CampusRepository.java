@@ -10,4 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface CampusRepository extends JpaRepository<CampusEntity, Integer> {
     @Query("SELECT c.campusNameKo FROM CampusEntity c WHERE c.id = :campusId")
     String findCampusNameById(@Param("campusId") int campusId);
+
+    @Query("SELECT c.id FROM CampusEntity c WHERE c.campusNameKo = :campusName")
+    int findCampusIdByName(@Param("campusName") String campusName);
 }

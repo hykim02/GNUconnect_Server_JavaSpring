@@ -27,4 +27,12 @@ public class CampusService {
         return campusName;
     }
 
+    public int getCampusId(String campusName) {
+        logger.info("getCampusId 실행");
+
+        int campusId = campusRepository.findCampusIdByName(campusName);
+        logger.info("campusId: {}", campusId);
+        return campusId;
+    }
+
 }

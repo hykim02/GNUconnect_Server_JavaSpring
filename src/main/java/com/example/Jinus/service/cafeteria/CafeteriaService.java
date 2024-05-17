@@ -33,9 +33,13 @@ public class CafeteriaService {
     public int getCafeteriaIdByCampusId(String sysCafeteriaName, int campusId) {
         logger.info("getCafeteriaIdByCampusId 실행");
 
-        int cafeteriaId = cafeteriaRepository.findIdByNameAndCampusId(sysCafeteriaName, campusId);
+        Integer cafeteriaId = cafeteriaRepository.findIdByNameAndCampusId(sysCafeteriaName, campusId);
         logger.info("cafeteriaId : {}", cafeteriaId);
 
-        return cafeteriaId;
+        if (cafeteriaId != null) {
+            return cafeteriaId;
+        } else {
+            return 0;
+        }
     }
 }
