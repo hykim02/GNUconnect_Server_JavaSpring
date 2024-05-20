@@ -32,6 +32,12 @@ pipeline {
             }
         }
 
+        stage('Docker Build') {
+            steps {
+                sh 'docker-compose -f docker-compose.yml build'
+            }
+        }
+
         stage('Tag & Push') { // Combine Tag and Push stages for efficiency
             steps {
                 script {
