@@ -25,7 +25,7 @@ pipeline {
                     sh 'pwd'
                     sh 'ls'
                     sh 'cp ${springConfigFile} ./application.properties'
-                    sh 'ls'
+                    sh 'cat application.properties'
                 }
                 }
             }
@@ -61,7 +61,7 @@ pipeline {
             steps {
                 script {
                     sh 'docker-compose down'
-                    sh "docker-compose -f docker-compose.yml -f ${APP_PROPERTIES_FILE} up -d backend_spring_server"
+                    sh "docker-compose up -d backend_spring_server"
                 }
             }
         }
