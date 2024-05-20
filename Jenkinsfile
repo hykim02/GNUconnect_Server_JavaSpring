@@ -19,7 +19,9 @@ pipeline {
         }
 
         stage('Replace Properties') {
-            sh 'cat $APP_PROPERTIES > app.properties'
+            steps {
+                sh 'cat $APP_PROPERTIES > app.properties'
+            }
         }
 
         stage('Build') {
