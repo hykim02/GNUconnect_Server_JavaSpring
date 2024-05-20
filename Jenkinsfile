@@ -25,10 +25,12 @@ pipeline {
         }
 
         stage('Tag') {
-            sh(script: '''
-                docker tag ${DOCKER_USER_ID}/connect-gnu-spring \
-                ${DOCKER_USER_ID}/connect-gnu-spring:${BUILD_NUMBER}
-            ''')
+            steps {
+                script {
+                    sh 'docker tag ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:${BUILD_NUMBER}'
+                    sh 'docker tag ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:latest'
+                }
+            }
         }
 
         stage('Push') {
