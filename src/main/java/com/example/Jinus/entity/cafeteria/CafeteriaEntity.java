@@ -21,4 +21,7 @@ public class CafeteriaEntity {
 
     @Column(name = "campus_id")
     private int campusId;
+
+    @Column(name = "thumbnail_url")
+    private String thumbnailUrl;
 }

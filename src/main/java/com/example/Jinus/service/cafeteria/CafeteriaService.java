@@ -52,4 +52,14 @@ public class CafeteriaService {
 
         return campusId;
     }
+
+    // 식당 id로 썸네일 url 찾기
+    public String getCampusThumnail(int cafeteriaId) {
+        logger.info("getCampusThumnail 실행");
+
+        String thumnailUrl = cafeteriaRepository.findThumnailUrl(cafeteriaId);
+        logger.info("thumnailUrl : {}", thumnailUrl);
+
+        return thumnailUrl;
+    }
 }

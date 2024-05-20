@@ -159,7 +159,7 @@ public class CafeteriaController {
         // 사용자의 입력값 없는 경우(식당 블록 리턴하는 경우) -> paramsCampus 값은 항상 존재
         if (detailParamsDate.isEmpty() && detailParamsPeriod.isEmpty()) {
             categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), paramsPeriod, cafeteriaId);
-            return responseMapping(categoryMenuMap, paramsCafeteriaName,
+            return responseMapping(cafeteriaId, categoryMenuMap, paramsCafeteriaName,
                     paramsCampusName, currentDay, paramsPeriod);
         } else { // 사용자의 입력값 있는 경우(직접 입력하는 경우)
             // date값이 오늘이나 내일이 아닌 경우 -> 예외처리
@@ -167,24 +167,25 @@ public class CafeteriaController {
                 return responseSimpleTextExp("오늘과 내일의 식단만 조회할 수 있습니다.");
             } else if (!detailParamsDate.isEmpty() && !detailParamsPeriod.isEmpty()) { // 둘 다 입력된 경우
                 categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), detailParamsPeriod, cafeteriaId);
-                return responseMapping(categoryMenuMap, paramsCafeteriaName,
+                return responseMapping(cafeteriaId, categoryMenuMap, paramsCafeteriaName,
                         paramsCampusName, detailParamsDate, detailParamsPeriod);
             } else if (!detailParamsDate.isEmpty()) { // date값만 입력된 경우
                 categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), paramsPeriod, cafeteriaId);
-                return responseMapping(categoryMenuMap, paramsCafeteriaName,
+                return responseMapping(cafeteriaId, categoryMenuMap, paramsCafeteriaName,
                         paramsCampusName, detailParamsDate, paramsPeriod);
             } else { // period 값만 입력된 경우
                 categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), detailParamsPeriod, cafeteriaId);
-                return responseMapping(categoryMenuMap, paramsCafeteriaName,
+                return responseMapping(cafeteriaId, categoryMenuMap, paramsCafeteriaName,
                         paramsCampusName, currentDay, detailParamsPeriod);
             }
         }
     }
 
-    public String responseMapping(HashMap<String, List<String>> categoryMenuMap,
+    public String responseMapping(int cafeteriaId, HashMap<String, List<String>> categoryMenuMap,
                                   String cafeteriaName, String campus, String day, String period) {
         logger.info("resonseMapping 실행");
-        ThumbnailDto thumbnailDto = new ThumbnailDto("https://t1.kakaocdn.net/openbuilder/sample/lj3JUcmrzC53YIjNDkqbWK.jpg");
+        String url = cafeteriaService.getCampusThumnail(cafeteriaId);
+        ThumbnailDto thumbnailDto = new ThumbnailDto(url);
 
         String title = cafeteriaName + " 메뉴";
         String description = handleCafeteriaDiet(categoryMenuMap, campus, day, period);
@@ -326,9 +327,9 @@ public class CafeteriaController {
 
         if (time.isAfter(LocalTime.parse("00:00:00")) && time.isBefore(LocalTime.parse("09:30:00"))) {
             return "아침";
-        } else if (time.isAfter(LocalTime.parse("09:30:00")) && time.isBefore(LocalTime.parse("14:30:00"))) {
+        } else if (time.isAfter(LocalTime.parse("09:30:00")) && time.isBefore(LocalTime.parse("13:30:00"))) {
             return "점심";
-        } else if (time.isAfter(LocalTime.parse("14:30:00")) && time.isBefore(LocalTime.parse("19:00:00"))) {
+        } else if (time.isAfter(LocalTime.parse("13:30:00")) && time.isBefore(LocalTime.parse("19:00:00"))) {
             return "저녁";
         } else {
             return "아침";
