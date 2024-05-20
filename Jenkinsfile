@@ -45,8 +45,8 @@ pipeline {
 
         stage('application-properties download') {
             steps {
-                withCredentials([file(credentialsId: 'spring-application-properties', variable: 'application.properties')]) {
-                    sh 'cp application.properties ./application.properties'
+                withCredentials([file(credentialsId: 'spring-application-properties', variable: 'springConfigFile')]) {
+                    sh 'cp $springConfigFile ./application.properties'
                 }
             }
         }
