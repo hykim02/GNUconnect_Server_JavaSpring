@@ -7,14 +7,8 @@ pipeline {
 
     environment {
         JAVA_HOME = "tool jdk21"
+        DOCKERHUB_CREDENTIALS = credentials('docker-hub-flask')
     }
-
-    withCredentials([
-        [$class: 'UsernamePasswordMultiBinding',
-         credentialsId: 'docker-hub-flask',
-         usernameVariable: 'DOCKER_USER_ID',
-         passwordVariable: 'DOCKER_USER_PASSWORD']
-    ])
 
     stages {
         stage('Checkout') {
@@ -35,8 +29,8 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    docker tag backend_spring_server ${DOCKER_USER_ID}/connect-gnu-spring:${BUILD_NUMBER}
-                    docker tag backend_spring_server ${DOCKER_USER_ID}/connect-gnu-spring:latest
+                    docker tag backend_spring_server ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:${BUILD_NUMBER}
+                    docker tag backend_spring_server ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:latest
                     '''
                 }
             }
@@ -45,9 +39,9 @@ pipeline {
         stage('Push') {
             steps {
                 script {
-                    sh 'docker login -u ${DOCKER_USER_ID} -p ${DOCKER_USER_PASSWORD}'
-                    sh 'docker push ${DOCKER_USER_ID}/connect-gnu-spring:${BUILD_NUMBER}'
-                    sh 'docker push ${DOCKER_USER_ID}/connect-gnu-spring:latest'
+                    sh 'docker login -u ${DOCKERHUB_CREDENTIALS_USR} -p ${DOCKERHUB_CREDENTIALS_PSW}'
+                    sh 'docker push ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:${BUILD_NUMBER}'
+                    sh 'docker push ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:latest'
                 }
             }
         }
