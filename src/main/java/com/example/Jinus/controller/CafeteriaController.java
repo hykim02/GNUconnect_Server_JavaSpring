@@ -55,7 +55,7 @@ public class CafeteriaController {
         this.campusService = campusService;
     }
 
-    @PostMapping("/cafeteria")
+    @PostMapping("/api/spring/cafeteria")
     public String handleRequest(@RequestBody RequestDto requestDto) {
         logger.info("CafeteriaController 실행");
         logger.info("handleRequest 실행");

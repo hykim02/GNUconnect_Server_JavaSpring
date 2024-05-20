@@ -46,7 +46,7 @@ public class NoticeController {
         this.processMonitor = processMonitor;
     }
 
-    @PostMapping("/department-notice")
+    @PostMapping("/api/spring/department-notice")
     public String handleRequest(@RequestBody RequestDto requestDto) throws ParseException {
         logger.info("NoticeController 실행");
         logger.info("handleRequest 실행");
