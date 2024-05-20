@@ -25,21 +25,16 @@ pipeline {
             }
         }
 
-        stage('Tag') {
+        stage('Tag & Push') {
             steps {
                 script {
-                    sh 'docker tag ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:${BUILD_NUMBER}'
-                    sh 'docker tag ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:latest'
-                }
-            }
-        }
-
-        stage('Push') {
-            steps {
-                script {
-                    sh 'docker login -u ${DOCKERHUB_CREDENTIALS_USR} -p ${DOCKERHUB_CREDENTIALS_PSW}'
-                    sh 'docker push ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:${BUILD_NUMBER}'
-                    sh 'docker push ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:latest'
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-flask', usernameVariable: 'DOCKERHUB_CREDENTIALS_USR', passwordVariable: 'DOCKERHUB_CREDENTIALS_PSW')]) {
+                        def imageName = "$DOCKERHUB_CREDENTIALS_USR/connect-gnu-spring"
+                        sh 'docker login -u $DOCKERHUB_CREDENTIALS_USR -p $DOCKERHUB_CREDENTIALS_PSW'
+                        sh "docker tag ${imageName}:${BUILD_NUMBER} ${imageName}:latest"
+                        sh "docker push ${imageName}:${BUILD_NUMBER}"
+                        sh "docker push ${imageName}:latest"
+                    }
                 }
             }
         }
