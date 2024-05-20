@@ -19,9 +19,8 @@ pipeline {
 
         stage('Add Env') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'spring-application-properties', usernameVariable: 'SPRING_CONFIG_USERNAME', passwordVariable: 'SPRING_CONFIG_PASSWORD')]) {
-                    sh 'cp ${SPRING_CONFIG_USERNAME} ./application.properties'
-                }
+                withCredentials([file(credentialsId: 'spring-application-properties', variable: 'springConfigFile')]) {
+                    sh 'cp ${springConfigFile} ./application.properties'
             }
         }
 
