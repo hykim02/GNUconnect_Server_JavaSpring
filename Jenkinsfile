@@ -37,14 +37,6 @@ pipeline {
             }
         }
 
-        stage('Docker Build') {
-            steps {
-                script {
-                    sh 'docker build -t ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:${BUILD_NUMBER} .'
-                }
-            }
-        }
-
         stage('Tag') {
             steps {
                 script {
