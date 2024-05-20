@@ -6,9 +6,8 @@ pipeline {
     }
 
     environment {
-        JAVA_HOME = "tool jdk21"
-        DOCKERHUB_CREDENTIALS = credentials('docker-hub-flask')
-        APP_PROPERTIES_FILE = 'application.properties'
+        JAVA_HOME = toolName('jdk21')  // Use toolName for clarity
+        DOCKERHUB_CREDENTIALS = credentialsId('docker-hub-flask')
     }
 
     stages {
@@ -20,8 +19,8 @@ pipeline {
 
         stage('Add Env') {
             steps {
-                withCredentials([file(credentialsId: 'spring-application-properties', variable: 'springConfigFile')]) {
-                    sh 'cp ${springConfigFile} ./application.properties'
+                withCredentials([usernamePassword(credentialsId: 'spring-application-properties', usernameVariable: 'SPRING_CONFIG_USERNAME', passwordVariable: 'SPRING_CONFIG_PASSWORD')]) {
+                    sh 'cp ${SPRING_CONFIG_USERNAME} ./application.properties'
                 }
             }
         }
@@ -33,21 +32,14 @@ pipeline {
             }
         }
 
-        stage('Tag') {
+        stage('Tag & Push') { // Combine Tag and Push stages for efficiency
             steps {
                 script {
-                    sh 'docker tag ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:${BUILD_NUMBER}'
-                    sh 'docker tag ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:latest'
-                }
-            }
-        }
-
-        stage('Push') {
-            steps {
-                script {
-                    sh 'docker login -u ${DOCKERHUB_CREDENTIALS_USR} -p ${DOCKERHUB_CREDENTIALS_PSW}'
-                    sh 'docker push ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:${BUILD_NUMBER}'
-                    sh 'docker push ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:latest'
+                    docker login -u ${DOCKERHUB_CREDENTIALS_USR} -p ${DOCKERHUB_CREDENTIALS_PSW}
+                    def imageName = "${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring"
+                    sh "docker tag ${imageName}:${BUILD_NUMBER} ${imageName}:latest"
+                    sh "docker push ${imageName}:${BUILD_NUMBER}"
+                    sh "docker push ${imageName}:latest"
                 }
             }
         }
