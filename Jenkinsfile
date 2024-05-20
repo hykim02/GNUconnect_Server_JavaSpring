@@ -35,8 +35,8 @@ pipeline {
         stage('Tag & Push') { // Combine Tag and Push stages for efficiency
             steps {
                 script {
-                    docker login -u ${DOCKERHUB_CREDENTIALS_USR} -p ${DOCKERHUB_CREDENTIALS_PSW}
-                    def imageName = "${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring"
+                    sh 'docker login -u ${DOCKERHUB_CREDENTIALS_USR} -p ${DOCKERHUB_CREDENTIALS_PSW}'
+                    def imageName = '${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring'
                     sh "docker tag ${imageName}:${BUILD_NUMBER} ${imageName}:latest"
                     sh "docker push ${imageName}:${BUILD_NUMBER}"
                     sh "docker push ${imageName}:latest"
