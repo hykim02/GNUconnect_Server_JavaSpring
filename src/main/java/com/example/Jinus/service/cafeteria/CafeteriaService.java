@@ -47,7 +47,7 @@ public class CafeteriaService {
     public int getCampusIdByName(String cafeteriaName) {
         logger.info("getCampusIdByName 실행");
 
-        int campusId = cafeteriaRepository.findIdByName(cafeteriaName);
+        int campusId = cafeteriaRepository.findCampusId(cafeteriaName);
         logger.info("campusId : {}", campusId);
 
         return campusId;
