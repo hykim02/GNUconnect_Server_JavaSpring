@@ -21,7 +21,12 @@ pipeline {
         stage('Replace Properties') {
             steps {
                 withCredentials([file(credentialsId: 'spring-application-properties', variable: 'springConfigFile')]) {
+                script {
+                    sh 'pwd'
+                    sh 'ls'
                     sh 'cp ${springConfigFile} ./application.properties'
+                    sh 'ls'
+                }
                 }
             }
         }
