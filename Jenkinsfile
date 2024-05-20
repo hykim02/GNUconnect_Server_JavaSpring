@@ -18,6 +18,14 @@ pipeline {
             }
         }
 
+        stage('Add Env') {
+            steps {
+                withCredentials([file(credentialsId: 'spring-application-properties', variable: 'springConfigFile')]) {
+                    sh 'cp ${springConfigFile} ./application.properties'
+                }
+            }
+        }
+
         stage('Build') {
             steps {
                 sh 'chmod +x gradlew'
@@ -44,19 +52,11 @@ pipeline {
             }
         }
 
-        stage('application-properties download') {
-            steps {
-                withCredentials([file(credentialsId: 'spring-application-properties', variable: 'springConfigFile')]) {
-                    sh 'cp $springConfigFile ./application.properties'
-                }
-            }
-        }
-
         stage('Deploy') {
             steps {
                 script {
-                    sh 'docker-compose -f docker-compose.yml -f ${APP_PROPERTIES_FILE} down'
-                    sh "docker-compose -f docker-compose.yml -f ${APP_PROPERTIES_FILE} up -d backend_spring_server"
+                    sh 'docker-compose down'
+                    sh "docker-compose up -d backend_spring_server"
                 }
             }
         }
