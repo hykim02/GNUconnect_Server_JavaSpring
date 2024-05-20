@@ -7,7 +7,7 @@ pipeline {
 
     environment {
         JAVA_HOME = toolName('jdk21')  // Use toolName for clarity
-        DOCKERHUB_CREDENTIALS = credentialsId('docker-hub-flask')
+        DOCKERHUB_CREDENTIALS = credentials('docker-hub-flask')
     }
 
     stages {
