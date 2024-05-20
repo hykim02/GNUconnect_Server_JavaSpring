@@ -8,6 +8,8 @@ pipeline {
     environment {
         JAVA_HOME = "tool jdk21"
         DOCKERHUB_CREDENTIALS = credentials('docker-hub-flask')
+        SPRING_APP_PROPERTIES_CREDENTIALS_ID = 'spring-application-properties'
+        APP_PROPERTIES_FILE = 'app.properties'
     }
 
     stages {
@@ -43,11 +45,20 @@ pipeline {
             }
         }
 
+        stage('application-properties download') {
+            steps {
+                withCredentials([file(credentialsId: "${SPRING_APP_PROPERTIES_CREDENTIALS_ID}", variable: 'SPRING_APP_PROPERTIES_FILE_PATH')]) {
+                    // 바인딩된 파일을 파이프라인 환경 변수에 로드합니다.
+                    APP_PROPERTIES_CONTENT = readFile(file: "${SPRING_APP_PROPERTIES_FILE_PATH}").trim()
+                }
+            }
+        }
+
         stage('Deploy') {
             steps {
                 script {
                     sh 'docker-compose down'
-                    sh 'docker-compose up -d backend_spring_server'
+                    sh "docker-compose -f docker-compose.yml -f ${APP_PROPERTIES_FILE} up -d"
                 }
             }
         }
