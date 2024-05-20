@@ -20,7 +20,7 @@ pipeline {
 
         stage('Replace Properties') {
             steps {
-                sh 'cat $APP_PROPERTIES > app.properties'
+                sh 'cat $APP_PROPERTIES > src/main/resources/app.properties'
             }
         }
 
