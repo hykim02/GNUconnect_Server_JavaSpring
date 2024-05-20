@@ -7,11 +7,14 @@ pipeline {
 
     environment {
         JAVA_HOME = "tool jdk21"
-        DOCKER_USER_ID = "${credentials('docker-hub-flask').username}"
-        DOCKER_USER_PASSWORD = "${credentials('docker-hub-flask').password}"
     }
 
-    stages {
+    withCredentials([
+        [$class: 'UsernamePasswordMultiBinding',
+         credentialsId: 'docker-hub-flask',
+         usernameVariable: 'DOCKER_USER_ID',
+         passwordVariable: 'DOCKER_USER_PASSWORD']
+    ]){
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/GNU-connect/Server-JavaSpring.git'
@@ -54,12 +57,6 @@ pipeline {
                     sh 'docker-compose up -d backend_spring_server'
                 }
             }
-        }
-    }
-
-    post {
-        always {
-            cleanWs()
         }
     }
 }
