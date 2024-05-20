@@ -10,11 +10,7 @@ pipeline {
 
         stage('Build') {
             steps {
-               sh '''
-                echo 'start bootJar'
-                chmod +x gradlew
-                ./gradlew clean bootJar
-                '''
+                docker.build(imageName: 'backend_spring_server', dockerfilePath: 'Dockerfile')
             }
         }
     }
