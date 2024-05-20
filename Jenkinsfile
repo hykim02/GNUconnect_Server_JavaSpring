@@ -14,7 +14,9 @@ pipeline {
          credentialsId: 'docker-hub-flask',
          usernameVariable: 'DOCKER_USER_ID',
          passwordVariable: 'DOCKER_USER_PASSWORD']
-    ]){
+    ])
+
+    stages {
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/GNU-connect/Server-JavaSpring.git'
