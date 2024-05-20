@@ -7,8 +7,8 @@ pipeline {
 
     environment {
         JAVA_HOME = "tool jdk21"
-        DOCKER_USER_ID = credentials('docker-hub-flask').username
-        DOCKER_USER_PASSWORD = credentials('docker-hub-flask').password
+        DOCKER_USER_ID = "${credentials('docker-hub-flask').username}"
+        DOCKER_USER_PASSWORD = "${credentials('docker-hub-flask').password}"
     }
 
     stages {
