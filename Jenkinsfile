@@ -9,13 +9,12 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Git 저장소에서 코드 체크아웃
-                git branch: 'main', url: 'https://github.com/mooh2jj/docker-jenkins-pipeline-test2.git'
+                git branch: 'main', url: 'https://github.com/GNU-connect/Server-JavaSpring.git'
             }
         }
 
         stage('Build') {
-            sh(script: 'docker-compose build backend_flask_server')
+            sh(script: 'docker-compose build backend_spring_server')
         }
 
         stage('Tag and Push') {
