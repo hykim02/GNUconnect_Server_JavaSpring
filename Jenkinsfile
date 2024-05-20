@@ -22,12 +22,7 @@ pipeline {
             steps {
                 sh 'chmod +x gradlew'
                 sh './gradlew clean build'
-            }
-        }
-
-        stage('Docker Build') {
-            steps {
-                docker.build(imageName: 'backend_spring_server', dockerfilePath: 'Dockerfile')
+                sh 'docker-compose build backend_spring_server'
             }
         }
 
