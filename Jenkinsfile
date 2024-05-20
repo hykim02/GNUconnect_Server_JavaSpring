@@ -25,7 +25,6 @@ pipeline {
                     sh 'pwd'
                     sh 'ls'
                     sh 'cp ${springConfigFile} src/main/resources/application.properties'
-                    sh 'cat application.properties'
                 }
                 }
             }
