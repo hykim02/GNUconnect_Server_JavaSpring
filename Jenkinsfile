@@ -21,7 +21,6 @@ pipeline {
             steps {
                 sh 'chmod +x gradlew'
                 sh './gradlew clean build'
-                sh 'docker-compose build backend_spring_server'
             }
         }
 
