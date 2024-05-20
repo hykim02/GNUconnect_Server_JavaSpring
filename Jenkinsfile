@@ -15,12 +15,7 @@ pipeline {
         }
 
         stage('Build') {
-            steps {
-                // 스프링 부트 애플리케이션 빌드
-                sh 'chmod +x gradlew'
-                sh './gradlew clean build'
-                sh 'ls -al ./build'
-            }
+            sh(script: 'docker-compose build backend_flask_server')
         }
 
         stage('Tag and Push') {
