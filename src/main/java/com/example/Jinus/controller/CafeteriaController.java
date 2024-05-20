@@ -159,22 +159,30 @@ public class CafeteriaController {
         // 사용자의 입력값 없는 경우(식당 블록 리턴하는 경우) -> paramsCampus 값은 항상 존재
         if (detailParamsDate.isEmpty() && detailParamsPeriod.isEmpty()) {
             categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), paramsPeriod, cafeteriaId);
+
             return responseMapping(cafeteriaId, categoryMenuMap, paramsCafeteriaName,
                     paramsCampusName, currentDay, paramsPeriod);
+
         } else { // 사용자의 입력값 있는 경우(직접 입력하는 경우)
             // date값이 오늘이나 내일이 아닌 경우 -> 예외처리
             if (!detailParamsDate.isEmpty() && !(detailParamsDate.equals("오늘") || detailParamsDate.equals("내일"))) {
                 return responseSimpleTextExp("오늘과 내일의 식단만 조회할 수 있습니다.");
+
             } else if (!detailParamsDate.isEmpty() && !detailParamsPeriod.isEmpty()) { // 둘 다 입력된 경우
                 categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), detailParamsPeriod, cafeteriaId);
+
                 return responseMapping(cafeteriaId, categoryMenuMap, paramsCafeteriaName,
                         paramsCampusName, detailParamsDate, detailParamsPeriod);
+
             } else if (!detailParamsDate.isEmpty()) { // date값만 입력된 경우
                 categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), paramsPeriod, cafeteriaId);
+
                 return responseMapping(cafeteriaId, categoryMenuMap, paramsCafeteriaName,
                         paramsCampusName, detailParamsDate, paramsPeriod);
+
             } else { // period 값만 입력된 경우
                 categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), detailParamsPeriod, cafeteriaId);
+
                 return responseMapping(cafeteriaId, categoryMenuMap, paramsCafeteriaName,
                         paramsCampusName, currentDay, detailParamsPeriod);
             }
@@ -190,7 +198,11 @@ public class CafeteriaController {
         String title = cafeteriaName + " 메뉴";
         String description = handleCafeteriaDiet(categoryMenuMap, campus, day, period);
 
-        BasicCardDto basicCardDto = new BasicCardDto(title, description, thumbnailDto);
+        ArrayList<ButtonDto> buttons = new ArrayList<>();
+        ButtonDto buttonDto = new ButtonDto("공유하기", "share");
+        buttons.add(buttonDto);
+
+        BasicCardDto basicCardDto = new BasicCardDto(title, description, thumbnailDto, buttons);
         ComponentDto componentDto = new ComponentDto(basicCardDto);
 
         List<ComponentDto> componentDtoList = new ArrayList<>();

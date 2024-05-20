@@ -13,12 +13,16 @@ public class ButtonDto {
     private String action;
     private String webLinkUrl;
     private String blockId;
-    private Map<String, Any> extra;
 
     public ButtonDto(String label, String action, String webLinkUrl, String blockId) {
         this.label = label;
         this.action = action;
         this.webLinkUrl = webLinkUrl;
         this.blockId = blockId;
+    }
+
+    public ButtonDto(String label, String action) {
+        this.label = label;
+        this.action = action;
     }
 }
