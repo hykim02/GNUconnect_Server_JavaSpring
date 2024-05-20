@@ -18,6 +18,17 @@ pipeline {
             }
         }
 
+        stage('Replace Properties') {
+            steps {
+                script {
+                    //깃주소와 인증정보를 담은 chekout 스크립트
+                    withCredentials([file(credentialsId: 'spring-application-properties', variable: 'configFile')]) {
+                        sh 'cp $configFile /app/application.properties'
+                    }
+                }
+            }
+        }
+
         stage('Build') {
             steps {
                 sh 'chmod +x gradlew'
