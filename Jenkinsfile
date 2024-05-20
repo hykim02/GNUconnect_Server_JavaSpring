@@ -6,22 +6,15 @@ pipeline {
     }
 
     environment {
-        JAVA_HOME = tool('jdk21')
+        JAVA_HOME = "tool jdk21"
         DOCKERHUB_CREDENTIALS = credentials('docker-hub-flask')
+        APP_PROPERTIES_FILE = 'application.properties'
     }
 
     stages {
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/GNU-connect/Server-JavaSpring.git'
-            }
-        }
-
-        stage('Add Env') {
-            steps {
-                withCredentials([file(credentialsId: 'spring-application-properties', variable: 'springConfigFile')]) {
-                    sh 'cp ${springConfigFile} ./application.properties'
-                }
             }
         }
 
@@ -32,20 +25,21 @@ pipeline {
             }
         }
 
-        stage('Docker Build') {
+        stage('Tag') {
             steps {
-                sh 'docker-compose -f docker-compose.yml build'
+                script {
+                    sh 'docker tag ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:${BUILD_NUMBER}'
+                    sh 'docker tag ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:latest'
+                }
             }
         }
 
-        stage('Tag & Push') { // Combine Tag and Push stages for efficiency
+        stage('Push') {
             steps {
                 script {
                     sh 'docker login -u ${DOCKERHUB_CREDENTIALS_USR} -p ${DOCKERHUB_CREDENTIALS_PSW}'
-                    def imageName = '${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring'
-                    sh "docker tag ${imageName}:${BUILD_NUMBER} ${imageName}:latest"
-                    sh "docker push ${imageName}:${BUILD_NUMBER}"
-                    sh "docker push ${imageName}:latest"
+                    sh 'docker push ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:${BUILD_NUMBER}'
+                    sh 'docker push ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:latest'
                 }
             }
         }
@@ -54,7 +48,7 @@ pipeline {
             steps {
                 script {
                     sh 'docker-compose down'
-                    sh 'docker-compose up -d backend_spring_server'
+                    sh "docker-compose up -d backend_spring_server"
                 }
             }
         }
