@@ -27,10 +27,8 @@ pipeline {
         stage('Tag') {
             steps {
                 script {
-                    sh '''
-                    docker tag backend_spring_server ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:${BUILD_NUMBER}
-                    docker tag backend_spring_server ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:latest
-                    '''
+                    sh 'docker tag backend_spring_server ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:${BUILD_NUMBER}'
+                    sh 'docker tag backend_spring_server ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:latest'
                 }
             }
         }
