@@ -55,7 +55,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    sh 'docker-compose down'
+                    sh 'docker-compose -f docker-compose.yml -f ${APP_PROPERTIES_FILE} down'
                     sh "docker-compose -f docker-compose.yml -f ${APP_PROPERTIES_FILE} up -d backend_spring_server"
                 }
             }
