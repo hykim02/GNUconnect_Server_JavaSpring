@@ -1,6 +1,14 @@
 pipeline {
     agent any
 
+    tools {
+        jdk 'jdk21'
+    }
+
+    environment {
+        JAVA_HOME = "tool jdk21"
+    }
+
     stages {
         stage('Checkout') {
             steps {
