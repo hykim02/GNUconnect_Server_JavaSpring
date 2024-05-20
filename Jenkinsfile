@@ -21,6 +21,7 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId: 'spring-application-properties', variable: 'springConfigFile')]) {
                     sh 'cp ${springConfigFile} ./application.properties'
+                }
             }
         }
 
@@ -34,7 +35,7 @@ pipeline {
         stage('Tag & Push') { // Combine Tag and Push stages for efficiency
             steps {
                 script {
-                    sh 'docker login -u ${DOCKERHUB_CREDENTIALS_USR} -p ${DOCKERHUB_CREDENTIALS_PSW}'
+                    docker login -u ${DOCKERHUB_CREDENTIALS_USR} -p ${DOCKERHUB_CREDENTIALS_PSW}
                     def imageName = "${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring"
                     sh "docker tag ${imageName}:${BUILD_NUMBER} ${imageName}:latest"
                     sh "docker push ${imageName}:${BUILD_NUMBER}"
