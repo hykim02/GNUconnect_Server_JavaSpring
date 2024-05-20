@@ -231,7 +231,7 @@ public class CafeteriaController {
         String joinedMenu = String.join(",", cafeteriaDishes); // 메뉴들 컴마로 연결
         logger.info("joinedMenu: {}", joinedMenu);
 
-        return menuDescription + coveredCategory + "\n" + joinedMenu;
+        return menuDescription + coveredCategory + "\n" + joinedMenu + "\n";
     }
 
 

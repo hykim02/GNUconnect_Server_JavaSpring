@@ -30,7 +30,6 @@ public class CafeteriaDietService {
 
         List<CafeteriaDietEntity> dishCategory = cafeteriaDietRepository.findCategoryOrType(date, time, cafeteriaId);
         HashMap<String, List<String>> categoryMenuMap = new HashMap<>();
-        List<String> menuList = new ArrayList<>(); // 메뉴 담을 리스트 생성 및 초기화
         List<String> categoryCheckList = new ArrayList<>(); // 카테고리 중복체크를 위한 리스트
 
         for (CafeteriaDietEntity dish : dishCategory) {
@@ -41,6 +40,7 @@ public class CafeteriaDietService {
             if (dish.getDishCategory() != null) {
                 if (!categoryCheckList.contains(dish.getDishCategory())) {
                     categoryCheckList.add(dish.getDishCategory());
+                    List<String> menuList = new ArrayList<>(); // 메뉴 담을 리스트 생성 및 초기화
                     // 식단 가져오기
                     menuList = getDishNameByCategory(dishCategory, menuList, dish.getDishCategory());
                     logger.info("menuList: {}", menuList);
@@ -51,16 +51,22 @@ public class CafeteriaDietService {
             } else if (dish.getDishType() != null) {
                 if (!categoryCheckList.contains(dish.getDishType())) {
                     categoryCheckList.add(dish.getDishType());
+                    List<String> menuList = new ArrayList<>(); // 메뉴 담을 리스트 생성 및 초기화
+                    // 식단 가져오기
                     menuList = getDishNameByType(dishCategory, menuList, dish.getDishType());
                     logger.info("menuList: {}", menuList);
+                    // 타입 & 식단 매핑
                     categoryMenuMap.put(dish.getDishType(), menuList);
                     logger.info("CategoryMenuMap: {}", categoryMenuMap);
                 }
             } else {
                 if (!categoryCheckList.contains("메뉴")) {
                     categoryCheckList.add("메뉴");
+                    List<String> menuList = new ArrayList<>(); // 메뉴 담을 리스트 생성 및 초기화
+                    // 식단 가져오기
                     menuList = getDishNameByExtra(dishCategory, menuList);
                     logger.info("menuList: {}", menuList);
+                    // 식단 매핑
                     categoryMenuMap.put("메뉴", menuList);
                     logger.info("CategoryMenuMap: {}", categoryMenuMap);
                 }
@@ -92,10 +98,12 @@ public class CafeteriaDietService {
         logger.info("getDishNameByType 실행");
 
         for ( CafeteriaDietEntity dish : dishCategory) {
-            if (dish.getDishCategory().equals(type)) {
+            if (dish.getDishType().equals(type)) {
                 logger.info("dish_type: {}", dish.getDishType());
                 logger.info("dish_name: {}", dish.getDishName());
                 menuList.add(dish.getDishName());
+            } else {
+                logger.info("해당 타입의 메뉴가 없습니다.");
             }
         }
         return menuList;
@@ -111,6 +119,8 @@ public class CafeteriaDietService {
                 logger.info("dish_type: {}", dish.getDishType()); // null
                 logger.info("dish_name: {}", dish.getDishName());
                 menuList.add(dish.getDishName());
+            }  else {
+                logger.info("해당 메뉴가 없습니다.");
             }
         }
         return menuList;
