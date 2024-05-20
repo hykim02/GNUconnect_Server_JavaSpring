@@ -7,6 +7,8 @@ pipeline {
 
     environment {
         JAVA_HOME = "tool jdk21"
+        DOCKER_USER_ID = credentials('docker-hub-flask').username
+        DOCKER_USER_PASSWORD = credentials('docker-hub-flask').password
     }
 
     stages {
@@ -20,6 +22,42 @@ pipeline {
             steps {
                 docker.build(imageName: 'backend_spring_server', dockerfilePath: 'Dockerfile')
             }
+        }
+
+        stage('Tag') {
+            steps {
+                script {
+                    sh '''
+                    docker tag backend_spring_server ${DOCKER_USER_ID}/connect-gnu-spring:${BUILD_NUMBER}
+                    docker tag backend_spring_server ${DOCKER_USER_ID}/connect-gnu-spring:latest
+                    '''
+                }
+            }
+        }
+
+        stage('Push') {
+            steps {
+                script {
+                    sh 'docker login -u ${DOCKER_USER_ID} -p ${DOCKER_USER_PASSWORD}'
+                    sh 'docker push ${DOCKER_USER_ID}/connect-gnu-spring:${BUILD_NUMBER}'
+                    sh 'docker push ${DOCKER_USER_ID}/connect-gnu-spring:latest'
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    sh 'docker-compose down'
+                    sh 'docker-compose up -d backend_spring_server'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
         }
     }
 }
