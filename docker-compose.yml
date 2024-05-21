@@ -5,5 +5,3 @@ services:
     restart: unless-stopped
     environment:
       - SPRING_CONFIG_LOCATION=classpath:/application.properties
-    volumes:
-      - ./src/main/resources/application.properties:/src/main/resources/application.properties
