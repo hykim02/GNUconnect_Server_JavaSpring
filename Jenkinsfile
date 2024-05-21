@@ -23,7 +23,7 @@ pipeline {
                     script {
                         sh 'pwd'
                         sh 'ls'
-                        sh 'cp ${configFile} /src/main/resources/application.properties'
+                        sh 'cp ${configFile} src/main/resources/application.properties'
                     }
                 }
             }
