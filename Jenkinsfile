@@ -8,7 +8,7 @@ pipeline {
     environment {
         JAVA_HOME = "tool jdk21"
         DOCKERHUB_CREDENTIALS = credentials('docker-hub-flask')
-        APP_PROPERTIES = credentials('spring-application-properties')
+        APP_PROPERTIES = credentials('')
     }
 
     stages {
@@ -18,9 +18,13 @@ pipeline {
             }
         }
 
-        stage('Replace Properties') {
+        stage('Download Application Properties') {
             steps {
-                sh 'cat $APP_PROPERTIES > src/main/resources/app.properties'
+                withCredentials([file(credentialsId: 'spring-application-properties', variable: 'configFile')]) {
+                    script {
+                        sh 'cp $configFile /src/main/resources/application.properties'
+                    }
+                }
             }
         }
 
