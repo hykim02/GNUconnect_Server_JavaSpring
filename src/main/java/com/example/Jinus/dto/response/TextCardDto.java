@@ -9,10 +9,17 @@ import java.util.List;
 @Setter
 public class TextCardDto {
     String title;
+    String description;
     List<ButtonDto> buttons;
 
     public TextCardDto(String title, List<ButtonDto> buttons) {
         this.title = title;
+        this.buttons = buttons;
+    }
+
+    public TextCardDto(String title, String description, List<ButtonDto> buttons) {
+        this.title = title;
+        this.description = description;
         this.buttons = buttons;
     }
 }

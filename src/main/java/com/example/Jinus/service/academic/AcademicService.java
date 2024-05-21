@@ -1,0 +1,45 @@
+package com.example.Jinus.service.academic;
+
+import com.example.Jinus.entity.academic.AcademicEntity;
+import com.example.Jinus.repository.academic.AcademicRepository;
+import com.example.Jinus.service.CollegeService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+@Service
+public class AcademicService {
+    private static final Logger logger = LoggerFactory.getLogger(CollegeService.class);
+    private final AcademicRepository academicRepository;
+
+    public AcademicService(AcademicRepository calendarRepository) {
+        this.academicRepository = calendarRepository;
+        logger.info("AcademicService 실행");
+    }
+
+    public List<HashMap<String, String>> getAcademicContents(int currentMonth) {
+        logger.info("getAcademicContents 실행");
+
+        List<AcademicEntity> entities = academicRepository.findCalendarEntities(currentMonth);
+        List<HashMap<String, String>> academicList = new ArrayList<>();
+
+        for (AcademicEntity entity : entities) {
+            HashMap<String, String> academicMap = new HashMap<>();
+
+            logger.info("type: {}", entity.getCalendarType());
+            logger.info("content: {}", entity.getContent());
+            logger.info("end_date: {}", entity.getEndDate());
+            logger.info("start_date: {}", entity.getStartDate());
+            academicMap.put("type", String.valueOf(entity.getCalendarType()));
+            academicMap.put("content", entity.getContent());
+            academicMap.put("end_date", entity.getEndDate());
+            academicMap.put("start_date", entity.getStartDate());
+            academicList.add(academicMap);
+        }
+        return academicList;
+    }
+}

@@ -25,4 +25,10 @@ public class ButtonDto {
         this.label = label;
         this.action = action;
     }
+
+    public ButtonDto(String label, String action, String webLinkUrl) {
+        this.label = label;
+        this.action = action;
+        this.webLinkUrl = webLinkUrl;
+    }
 }
