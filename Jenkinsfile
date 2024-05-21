@@ -21,11 +21,9 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId: 'spring-application-properties', variable: 'configFile')]) {
                     script {
-                        steps {
-                            sh pwd
-                            sh ls
-                            sh 'cp $configFile /src/main/resources/application.properties'
-                        }
+                        sh 'pwd'
+                        sh 'ls'
+                        sh 'cp ${configFile} /src/main/resources/application.properties'
                     }
                 }
             }
