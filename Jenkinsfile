@@ -38,11 +38,11 @@ pipeline {
             }
         }
 
-        stage('Tag') {
+        stage('Build Docker Image') {
             steps {
                 script {
-                    sh 'docker tag ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:${BUILD_NUMBER}'
-                    sh 'docker tag ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:latest'
+                    sh 'docker build -t ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:${BUILD_NUMBER} .'
+                    sh 'docker tag ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:${BUILD_NUMBER} ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:latest'
                 }
             }
         }
