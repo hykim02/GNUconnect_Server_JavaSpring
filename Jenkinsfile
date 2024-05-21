@@ -33,12 +33,13 @@ pipeline {
             steps {
                 sh 'chmod +x gradlew'
                 sh './gradlew clean build -x test'
+                sh 'ls -l build/libs/'  // 빌드 아티팩트 확인
             }
         }
 
         stage('Docker Build') {
             steps {
-                sh 'docker build -t ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring .'
+                sh 'docker build --no-cache -t ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring .'
             }
         }
 
