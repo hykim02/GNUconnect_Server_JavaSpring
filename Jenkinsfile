@@ -24,6 +24,8 @@ pipeline {
                         sh 'pwd'
                         sh 'ls'
                         sh 'cp ${configFile} src/main/resources/application.properties'
+                        sh 'chmod 644 src/main/resources/application.properties' // 권한 설정
+                        sh 'ls -l src/main/resources/' // 파일이 제대로 복사되었는지 확인
                     }
                 }
             }
