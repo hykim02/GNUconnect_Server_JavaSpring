@@ -36,6 +36,12 @@ pipeline {
             }
         }
 
+        stage('Docker Build') {
+            steps {
+                sh 'docker-compose build backend_spring_server'
+            }
+        }
+
         stage('Tag') {
             steps {
                 script {
@@ -59,9 +65,6 @@ pipeline {
             steps {
                 script {
                     sh 'docker-compose down'
-                    sh 'pwd'
-                    sh 'ls'
-                    sh 'ls -l build/libs/'
                     sh "docker-compose up -d backend_spring_server"
                 }
             }
