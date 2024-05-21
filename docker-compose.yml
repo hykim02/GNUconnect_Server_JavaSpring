@@ -1,6 +1,7 @@
 services:
   backend_spring_server:
     build: .
+    images: dongho18/connect-gnu-spring:latest
     container_name: backend_spring_server
     restart: unless-stopped
     networks:
