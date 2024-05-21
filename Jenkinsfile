@@ -37,14 +37,6 @@ pipeline {
             }
         }
 
-        stage('Docker Build') {
-            steps {
-                sh 'pwd'
-                sh 'ls'
-                sh 'docker build --no-cache -t ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring .'
-            }
-        }
-
         stage('Tag') {
             steps {
                 script {
