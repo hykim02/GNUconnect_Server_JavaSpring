@@ -3,5 +3,8 @@ services:
     build: .
     container_name: backend_spring_server
     restart: unless-stopped
-    environment:
-      - SPRING_CONFIG_LOCATION=classpath:/application.properties
+    networks:
+      - connect-gnu-network
+networks:
+  connect-gnu-network:
+    external: true
