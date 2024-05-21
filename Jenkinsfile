@@ -38,7 +38,7 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                sh 'docker-compose build backend_spring_server'
+                sh 'docker build -t ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring .'
             }
         }
 
