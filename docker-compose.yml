@@ -1,0 +1,11 @@
+services:
+  backend_spring_server:
+    build: .
+    image: dongho18/connect-gnu-spring:latest
+    container_name: backend_spring_server
+    restart: unless-stopped
+    networks:
+      - connect-gnu-network
+networks:
+  connect-gnu-network:
+    external: true
