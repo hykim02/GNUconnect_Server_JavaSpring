@@ -21,8 +21,6 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId: 'spring-application-properties', variable: 'configFile')]) {
                     script {
-                        sh 'pwd'
-                        sh 'ls'
                         sh 'cp ${configFile} src/main/resources/application.properties'
                         sh 'chmod 644 src/main/resources/application.properties' // 권한 설정
                         sh 'ls -l src/main/resources/' // 파일이 제대로 복사되었는지 확인
@@ -38,10 +36,9 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Tag') {
             steps {
                 script {
-                    sh 'docker build -t ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:${BUILD_NUMBER} .'
                     sh 'docker tag ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:${BUILD_NUMBER} ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:latest'
                 }
             }
