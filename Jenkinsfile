@@ -31,9 +31,9 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'chmod +x gradlew'
-                sh './gradlew clean build -x test'
-                sh 'ls -l build/libs/'  // 빌드 아티팩트 확인
+                script {
+                    sh 'docker-compose build backend_spring_server'
+                }
             }
         }
 
