@@ -1,7 +1,14 @@
+FROM gradle:8.6-jdk21 as builder
+WORKDIR /build
+
+COPY . /build
+RUN gradle build -x test --parallel
+
 FROM openjdk:21
-ARG JAR_FILE=build/libs/Jinus-0.0.1-SNAPSHOT.jar
-COPY ${JAR_FILE} app.jar
-ARG ENV_FILE=src/main/resources/application.properties
-COPY ${ENV_FILE} application.properties
+WORKDIR /app
+
+COPY --from=builder /build/build/libs/*-SNAPSHOT.jar ./app.jar
+
 EXPOSE 5100
-ENTRYPOINT ["java","-jar","/app.jar"]
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
