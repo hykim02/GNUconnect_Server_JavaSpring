@@ -1,0 +1,9 @@
+services:
+  backend_spring_server:
+    build: .
+    container_name: backend_spring_server
+    restart: unless-stopped
+    ports:
+      - 5100:5100
+    environment:
+      TZ: "Asia/Seoul"

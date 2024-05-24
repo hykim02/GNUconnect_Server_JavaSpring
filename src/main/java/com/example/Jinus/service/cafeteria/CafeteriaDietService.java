@@ -31,7 +31,6 @@ public class CafeteriaDietService {
         List<CafeteriaDietEntity> dishCategory = cafeteriaDietRepository.findCategoryOrType(date, time, cafeteriaId);
         HashMap<String, List<String>> categoryMenuMap = new HashMap<>();
         List<String> categoryCheckList = new ArrayList<>(); // 카테고리 중복체크를 위한 리스트
-        logger.info("{}", dishCategory);
 
         for (CafeteriaDietEntity dish : dishCategory) {
 

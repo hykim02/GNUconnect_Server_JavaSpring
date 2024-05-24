@@ -6,6 +6,8 @@ services:
     restart: unless-stopped
     networks:
       - connect-gnu-network
+    environment:
+      TZ: "Asia/Seoul"
 networks:
   connect-gnu-network:
     external: true
