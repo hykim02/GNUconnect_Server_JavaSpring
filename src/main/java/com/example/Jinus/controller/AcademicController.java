@@ -114,7 +114,8 @@ public class AcademicController {
                 break;
             } else {
                 String label = replyMonth + "월";
-                QuickReplyDto quickReplyDto = new QuickReplyDto(label, "message", label);
+                String msg = label + " 학사일정";
+                QuickReplyDto quickReplyDto = new QuickReplyDto(label, "message", msg);
                 quickReplies.add(quickReplyDto);
             }
         }
