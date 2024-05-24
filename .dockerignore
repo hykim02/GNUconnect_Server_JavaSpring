@@ -1,0 +1,5 @@
+.gradle
+.mvn
+.idea
+build
+application.properties

@@ -8,7 +8,6 @@ pipeline {
     environment {
         JAVA_HOME = "tool jdk21"
         DOCKERHUB_CREDENTIALS = credentials('docker-hub-flask')
-        APP_PROPERTIES = credentials('spring-application-properties')
     }
 
     stages {
@@ -18,16 +17,23 @@ pipeline {
             }
         }
 
-        stage('Replace Properties') {
+        stage('Download Application Properties') {
             steps {
-                sh 'cat $APP_PROPERTIES > src/main/resources/app.properties'
+                withCredentials([file(credentialsId: 'spring-application-properties', variable: 'configFile')]) {
+                    script {
+                        sh 'cp ${configFile} src/main/resources/application.properties'
+                        sh 'chmod 644 src/main/resources/application.properties' // 권한 설정
+                        sh 'ls -l src/main/resources/' // 파일이 제대로 복사되었는지 확인
+                    }
+                }
             }
         }
 
         stage('Build') {
             steps {
-                sh 'chmod +x gradlew'
-                sh './gradlew clean build -x test'
+                script {
+                    sh 'docker-compose build backend_spring_server'
+                }
             }
         }
 

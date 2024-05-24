@@ -11,6 +11,6 @@ COPY --from=builder /build/build/libs/*-SNAPSHOT.jar ./app.jar
 
 EXPOSE 5100
 
-ENV ENVIRONMENT=production
+ENV ENVIRONMENT=development
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
