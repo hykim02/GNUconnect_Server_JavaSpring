@@ -308,7 +308,7 @@ public class CafeteriaController {
 
     // 현재 시간 출력 함수
     public String getCurrentTime() {
-        logger.info("getCurrentTime 실행222");
+        logger.info("getCurrentTime 실행");
         LocalDateTime currentDateTime = LocalDateTime.now();
         String[] dateTimeParts = currentDateTime.toString().split("T");
 

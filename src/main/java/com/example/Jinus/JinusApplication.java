@@ -22,6 +22,6 @@ public class JinusApplication {
 	// Timezone 설정
 	@PostConstruct
 	public void init() {
-		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));		// 한국은 "Asia/Seoul"
+		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
 	}
 }
