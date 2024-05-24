@@ -1,6 +1,8 @@
 services:
   backend_spring_server:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     container_name: backend_spring_server
     restart: unless-stopped
     ports:
