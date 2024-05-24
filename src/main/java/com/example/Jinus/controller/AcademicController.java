@@ -48,44 +48,18 @@ public class AcademicController {
         List<HashMap<String, String>> academicList = getAcademicCalendar(requestDto);
 
         List<String> descriptionList = new ArrayList<>();
-        String descriptions = "";
+        String descriptions;
+        ResponseDto responseDto;
 
         // 해당 월의 학사일정이 존재하는 경우
-        if (academicList != null) {
+        if (!academicList.isEmpty()) {
+            logger.info("학사 일정 존재함");
             descriptions = handleAcademicList(academicList, descriptionList);
+            responseDto = handleResponse(descriptions, requestDto);
+        } else { // 일정 존재하지 않는 경우
+            logger.info("학사 일정 존재하지 않음");
+            responseDto = simpleTextResponse();
         }
-
-        List<ButtonDto> buttons = new ArrayList<>();
-        ButtonDto buttonDto = new ButtonDto("더보기", "webLink", "https://www.gnu.ac.kr/main/ps/schdul/selectSchdulMainList.do");
-        buttons.add(buttonDto);
-
-        int year = LocalDate.now().getYear();
-        int month = getCurrentMonth();
-        String title = year + "년 " + month + "월 학사일정";
-        TextCardDto textCardDto = new TextCardDto(title, descriptions, buttons);
-
-        List<ComponentDto> components = new ArrayList<>();
-        ComponentDto componentDto = new ComponentDto(textCardDto);
-        components.add(componentDto);
-
-        // quickReplies
-        List<QuickReplyDto> quickReplies = new ArrayList<>();
-        int currentMonth = getCurrentMonth();
-
-        for (int i = 1; i <= 4; i++) {
-            int replyMonth = currentMonth + i;
-
-            if (replyMonth == 12) {
-                break;
-            } else {
-                String label = replyMonth + "월";
-                QuickReplyDto quickReplyDto = new QuickReplyDto(label, "message", label);
-                quickReplies.add(quickReplyDto);
-            }
-        }
-
-        TemplateDto templateDto = new TemplateDto(components, quickReplies);
-        ResponseDto responseDto = new ResponseDto("2.0", templateDto);
 
         return toJsonResponse(responseDto);
     }
@@ -116,6 +90,41 @@ public class AcademicController {
         return descriptions;
     }
 
+    public ResponseDto handleResponse(String descriptions, RequestDto requestDto) {
+        List<ButtonDto> buttons = new ArrayList<>();
+        ButtonDto buttonDto = new ButtonDto("더보기", "webLink", "https://www.gnu.ac.kr/main/ps/schdul/selectSchdulMainList.do");
+        buttons.add(buttonDto);
+
+        int year = LocalDate.now().getYear();
+        int currentMonth = getCurrentMonth(requestDto);
+        String title = year + "년 " + currentMonth + "월 학사일정";
+        TextCardDto textCardDto = new TextCardDto(title, descriptions, buttons);
+
+        List<ComponentDto> components = new ArrayList<>();
+        ComponentDto componentDto = new ComponentDto(textCardDto);
+        components.add(componentDto);
+
+        // quickReplies
+        List<QuickReplyDto> quickReplies = new ArrayList<>();
+
+        for (int i = 1; i <= 4; i++) {
+            int replyMonth = currentMonth + i;
+
+            if (replyMonth == 13) {
+                break;
+            } else {
+                String label = replyMonth + "월";
+                QuickReplyDto quickReplyDto = new QuickReplyDto(label, "message", label);
+                quickReplies.add(quickReplyDto);
+            }
+        }
+
+        TemplateDto templateDto = new TemplateDto(components, quickReplies);
+        ResponseDto responseDto = new ResponseDto("2.0", templateDto);
+
+        return responseDto;
+    }
+
     public static String joinAllAcademics(String startDate, String endDate, String content) {
         logger.info("joinAllAcademics 실행");
         String duration = "[" + startDate + " ~ " + endDate + "]" + "\n";
@@ -138,18 +147,7 @@ public class AcademicController {
         logger.info("getAcademicCalendar 실행");
 
         List<HashMap<String, String>> academicList;
-
-        String extractedMonth = checkUserUtterance(requestDto);
-        int currentMonth;
-
-        // 현재 월에 해당하는 공지 들고옴
-        if (extractedMonth.isEmpty()) {
-            currentMonth = getCurrentMonth();
-            logger.info("currentMonth: {}", currentMonth);
-        } else {
-            logger.info("extractedMonth: {}", extractedMonth);
-            currentMonth = Integer.parseInt(extractedMonth);
-        }
+        int currentMonth = getCurrentMonth(requestDto);
 
         academicList = academicService.getAcademicContents(currentMonth);
         logger.info("academicList: {}", academicList); // 해당 월의 학사일정 (type 1)
@@ -173,14 +171,46 @@ public class AcademicController {
         }
     }
 
+    public int getCurrentMonth(RequestDto requestDto) {
+        String extractedMonth = checkUserUtterance(requestDto);
+        int currentMonth;
+
+        // 현재 월에 해당하는 공지 들고옴
+        if (extractedMonth == null) {
+            currentMonth = getSystemMonth();
+            logger.info("currentMonth: {}", currentMonth);
+        } else {
+            logger.info("extractedMonth: {}", extractedMonth);
+            currentMonth = Integer.parseInt(extractedMonth);
+            logger.info("currentMonth: {}", currentMonth);
+        }
+        return currentMonth;
+    }
+
     // 현재 월 출력
-    public static int getCurrentMonth() {
+    public static int getSystemMonth() {
         logger.info("getCurrentMonth 실행");
         LocalDate today = LocalDate.now(); // 현재 날짜를 가져옴
         int currentMonth = today.getMonthValue(); // 월을 숫자로 가져옴 (1~12)
 
         System.out.println("Current month: " + currentMonth);
         return currentMonth;
+    }
+
+    // 학사일정 존재하지 않는 경우 예외처리
+    public ResponseDto simpleTextResponse() {
+        logger.info("simpleTextResponse 실행");
+
+        SimpleTextDto simpleTextDto = new SimpleTextDto("학사일정이 존재하지 않습니다.");
+        ComponentDto componentDto = new ComponentDto(simpleTextDto);
+
+        List<ComponentDto> components = new ArrayList<>();
+        components.add(componentDto);
+
+        TemplateDto templateDto = new TemplateDto(components);
+        ResponseDto responseDto = new ResponseDto("2.0", templateDto);
+
+        return responseDto;
     }
 
     // ObjectMapper를 사용하여 ResponseDto 객체를 JSON 문자열로 변환
