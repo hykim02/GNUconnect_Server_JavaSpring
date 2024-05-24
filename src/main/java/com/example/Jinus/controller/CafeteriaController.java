@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -288,7 +289,7 @@ public class CafeteriaController {
     // 조회할 날짜 찾는 함수
     public String getCurrentDate() {
         logger.info("getCurrentDate 실행");
-        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDateTime currentDateTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         String[] dateTimeParts = currentDateTime.toString().split("T"); // 2024-05-13
         String[] dateSplt = dateTimeParts[0].split("-");
         logger.info("dateSplt: {}", (Object) dateSplt);
@@ -309,7 +310,7 @@ public class CafeteriaController {
     // 현재 시간 출력 함수
     public String getCurrentTime() {
         logger.info("getCurrentTime 실행");
-        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDateTime currentDateTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         String[] dateTimeParts = currentDateTime.toString().split("T");
 
         String timePart = dateTimeParts[1]; // 시간 부분
