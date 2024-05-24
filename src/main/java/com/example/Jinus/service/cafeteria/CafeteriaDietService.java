@@ -27,6 +27,7 @@ public class CafeteriaDietService {
 
     public HashMap<String, List<String>> getCafeteriaDiet(LocalDate date, String time, int cafeteriaId) {
         logger.info("getCafeteriaDiet 실행");
+        logger.info("{} / {} / {}", date, time, cafeteriaId);
 
         List<CafeteriaDietEntity> dishCategory = cafeteriaDietRepository.findCategoryOrType(date, time, cafeteriaId);
         HashMap<String, List<String>> categoryMenuMap = new HashMap<>();
