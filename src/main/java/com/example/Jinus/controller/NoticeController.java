@@ -1,6 +1,5 @@
 package com.example.Jinus.controller;
 
-import com.example.Jinus.component.ProcessMonitor;
 import com.example.Jinus.dto.request.RequestDto;
 import com.example.Jinus.dto.response.*;
 import com.example.Jinus.service.*;
@@ -27,7 +26,6 @@ public class NoticeController {
     private final DepartmentService departmentService;
     private final CategoryService categoryService;
     private final NoticeService noticeService;
-    private final ProcessMonitor processMonitor;
 
 
     @Autowired
@@ -36,23 +34,19 @@ public class NoticeController {
             CollegeService collegeService,
             DepartmentService departmentService,
             CategoryService categoryService,
-            NoticeService noticeService, ProcessMonitor processMonitor
+            NoticeService noticeService
     ) {
         this.userService = userService;
         this.collegeService = collegeService;
         this.departmentService = departmentService;
         this.categoryService = categoryService;
         this.noticeService = noticeService;
-        this.processMonitor = processMonitor;
     }
 
     @PostMapping("/api/spring/department-notice")
     public String handleRequest(@RequestBody RequestDto requestDto) throws ParseException {
         logger.info("NoticeController 실행");
         logger.info("handleRequest 실행");
-        // 사용자 요청을 감지하여 프로세스 종료 스케줄링을 취소
-//        processMonitor.onRequestReceived();
-//        processMonitor.startProcessShutdownTimer();
         return findUserId(requestDto);
     }
 

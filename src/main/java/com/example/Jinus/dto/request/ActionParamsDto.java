@@ -12,4 +12,5 @@ public class ActionParamsDto {
     private String sys_cafeteria_name;
     private String sys_campus_name;
     private String sys_time_period;
+    private String sys_month;
 }

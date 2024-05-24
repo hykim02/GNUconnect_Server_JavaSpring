@@ -27,19 +27,26 @@ public class AcademicService {
         List<AcademicEntity> entities = academicRepository.findCalendarEntities(currentMonth);
         List<HashMap<String, String>> academicList = new ArrayList<>();
 
-        for (AcademicEntity entity : entities) {
-            HashMap<String, String> academicMap = new HashMap<>();
+        // 해당 월의 학사일정이 존재하지 않는 경우
+        if (entities != null) {
+            for (AcademicEntity entity : entities) {
+                HashMap<String, String> academicMap = new HashMap<>();
 
-            logger.info("type: {}", entity.getCalendarType());
-            logger.info("content: {}", entity.getContent());
-            logger.info("end_date: {}", entity.getEndDate());
-            logger.info("start_date: {}", entity.getStartDate());
-            academicMap.put("type", String.valueOf(entity.getCalendarType()));
-            academicMap.put("content", entity.getContent());
-            academicMap.put("end_date", entity.getEndDate());
-            academicMap.put("start_date", entity.getStartDate());
-            academicList.add(academicMap);
+                logger.info("type: {}", entity.getCalendarType());
+                logger.info("content: {}", entity.getContent());
+                logger.info("end_date: {}", entity.getEndDate());
+                logger.info("start_date: {}", entity.getStartDate());
+                academicMap.put("type", String.valueOf(entity.getCalendarType()));
+                academicMap.put("content", entity.getContent());
+                academicMap.put("end_date", entity.getEndDate());
+                academicMap.put("start_date", entity.getStartDate());
+                academicList.add(academicMap);
+            }
+        } else {
+            logger.info("db에 해당 월의 학사일정이 존재하지 않음");
+            academicList = null;
         }
+
         return academicList;
     }
 }

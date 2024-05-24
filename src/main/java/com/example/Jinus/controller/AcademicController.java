@@ -8,17 +8,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,21 +26,73 @@ public class AcademicController {
         this.academicService = academicService;
     }
 
+//    @PostMapping("/api/spring/academic-calendar")
+//    public void handleRequest(@RequestBody String jsonresponse) {
+//        logger.info("AcademicController 실행");
+//        logger.info("hadleRequest 실행");
+//        logger.info(jsonresponse);
+//    }
 
     @PostMapping("/api/spring/academic-calendar")
     public String handleRequest(@RequestBody RequestDto requestDto) {
         logger.info("AcademicController 실행");
-        logger.info("hadleRequest 실행");
+        logger.info("handleRequest 실행");
 
-        return responseMapping();
+        return responseMapping(requestDto);
     }
 
+
     // response json 매핑
-    public String responseMapping() {
+    public String responseMapping(RequestDto requestDto) {
         logger.info("responseMapping 실행");
-        List<HashMap<String, String>> academicList = getAcademicCalendar();
+        List<HashMap<String, String>> academicList = getAcademicCalendar(requestDto);
 
         List<String> descriptionList = new ArrayList<>();
+        String descriptions = "";
+
+        // 해당 월의 학사일정이 존재하는 경우
+        if (academicList != null) {
+            descriptions = handleAcademicList(academicList, descriptionList);
+        }
+
+        List<ButtonDto> buttons = new ArrayList<>();
+        ButtonDto buttonDto = new ButtonDto("더보기", "webLink", "https://www.gnu.ac.kr/main/ps/schdul/selectSchdulMainList.do");
+        buttons.add(buttonDto);
+
+        int year = LocalDate.now().getYear();
+        int month = getCurrentMonth();
+        String title = year + "년 " + month + "월 학사일정";
+        TextCardDto textCardDto = new TextCardDto(title, descriptions, buttons);
+
+        List<ComponentDto> components = new ArrayList<>();
+        ComponentDto componentDto = new ComponentDto(textCardDto);
+        components.add(componentDto);
+
+        // quickReplies
+        List<QuickReplyDto> quickReplies = new ArrayList<>();
+        int currentMonth = getCurrentMonth();
+
+        for (int i = 1; i <= 4; i++) {
+            int replyMonth = currentMonth + i;
+
+            if (replyMonth == 12) {
+                break;
+            } else {
+                String label = replyMonth + "월";
+                QuickReplyDto quickReplyDto = new QuickReplyDto(label, "message", label);
+                quickReplies.add(quickReplyDto);
+            }
+        }
+
+        TemplateDto templateDto = new TemplateDto(components, quickReplies);
+        ResponseDto responseDto = new ResponseDto("2.0", templateDto);
+
+        return toJsonResponse(responseDto);
+    }
+
+    // 학사일정 리스트 개별 처리
+    public String handleAcademicList(List<HashMap<String, String>> academicList,
+                                           List<String> descriptionList) {
         String descriptions = "";
 
         for (HashMap<String, String> academic: academicList) {
@@ -67,23 +113,7 @@ public class AcademicController {
         }
         logger.info("descriptions: {}", descriptions);
 
-        List<ButtonDto> buttons = new ArrayList<>();
-        ButtonDto buttonDto = new ButtonDto("더보기", "webLink", "https://www.gnu.ac.kr/main/ps/schdul/selectSchdulMainList.do");
-        buttons.add(buttonDto);
-
-        int year = LocalDate.now().getYear();
-        int month = getCurrentMonth();
-        String title = year + "년 " + month + "월 학사일정";
-        TextCardDto textCardDto = new TextCardDto(title, descriptions, buttons);
-
-        List<ComponentDto> components = new ArrayList<>();
-        ComponentDto componentDto = new ComponentDto(textCardDto);
-        components.add(componentDto);
-
-        TemplateDto templateDto = new TemplateDto(components);
-        ResponseDto responseDto = new ResponseDto("2.0", templateDto);
-
-        return toJsonResponse(responseDto);
+        return descriptions;
     }
 
     public static String joinAllAcademics(String startDate, String endDate, String content) {
@@ -103,16 +133,44 @@ public class AcademicController {
         return spltMonth[1] + "/" + spltMonth[2];
     }
 
-    public List<HashMap<String, String>> getAcademicCalendar() {
+    // db에서 일정 찾아오기
+    public List<HashMap<String, String>> getAcademicCalendar(RequestDto requestDto) {
         logger.info("getAcademicCalendar 실행");
 
         List<HashMap<String, String>> academicList;
 
-        int currentMonth = getCurrentMonth();
+        String extractedMonth = checkUserUtterance(requestDto);
+        int currentMonth;
+
+        // 현재 월에 해당하는 공지 들고옴
+        if (extractedMonth.isEmpty()) {
+            currentMonth = getCurrentMonth();
+            logger.info("currentMonth: {}", currentMonth);
+        } else {
+            logger.info("extractedMonth: {}", extractedMonth);
+            currentMonth = Integer.parseInt(extractedMonth);
+        }
+
         academicList = academicService.getAcademicContents(currentMonth);
         logger.info("academicList: {}", academicList); // 해당 월의 학사일정 (type 1)
 
         return academicList;
+    }
+
+    // 사용자 발화문에 월이 포함되어 있는지 여부 확인
+    public String checkUserUtterance(RequestDto requestDto) {
+        logger.info("checkUserUtterance 실행");
+
+        String userMsg = requestDto.getUserRequest().getUtterance();
+        logger.info("userMsg: {}", userMsg);
+
+        String extractedInt = userMsg.replaceAll("[^0-9]", "");
+
+        if (extractedInt.isEmpty()) {
+            return null;
+        } else {
+            return extractedInt;
+        }
     }
 
     // 현재 월 출력
