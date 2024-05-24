@@ -27,11 +27,11 @@ public class CafeteriaDietService {
 
     public HashMap<String, List<String>> getCafeteriaDiet(LocalDate date, String time, int cafeteriaId) {
         logger.info("getCafeteriaDiet 실행");
-        logger.info("{} / {} / {}", date, time, cafeteriaId);
 
         List<CafeteriaDietEntity> dishCategory = cafeteriaDietRepository.findCategoryOrType(date, time, cafeteriaId);
         HashMap<String, List<String>> categoryMenuMap = new HashMap<>();
         List<String> categoryCheckList = new ArrayList<>(); // 카테고리 중복체크를 위한 리스트
+        logger.info("{}", dishCategory)
 
         for (CafeteriaDietEntity dish : dishCategory) {
 
