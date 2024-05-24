@@ -2,6 +2,20 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.4'
 	id 'io.spring.dependency-management' version '1.1.4'
+	id "io.sentry.jvm.gradle" version "4.6.0"
+}
+
+// 환경 변수에서 ENVIRONMENT 값 가져오기
+def environment = System.getenv("ENVIRONMENT")
+
+// ENVIRONMENT 값이 production인 경우에만 Sentry 빌드
+if (environment == "production") {
+	sentry {
+		includeSourceContext = true
+		org = "connect-gnu"
+		projectName = "java-spring-boot"
+		authToken = System.getenv("SENTRY_AUTH_TOKEN")
+	}
 }
 
 group = 'com.example'
@@ -22,7 +36,7 @@ repositories {
 }
 
 jar {
-    enabled = false
+	enabled = false
 }
 
 dependencies {
