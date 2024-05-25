@@ -17,6 +17,10 @@ pipeline {
             }
         }
 
+        stage('Post Slack') {
+            slackSend(channel: '#build-notification', color: 'warning', message: "빌드 시작: 지누가 ${env.JOB_NAME} 서버 ${env.BUILD_NUMBER} 버전을 열심히 빌드중이야!")
+        }
+
         stage('Download Application Properties') {
             steps {
                 withCredentials([file(credentialsId: 'spring-application-properties', variable: 'configFile')]) {
@@ -68,10 +72,10 @@ pipeline {
 
     post {
         success {
-            slackSend(channel: '#build-notification', color: 'good', message: "Deployment succeeded: ${env.JOB_NAME} build ${env.BUILD_NUMBER}")
+            slackSend(channel: '#build-notification', color: 'good', message: "빌드 성공: 야호! ${env.JOB_NAME} 서버 ${env.BUILD_NUMBER} 버전이 성공적으로 배포되었어!")
         }
         failure {
-            slackSend(channel: '#build-notification', color: 'danger', message: "Deployment failed: ${env.JOB_NAME} build ${env.BUILD_NUMBER}")
+            slackSend(channel: '#build-notification', color: 'danger', message: "빌드 실패: 이런... ${env.JOB_NAME} 서버 ${env.BUILD_NUMBER} 버전 빌드에 실패했어 ㅜㅜ\n사유: ${currentBuild.result}")
         }
     }
 }
