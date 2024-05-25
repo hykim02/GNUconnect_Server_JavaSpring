@@ -65,4 +65,13 @@ pipeline {
             }
         }
     }
+
+    post {
+        success {
+            slackSend(channel: '#build-notification', color: 'good', message: "Deployment succeeded: ${env.JOB_NAME} build ${env.BUILD_NUMBER}")
+        }
+        failure {
+            slackSend(channel: '#build-notification', color: 'danger', message: "Deployment failed: ${env.JOB_NAME} build ${env.BUILD_NUMBER}")
+        }
+    }
 }
