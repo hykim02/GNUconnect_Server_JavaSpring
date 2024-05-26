@@ -179,7 +179,7 @@ public class CafeteriaController {
                 categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), paramsPeriod, cafeteriaId);
 
                 return responseMapping(cafeteriaId, categoryMenuMap, paramsCafeteriaName,
-                        paramsCampusName, detailParamsDate, paramsPeriod);
+                        paramsCampusName, currentDay, paramsPeriod);
 
             } else { // period 값만 입력된 경우
                 categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), detailParamsPeriod, cafeteriaId);
