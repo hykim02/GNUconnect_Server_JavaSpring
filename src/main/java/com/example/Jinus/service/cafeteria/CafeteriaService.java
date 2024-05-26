@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CafeteriaService {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
@@ -16,6 +18,11 @@ public class CafeteriaService {
     public CafeteriaService(CafeteriaRepository cafeteriaRepository) {
         this.cafeteriaRepository = cafeteriaRepository;
         logger.info("CafeteriaService 실행");
+    }
+
+    // 캠퍼스 id로 식당 리스트 찾기
+    public List<Object[]> getCafeteriaList(int campusId) {
+        return cafeteriaRepository.findCafeteriaListByCampusId(campusId);
     }
 
     // cafeteriaName으로 cafeteria_id 찾기

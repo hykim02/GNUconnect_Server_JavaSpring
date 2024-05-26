@@ -12,9 +12,13 @@ public class CarouselItemDto {
     private List<ListItemDto> items;
     private List<ButtonDto> buttons;
 
-    public CarouselItemDto(HeaderDto header, List<ListItemDto> items, List<ButtonDto> buttons) {
+    public CarouselItemDto(HeaderDto header, List<ListItemDto> items) {
         this.header = header;
         this.items = items;
+    }
+
+    public CarouselItemDto(HeaderDto header, List<ListItemDto> items, List<ButtonDto> buttons) {
+        this(header, items);
         this.buttons = buttons;
     }
 }

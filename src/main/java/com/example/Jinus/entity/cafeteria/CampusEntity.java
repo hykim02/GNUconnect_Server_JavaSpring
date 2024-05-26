@@ -18,4 +18,7 @@ public class CampusEntity {
 
     @Column(name = "campus_name_ko")
     private String campusNameKo;
+
+    @Column(name = "thumbnail_url")
+    private String thumbnailUrl;
 }
