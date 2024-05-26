@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class ActionDto {
     private String name;
-    private Object clientExtra;
+    private ClientExtraDto clientExtra;
     private ActionParamsDto params;
     private String id;
     private DetailParamsItemDto detailParams;

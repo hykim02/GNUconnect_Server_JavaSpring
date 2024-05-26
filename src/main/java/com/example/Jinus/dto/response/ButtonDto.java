@@ -13,6 +13,7 @@ public class ButtonDto {
     private String action;
     private String webLinkUrl;
     private String blockId;
+    private Map<String, Object> extra;
 
     public ButtonDto(String label, String action, String webLinkUrl, String blockId) {
         this.label = label;
@@ -30,5 +31,13 @@ public class ButtonDto {
         this.label = label;
         this.action = action;
         this.webLinkUrl = webLinkUrl;
+    }
+
+    public ButtonDto(String label, String action, String webLinkUrl, String blockId, Map<String, Object> extra) {
+        this.label = label;
+        this.action = action;
+        this.webLinkUrl = webLinkUrl;
+        this.blockId = blockId;
+        this.extra = extra;
     }
 }
