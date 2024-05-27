@@ -29,7 +29,7 @@ public class UserService {
         if (userEntity != null) {
             return userEntity.getDepartmentId(); // 학과 id
         } else { // 사용자 존재하지 않는 경우
-            logger.error("UserService: user를 찾을 수 없습니다.");
+            logger.warn("UserService: user를 찾을 수 없습니다.");
             return -1;
         }
     }
