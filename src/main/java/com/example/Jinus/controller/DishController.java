@@ -293,7 +293,7 @@ public class DishController {
         String[] dateSplt = dateTimeParts[0].split("-");
         logger.info("dateSplt: {}", (Object) dateSplt);
 
-        String currentDay = getDay(dateTimeParts[1]);
+        String currentDay = getDay(dateTimeParts[1]); // 오늘, 내일
         logger.info("currentDay: {}", currentDay);
 
         if (currentDay.equals("오늘")) {
