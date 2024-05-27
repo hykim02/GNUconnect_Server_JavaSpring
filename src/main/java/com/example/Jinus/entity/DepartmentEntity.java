@@ -18,4 +18,7 @@ public class DepartmentEntity {
 
     @Column(name = "department_en")
     private String departmentEn;
+
+    @Column(name = "department_ko")
+    private String departmentKo;
 }

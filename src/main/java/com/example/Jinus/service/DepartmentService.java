@@ -47,4 +47,15 @@ public class DepartmentService {
         }
     }
 
+    public String getDepartmentKor(int departmentId) {
+        DepartmentEntity departmentEntity = departmentRepository.findById(departmentId).orElse(null);
+        // 학과 영문명 찾기
+        if (departmentEntity != null) {
+            return departmentEntity.getDepartmentKo();
+        } else {
+            logger.error("DepartmentService: departmentEn을 찾을 수 없습니다.");
+            return "none";
+        }
+    }
+
 }
