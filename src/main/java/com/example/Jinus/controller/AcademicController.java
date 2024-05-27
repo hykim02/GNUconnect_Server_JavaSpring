@@ -35,8 +35,8 @@ public class AcademicController {
 
     @PostMapping("/api/spring/academic-calendar")
     public String handleRequest(@RequestBody RequestDto requestDto) {
-        logger.info("AcademicController 실행");
-        logger.info("handleRequest 실행");
+//        logger.info("AcademicController 실행");
+//        logger.info("handleRequest 실행");
 
         return responseMapping(requestDto);
     }
@@ -44,7 +44,7 @@ public class AcademicController {
 
     // response json 매핑
     public String responseMapping(RequestDto requestDto) {
-        logger.info("responseMapping 실행");
+//        logger.info("responseMapping 실행");
         List<HashMap<String, String>> academicList = getAcademicCalendar(requestDto);
 
         List<String> descriptionList = new ArrayList<>();
@@ -53,11 +53,11 @@ public class AcademicController {
 
         // 해당 월의 학사일정이 존재하는 경우
         if (!academicList.isEmpty()) {
-            logger.info("학사 일정 존재함");
+//            logger.info("학사 일정 존재함");
             descriptions = handleAcademicList(academicList, descriptionList);
             responseDto = handleResponse(descriptions, requestDto);
         } else { // 일정 존재하지 않는 경우
-            logger.info("학사 일정 존재하지 않음");
+            logger.debug("학사 일정 존재하지 않음");
             responseDto = simpleTextResponse();
         }
 
@@ -70,22 +70,22 @@ public class AcademicController {
         String descriptions = "";
 
         for (HashMap<String, String> academic: academicList) {
-            logger.info("academic:{}", academic); // 학사일정 한 개
+//            logger.info("academic:{}", academic); // 학사일정 한 개
 
             String startDate = spltDate(academic.get("start_date")); // 시작 날짜
             String endDate = spltDate(academic.get("end_date")); // 끝 날짜
             String content = academic.get("content");
-            logger.info("date: {}", startDate + "~" + endDate);
-            logger.info("content: {}", content);
+//            logger.info("date: {}", startDate + "~" + endDate);
+//            logger.info("content: {}", content);
 
             descriptionList.add(joinAllAcademics(startDate, endDate, content));
-            logger.info("descriptionList: {}", descriptionList);
+//            logger.info("descriptionList: {}", descriptionList);
         }
 
         for (String description: descriptionList) {
             descriptions = descriptions + description;
         }
-        logger.info("descriptions: {}", descriptions);
+//        logger.info("descriptions: {}", descriptions);
 
         return descriptions;
     }
@@ -127,41 +127,41 @@ public class AcademicController {
     }
 
     public static String joinAllAcademics(String startDate, String endDate, String content) {
-        logger.info("joinAllAcademics 실행");
+//        logger.info("joinAllAcademics 실행");
         String duration = "[" + startDate + " ~ " + endDate + "]" + "\n";
         return duration + content + "\n\n";
     }
 
     public static String spltDate(String date) {
-        logger.info("spltDate 실행");
+//        logger.info("spltDate 실행");
 
         String[] spltDate = date.split(" ");
         String[] spltMonth = spltDate[0].split("-");
-        logger.info("spltMonth: {}", spltMonth[1]);
-        logger.info("spltMonth: {}", spltMonth[2]);
+//        logger.info("spltMonth: {}", spltMonth[1]);
+//        logger.info("spltMonth: {}", spltMonth[2]);
 
         return spltMonth[1] + "/" + spltMonth[2];
     }
 
     // db에서 일정 찾아오기
     public List<HashMap<String, String>> getAcademicCalendar(RequestDto requestDto) {
-        logger.info("getAcademicCalendar 실행");
+//        logger.info("getAcademicCalendar 실행");
 
         List<HashMap<String, String>> academicList;
         int currentMonth = getCurrentMonth(requestDto);
 
         academicList = academicService.getAcademicContents(currentMonth);
-        logger.info("academicList: {}", academicList); // 해당 월의 학사일정 (type 1)
+//        logger.info("academicList: {}", academicList); // 해당 월의 학사일정 (type 1)
 
         return academicList;
     }
 
     // 사용자 발화문에 월이 포함되어 있는지 여부 확인
     public String checkUserUtterance(RequestDto requestDto) {
-        logger.info("checkUserUtterance 실행");
+//        logger.info("checkUserUtterance 실행");
 
         String userMsg = requestDto.getUserRequest().getUtterance();
-        logger.info("userMsg: {}", userMsg);
+//        logger.info("userMsg: {}", userMsg);
 
         String extractedInt = userMsg.replaceAll("[^0-9]", "");
 
@@ -179,28 +179,28 @@ public class AcademicController {
         // 현재 월에 해당하는 공지 들고옴
         if (extractedMonth == null) {
             currentMonth = getSystemMonth();
-            logger.info("currentMonth: {}", currentMonth);
+//            logger.info("currentMonth: {}", currentMonth);
         } else {
-            logger.info("extractedMonth: {}", extractedMonth);
+//            logger.info("extractedMonth: {}", extractedMonth);
             currentMonth = Integer.parseInt(extractedMonth);
-            logger.info("currentMonth: {}", currentMonth);
+//            logger.info("currentMonth: {}", currentMonth);
         }
         return currentMonth;
     }
 
     // 현재 월 출력
     public static int getSystemMonth() {
-        logger.info("getCurrentMonth 실행");
+//        logger.info("getCurrentMonth 실행");
         LocalDate today = LocalDate.now(); // 현재 날짜를 가져옴
         int currentMonth = today.getMonthValue(); // 월을 숫자로 가져옴 (1~12)
 
-        System.out.println("Current month: " + currentMonth);
+//        System.out.println("Current month: " + currentMonth);
         return currentMonth;
     }
 
     // 학사일정 존재하지 않는 경우 예외처리
     public ResponseDto simpleTextResponse() {
-        logger.info("simpleTextResponse 실행");
+//        logger.info("simpleTextResponse 실행");
 
         SimpleTextDto simpleTextDto = new SimpleTextDto("학사일정이 존재하지 않습니다.");
         ComponentDto componentDto = new ComponentDto(simpleTextDto);
@@ -216,7 +216,7 @@ public class AcademicController {
 
     // ObjectMapper를 사용하여 ResponseDto 객체를 JSON 문자열로 변환
     public String toJsonResponse(ResponseDto responseDto) {
-        logger.info("toJsonResponse 실행");
+//        logger.info("toJsonResponse 실행");
 
         String jsonResponse;
         ObjectMapper objectMapper = new ObjectMapper();

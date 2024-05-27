@@ -17,7 +17,7 @@ public class CafeteriaService {
     @Autowired
     public CafeteriaService(CafeteriaRepository cafeteriaRepository) {
         this.cafeteriaRepository = cafeteriaRepository;
-        logger.info("CafeteriaService 실행");
+//        logger.info("CafeteriaService 실행");
     }
 
     // 캠퍼스 id로 식당 리스트 찾기
@@ -27,21 +27,21 @@ public class CafeteriaService {
 
     // cafeteriaName으로 cafeteria_id 찾기
     public int getCafeteriaIdByName(String sysCafeteriaName) {
-        logger.info("getCafeteriaIdByName 실행");
+//        logger.info("getCafeteriaIdByName 실행");
 
         // cafeteriaName을 사용해 CafeteriaRepository에서 CafeteriaEntity 조회
         int cafeteriaId = cafeteriaRepository.findIdByName(sysCafeteriaName);
-        logger.info("cafeteriaId : {}", cafeteriaId);
+//        logger.info("cafeteriaId : {}", cafeteriaId);
 
         return cafeteriaId;
     }
 
     // campusId와 cafeteriaName으로 cafeteria_id 찾기(식당이름 중복된 경우)
     public int getCafeteriaIdByCampusId(String sysCafeteriaName, int campusId) {
-        logger.info("getCafeteriaIdByCampusId 실행");
+//        logger.info("getCafeteriaIdByCampusId 실행");
 
         Integer cafeteriaId = cafeteriaRepository.findIdByNameAndCampusId(sysCafeteriaName, campusId);
-        logger.info("cafeteriaId : {}", cafeteriaId);
+//        logger.info("cafeteriaId : {}", cafeteriaId);
 
         if (cafeteriaId != null) {
             return cafeteriaId;
@@ -52,20 +52,20 @@ public class CafeteriaService {
 
     // 식당 이름으로 캠퍼스 id 찾기 (학과 인증하지 않은 경우)
     public int getCampusIdByName(String cafeteriaName) {
-        logger.info("getCampusIdByName 실행");
+//        logger.info("getCampusIdByName 실행");
 
         int campusId = cafeteriaRepository.findCampusId(cafeteriaName);
-        logger.info("campusId : {}", campusId);
+//        logger.info("campusId : {}", campusId);
 
         return campusId;
     }
 
     // 식당 id로 썸네일 url 찾기
     public String getCampusThumnail(int cafeteriaId) {
-        logger.info("getCampusThumnail 실행");
+//        logger.info("getCampusThumnail 실행");
 
         String thumnailUrl = cafeteriaRepository.findThumnailUrl(cafeteriaId);
-        logger.info("thumnailUrl : {}", thumnailUrl);
+//        logger.info("thumnailUrl : {}", thumnailUrl);
 
         return thumnailUrl;
     }

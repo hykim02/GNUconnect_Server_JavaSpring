@@ -15,15 +15,15 @@ public class UserService {
     @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        logger.info("UserService 실행");
+//        logger.info("UserService 실행");
     }
 
     public int getDepartmentId(String userId) {
-        logger.info("getDepartmentId 실행");
+//        logger.info("getDepartmentId 실행");
 
         // userId를 사용해 UserRepository에서 UserEntity 조회
         UserEntity userEntity = userRepository.findById(userId).orElse(null);
-        logger.info("userEntity {}", userEntity);
+//        logger.info("userEntity {}", userEntity);
 
         // 사용자가 존재하는 경우
         if (userEntity != null) {
