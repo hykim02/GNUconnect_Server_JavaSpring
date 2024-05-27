@@ -115,9 +115,7 @@ public class DishController {
 
         // 때에 맞는 식단 조회를 위한 시간 및 날짜 조회
         // 현재 날짜 시간
-        String currentDate = getCurrentDate(); // 2024-05-13
         String currentTime = getCurrentTime(); // 16:43:12
-        logger.info("currentDate: {}", currentDate);
         logger.info("currentTime: {}", currentTime);
 
         String currentDay = getDay(currentTime); // 오늘, 내일
@@ -135,6 +133,10 @@ public class DishController {
             detailParamsDate = requestDto.getAction().getDetailParams().getSys_date().getOrigin();
             logger.info("detailParamsDate: {}", detailParamsDate);
         }
+
+        String currentDate = getCurrentDate(detailParamsDate); // 2024-05-13
+        logger.info("currentDate: {}", currentDate);
+
         // 식사 시기
         String detailParamsPeriod = "";
         if (paramsPeriod.equals("sys.time.period")) {
@@ -286,14 +288,16 @@ public class DishController {
     }
 
     // 조회할 날짜 찾는 함수
-    public String getCurrentDate() {
+    public String getCurrentDate(String currentDay) {
         logger.info("getCurrentDate 실행");
         LocalDateTime currentDateTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         String[] dateTimeParts = currentDateTime.toString().split("T"); // 2024-05-13
         String[] dateSplt = dateTimeParts[0].split("-");
         logger.info("dateSplt: {}", (Object) dateSplt);
 
-        String currentDay = getDay(dateTimeParts[1]); // 오늘, 내일
+        if (currentDay.isEmpty()) {
+            currentDay = getDay(dateTimeParts[1]); // 오늘, 내일
+        }
         logger.info("currentDay: {}", currentDay);
 
         if (currentDay.equals("오늘")) {
