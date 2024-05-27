@@ -78,6 +78,7 @@ public class CafeteriaController {
                 return campusResponse(campusService.getCampusList());
             }
         }
+
         // 유저 인증 O
         else {
             // 원하는 캠퍼스가 있는 경우
@@ -91,6 +92,7 @@ public class CafeteriaController {
                 int campusId = collegeService.getCampusId(collegeId);
                 String campusName = campusService.getCampusName(campusId);
                 return cafeteriaResponse(cafeteriaService.getCafeteriaList(campusId), campusName);
+
             }
         }
     }
