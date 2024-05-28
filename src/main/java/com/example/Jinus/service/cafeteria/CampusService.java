@@ -20,7 +20,6 @@ public class CampusService {
     @Autowired
     public CampusService(CampusRepository campusRepository) {
         this.campusRepository = campusRepository;
-//        logger.info("CampusService 실행");
     }
 
     public List<CampusEntity> getCampusList() {
@@ -28,18 +27,14 @@ public class CampusService {
     }
 
     public String getCampusName(int campusId) {
-//        logger.info("getCampusName 실행");
-
         String campusName = campusRepository.findCampusNameById(campusId);
-//        logger.info("campusName: {}", campusName);
+
         return campusName;
     }
 
     public int getCampusId(String campusName) {
-//        logger.info("getCampusId 실행");
-
         int campusId = campusRepository.findCampusIdByName(campusName);
-//        logger.info("campusId: {}", campusId);
+
         return campusId;
     }
 

@@ -84,17 +84,6 @@ public class DishController {
             paramsCampusName = campusService.getCampusName(campusId);
         }
 
-        // 캠퍼스에 해당 식당이 존재하지 않는 경우 예외처리
-        if (cafeteriaId == 0) {
-            // 칠암캠이면 한번더조회
-            if (campusId == 2) {
-                paramsCampusName = "칠암(의대,간호대)캠퍼스";
-            } else {
-                return responseSimpleTextExp(paramsCampusName + "에 " + paramsCafeteriaName +"이 존재하지 않습니다." +
-                        " 다시 입력해주세요!");
-            }
-        }
-
         // 시점 (아침, 점심, 저녁)
         String paramsPeriod = requestDto.getAction().getParams().getSys_time_period();
 
@@ -123,11 +112,26 @@ public class DishController {
             detailParamsPeriod = requestDto.getAction().getDetailParams().getSys_time_period().getOrigin();
         }
 
-        logger.debug("paramsPeriod: " + paramsPeriod);
-        logger.debug("detailParamsPeriod: " + detailParamsPeriod);
-        logger.debug("detailParamsDate: " + detailParamsDate);
-        logger.debug("paramsCafeteriaName: " + paramsCafeteriaName);
-        logger.debug("paramsCampusName: " + paramsCampusName);
+        // 캠퍼스에 해당 식당이 존재하지 않는 경우 예외처리
+        if (cafeteriaId == 0) {
+            // 칠암캠이면 한번더조회
+            if (campusId == 2) {
+                paramsCampusName = "칠암(의대,간호대)캠퍼스";
+                cafeteriaId = 3;
+            } else {
+                return responseSimpleTextExp(paramsCampusName + "에 " + paramsCafeteriaName +"이 존재하지 않습니다." +
+                        " 다시 입력해주세요!");
+            }
+        }
+
+        logger.info("paramsPeriod: " + paramsPeriod);
+        logger.info("detailParamsPeriod: " + detailParamsPeriod);
+        logger.info("detailParamsDate: " + detailParamsDate);
+        logger.info("paramsCafeteriaName: " + paramsCafeteriaName);
+        logger.info("paramsCampusName: " + paramsCampusName);
+        logger.info("cafeteriaId: " + cafeteriaId);
+        logger.info("currentDate: " + currentDate);
+        logger.info("currentDay: " + currentDay);
 
         return getCafeteriaData(detailParamsDate, detailParamsPeriod, currentDate,
                 paramsPeriod, cafeteriaId, paramsCafeteriaName, paramsCampusName, currentDay);
