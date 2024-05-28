@@ -74,8 +74,8 @@ pipeline {
         stage('Notify Sentry of deployment') {
             environment {
                 SENTRY_AUTH_TOKEN = credentials('sentry-auth-token')
-                SENTRY_ORG = 'sample-organization-slug'
-                SENTRY_PROJECT = 'sample-project-slug'
+                SENTRY_ORG = 'connect-gnu'
+                SENTRY_PROJECT = 'java-spring-boot'
                 SENTRY_ENVIRONMENT = 'production'
             }
             steps {
@@ -83,7 +83,7 @@ pipeline {
                 sh 'command -v sentry-cli || curl -sL https://sentry.io/get-cli/ | bash'
 
                 sh '''
-                    export SENTRY_RELEASE=$(env.BUILD_NUMBER)
+                    export SENTRY_RELEASE=$(sentry-cli releases propose-version)
                     sentry-cli releases new -p $SENTRY_PROJECT $SENTRY_RELEASE
                     sentry-cli releases set-commits $SENTRY_RELEASE --auto
                     sentry-cli releases files $SENTRY_RELEASE upload-sourcemaps /path/to/sourcemaps
