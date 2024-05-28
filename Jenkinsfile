@@ -74,8 +74,8 @@ pipeline {
         stage('Notify Sentry of deployment') {
             environment {
                 SENTRY_AUTH_TOKEN = credentials('sentry-auth-token')
-                SENTRY_ORG = 'connect-gnu'
-                SENTRY_PROJECT = 'java-spring-boot'
+                SENTRY_ORG = 'sample-organization-slug'
+                SENTRY_PROJECT = 'sample-project-slug'
                 SENTRY_ENVIRONMENT = 'production'
             }
             steps {
