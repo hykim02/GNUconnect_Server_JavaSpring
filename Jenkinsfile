@@ -83,7 +83,7 @@ pipeline {
                 sh 'command -v sentry-cli || curl -sL https://sentry.io/get-cli/ | bash'
 
                 sh '''
-                    export SENTRY_RELEASE=$(sentry-cli releases propose-version)
+                    export SENTRY_RELEASE=$(BUILD_NUMBER)
                     sentry-cli releases new -p $SENTRY_PROJECT $SENTRY_RELEASE
                     sentry-cli releases set-commits $SENTRY_RELEASE --auto
                     sentry-cli releases files $SENTRY_RELEASE upload-sourcemaps /path/to/sourcemaps
