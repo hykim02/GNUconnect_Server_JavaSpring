@@ -30,6 +30,11 @@ public class CollegeService {
         }
     }
 
+    public boolean checkEtcValue(int collegeId) {
+        CollegeEntity collegeEntity = collegeRepository.findById(collegeId).orElse(null);
+        return collegeEntity.isEtcValue();
+    }
+
     // collegeId에 해당하는 campusId 찾기
     public int getCampusId(int collegeId) {
 //        logger.info("getCampusId 실행");
