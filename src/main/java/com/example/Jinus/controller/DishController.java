@@ -57,73 +57,55 @@ public class DishController {
     }
     @PostMapping("/api/spring/dish")
     public String handleRequest(@RequestBody RequestDto requestDto) {
-//        logger.info("CafeteriaController 실행");
-//        logger.info("handleRequest 실행");
 
         // params 받아오기
         // 날짜 (오늘, 내일)
         String paramsDate = requestDto.getAction().getParams().getSys_date();
-//        logger.info("paramsDate: {}", paramsDate);
         // 캠퍼스 이름 (동의어 사용)
         String paramsCampusName = requestDto.getAction().getParams().getSys_campus_name();
-//        logger.info("paramsCampusName: {}", paramsCampusName); // 가좌캠퍼스
-
         // 식당 이름 (동의어 사용)
         String paramsCafeteriaName = requestDto.getAction().getParams().getSys_cafeteria_name();
-//        logger.info("paramsCafeteriaName: {}", paramsCafeteriaName); // 가좌본관식당
 
         int campusId = getUserId(requestDto);
         int cafeteriaId = cafeteriaService.getCafeteriaIdByCampusId(paramsCafeteriaName, campusId);
         // 캠퍼스 값이 존재하는 경우
         if (paramsCampusName != null) {
-//            logger.info("campusId 변경");
             campusId = campusService.getCampusId(paramsCampusName);
-
-//            logger.info("cafeteriaId 변경");
             cafeteriaId = cafeteriaService.getCafeteriaIdByCampusId(paramsCafeteriaName, campusId);
         } else if (campusId != 0) { // 캠퍼스 값이 없는 경우 & 학과 인증된 경우
-//            logger.info("paramsCampusName 변경");
             paramsCampusName = campusService.getCampusName(campusId);
         }
         // 학과 인증 하지않은 경우
         else if (paramsCafeteriaName.equals("교직원식당") || paramsCafeteriaName.equals("학생식당")) { // 식당 중복된 경우
             return responseSimpleTextExp("캠퍼스와 함께 다시 입력해주세요!");
         } else {
-//            logger.info("cafeteriaId 변경");
             cafeteriaId = cafeteriaService.getCafeteriaIdByName(paramsCafeteriaName);
-
-//            logger.info("campusId 변경");
             campusId = cafeteriaService.getCampusIdByName(paramsCafeteriaName);
-
-//            logger.info("paramsCampusName 변경");
             paramsCampusName = campusService.getCampusName(campusId);
         }
 
-//        logger.info("cafeteriaId: {}", cafeteriaId);
-//        logger.info("campusId: {}", campusId);
-//        logger.info("paramsCampusName: {}", paramsCampusName);
-
         // 캠퍼스에 해당 식당이 존재하지 않는 경우 예외처리
         if (cafeteriaId == 0) {
-            return responseSimpleTextExp(paramsCampusName + "에 " + paramsCafeteriaName +"이 존재하지 않습니다." +
-                    " 다시 입력해주세요!");
+            // 칠암캠이면 한번더조회
+            if (campusId == 2) {
+                paramsCampusName = "칠암(의대,간호대)캠퍼스";
+            } else {
+                return responseSimpleTextExp(paramsCampusName + "에 " + paramsCafeteriaName +"이 존재하지 않습니다." +
+                        " 다시 입력해주세요!");
+            }
         }
 
         // 시점 (아침, 점심, 저녁)
         String paramsPeriod = requestDto.getAction().getParams().getSys_time_period();
-//        logger.info("paramsPeriod: {}", paramsPeriod);
 
         // 때에 맞는 식단 조회를 위한 시간 및 날짜 조회
         // 현재 날짜 시간
         String currentTime = getCurrentTime(); // 16:43:12
-//        logger.info("currentTime: {}", currentTime);
-
         String currentDay = getDay(currentTime); // 오늘, 내일
 
         // 현재 식사 시기(사용자가 입력하지 않았을 경우)
         if (paramsPeriod == null) {
             paramsPeriod = getPeriodOfDay(currentTime); // 아침, 점심, 저녁
-//            logger.info("paramsPeriod: {}", paramsPeriod);
         }
 
         // 사용자의 입력값이 존재하는 경우
@@ -131,18 +113,21 @@ public class DishController {
         String detailParamsDate = "";
         if (paramsDate.equals("sys.date")) {
             detailParamsDate = requestDto.getAction().getDetailParams().getSys_date().getOrigin();
-//            logger.info("detailParamsDate: {}", detailParamsDate);
         }
 
         String currentDate = getCurrentDate(detailParamsDate); // 2024-05-13
-//        logger.info("currentDate: {}", currentDate);
 
         // 식사 시기
         String detailParamsPeriod = "";
         if (paramsPeriod.equals("sys.time.period")) {
             detailParamsPeriod = requestDto.getAction().getDetailParams().getSys_time_period().getOrigin();
-//            logger.info("detailParamsPeriod: {}", detailParamsPeriod);
         }
+
+        logger.debug("paramsPeriod: " + paramsPeriod);
+        logger.debug("detailParamsPeriod: " + detailParamsPeriod);
+        logger.debug("detailParamsDate: " + detailParamsDate);
+        logger.debug("paramsCafeteriaName: " + paramsCafeteriaName);
+        logger.debug("paramsCampusName: " + paramsCampusName);
 
         return getCafeteriaData(detailParamsDate, detailParamsPeriod, currentDate,
                 paramsPeriod, cafeteriaId, paramsCafeteriaName, paramsCampusName, currentDay);
