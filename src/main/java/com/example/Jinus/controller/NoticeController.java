@@ -57,7 +57,7 @@ public class NoticeController {
         // 학과 인증 메시지 리턴
         if (departmentId == -1) {
 //            logger.info("userId: null");
-            return simpleTextResponse();
+            return simpleTextResponseWithButton();
         } else {
 //            logger.info("userId: {}", userId);
             return findNotice(departmentId);
@@ -66,6 +66,11 @@ public class NoticeController {
 
     // userId 존재하는 경우 공지 찾기
     public String findNotice(int departmentId) throws ParseException {
+        boolean isActive = departmentService.checkDepartmentActive(departmentId);
+        String departmentKor = departmentService.getDepartmentKor(departmentId);
+        if (!isActive) {
+            return simpleTextResponse("아직 공지사항 서비스를 지원하지 않는 학과입니다. 조금만 기다려주세요!", departmentKor);
+        }
         List<Integer> categoryIdList = new ArrayList<>();
         List<Map<String, String>> noticeList;
         Map<Integer, List<Map<String, String>>> noticeMap = new HashMap<>();
@@ -80,6 +85,11 @@ public class NoticeController {
 
         Map<Integer, Map<String, String>> categories = categoryService.getCategory(departmentId, collegeEng); // 카테고리 찾기
 
+        // 학과에 존재하는 카테고리가 없을 때 예외처리
+        if (categories.size() == 0) {
+            return simpleTextResponse("활성화된 학과 공지사항 게시판을 찾지 못했습니다.", departmentKor);
+        }
+
         // 카테고리 id 추출
         categories.forEach((key, value) -> {
             // key와 value를 사용하여 작업 수행
@@ -92,7 +102,9 @@ public class NoticeController {
         // 공지 가져오기
         for (int categoryId : categoryIdList) {
             noticeList = noticeService.getNotice(categoryId, collegeEng);
-            noticeMap.put(categoryId, noticeList);
+            if (noticeList.size() != 0) {
+                noticeMap.put(categoryId, noticeList);
+            }
         }
 //        logger.info("noticeMap: {}", noticeMap);
 
@@ -100,7 +112,7 @@ public class NoticeController {
     }
 
     // userId 존재하지 않는 경우 학과인증 블록 리턴(예외처리)
-    public String simpleTextResponse() {
+    public String simpleTextResponseWithButton() {
         List<ComponentDto> componentDtoList = new ArrayList<>();
         List<ButtonDto> buttonList = new ArrayList<>();
         // 블록 버튼 생성
@@ -113,6 +125,17 @@ public class NoticeController {
         TemplateDto templateDto = new TemplateDto(componentDtoList);
         ResponseDto responseDto = new ResponseDto("2.0", templateDto);
 
+        return toJsonResponse(responseDto);
+    }
+    
+    // 학과 카테고리가 존재하지 않는 경우 카테고리가 존재않다고 블록 리턴(예외처리)
+    public String simpleTextResponse(String message, String departmentKor) {
+        List<ComponentDto> componentDtoList = new ArrayList<>();
+        TextCardDto textCardDto = new TextCardDto(message);
+        ComponentDto componentDto = new ComponentDto(textCardDto);
+        componentDtoList.add(componentDto);
+        TemplateDto templateDto = new TemplateDto(componentDtoList);
+        ResponseDto responseDto = new ResponseDto("2.0", templateDto);
         return toJsonResponse(responseDto);
     }
 
