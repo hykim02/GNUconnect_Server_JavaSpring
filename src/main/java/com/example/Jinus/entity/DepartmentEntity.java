@@ -21,4 +21,7 @@ public class DepartmentEntity {
 
     @Column(name = "department_ko")
     private String departmentKo;
+
+    @Column(name = "is_active")
+    private boolean isActive;
 }

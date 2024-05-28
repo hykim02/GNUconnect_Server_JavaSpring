@@ -12,6 +12,10 @@ public class TextCardDto {
     String description;
     List<ButtonDto> buttons;
 
+    public TextCardDto(String title) {
+        this.title = title;
+    }
+
     public TextCardDto(String title, List<ButtonDto> buttons) {
         this.title = title;
         this.buttons = buttons;

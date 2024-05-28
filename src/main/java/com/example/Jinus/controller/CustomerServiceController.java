@@ -51,7 +51,7 @@ public class CustomerServiceController {
         } else {
             department = departmentService.getDepartmentKor(departmentId);
         }
-        String formattedText = String.format("👀 감사합니다. 원활한 상담을 위해 유저 정보를 조회하였습니다. \n\n[유저 id]\n%s\n\n[학과]\n%s", userId, department);
+        String formattedText = String.format("👀 내 정보 확인 \n\n[아이디]\n%s\n\n[학과]\n%s(%s)", userId, department, departmentId);
         SimpleTextDto simpleTextDto = new SimpleTextDto(formattedText);
         ComponentDto componentDto = new ComponentDto(simpleTextDto);
 
