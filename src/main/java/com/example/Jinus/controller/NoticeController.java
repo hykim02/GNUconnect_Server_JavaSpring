@@ -78,12 +78,25 @@ public class NoticeController {
         int collegeId = departmentService.getCollegeId(departmentId); // 단과대학 찾기
         String departmentEng = departmentService.getDepartmentEng(departmentId); // 학과 영문명 찾기(url 생성 위함)
         String collegeEng = collegeService.getCollegeName(collegeId); // 영문명 찾기(테이블 조회 위함)
+        collegeEng = collegeService.checkEtcValue(collegeId) ? "etc" : collegeEng;
+        Integer parentDepartmentId = departmentService.getParentDepartmentId(departmentId); // 부모학과 찾기
 
 //        logger.info("departmentId: {}", departmentId); // 학과id
 //        logger.info("collegeId: {}", collegeId); // 단과대학id
 //        logger.info("collegeEng: {}", collegeEng); // 단과대학 영문명
-
+        logger.error("{} {}", departmentId, collegeEng);
         Map<Integer, Map<String, String>> categories = categoryService.getCategory(departmentId, collegeEng); // 카테고리 찾기
+        // 부모 학과가 존재할 경우 추가적으로 부모 학과 게시판 조회
+        if (parentDepartmentId != null) {
+            logger.error("{}, {}", parentDepartmentId, collegeEng);
+            Map<Integer, Map<String, String>> parentCategories = categoryService.getCategory(parentDepartmentId, collegeEng);
+            logger.error("parentCategories: {}", parentCategories);
+
+            for (Map.Entry<Integer, Map<String, String>> entry : parentCategories.entrySet()) {
+                categories.put(entry.getKey(), entry.getValue());
+            }
+            logger.error("categories: {}", categories);
+        }
 
         // 학과에 존재하는 카테고리가 없을 때 예외처리
         if (categories.size() == 0) {

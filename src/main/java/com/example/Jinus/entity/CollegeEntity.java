@@ -18,4 +18,7 @@ public class CollegeEntity {
 
     @Column(name = "campus_id")
     private int campusId;
+
+    @Column(name = "etc_value")
+    private boolean etcValue;
 }

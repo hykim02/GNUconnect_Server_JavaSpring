@@ -22,6 +22,9 @@ public class DepartmentEntity {
     @Column(name = "department_ko")
     private String departmentKo;
 
+    @Column(name = "parent_department_id")
+    private Integer parentDepartmentId;
+
     @Column(name = "is_active")
     private boolean isActive;
 }

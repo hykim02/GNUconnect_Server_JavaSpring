@@ -67,4 +67,13 @@ public class DepartmentService {
         }
     }
 
+    public Integer getParentDepartmentId(int departmentId) {
+        DepartmentEntity departmentEntity = departmentRepository.findById(departmentId).orElse(null);
+        if (departmentEntity != null) {
+            return departmentEntity.getParentDepartmentId();
+        } else {
+            return -1;
+        }
+    }
+
 }
