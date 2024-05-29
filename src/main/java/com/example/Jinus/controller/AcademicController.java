@@ -43,7 +43,7 @@ public class AcademicController {
             descriptions = handleAcademicList(academicList, descriptionList);
             responseDto = handleResponse(descriptions, requestDto);
         } else { // 일정 존재하지 않는 경우
-            String msg = "해당 월의 학사일정이 없어";
+            String msg = "해당 월에는 학사일정이 없어";
             responseDto = SimpleTextResponse.simpleTextResponse(msg);
         }
         return responseDto;
@@ -108,7 +108,7 @@ public class AcademicController {
     // 월별 학사일정 합치기
     public static String joinAllAcademics(String startDate, String endDate, String content) {
         String duration = "[" + startDate + " ~ " + endDate + "]" + "\n";
-        return duration + content + "\n\n";
+        return duration + "\uD83D\uDDD3\uFE0F" + content + "\n\n";
     }
 
     // 날짜 추출

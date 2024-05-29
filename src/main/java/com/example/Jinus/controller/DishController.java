@@ -171,7 +171,7 @@ public class DishController {
         String url = cafeteriaService.getCampusThumnail(cafeteriaId);
         ThumbnailDto thumbnailDto = new ThumbnailDto(url);
 
-        String title = originCafeteriaName + " 메뉴";
+        String title = "\uD83C\uDF71" + originCafeteriaName + " 메뉴";
         String description = handleCafeteriaDiet(categoryMenuMap, campus, day, period);
 
         ArrayList<ButtonDto> buttons = new ArrayList<>();

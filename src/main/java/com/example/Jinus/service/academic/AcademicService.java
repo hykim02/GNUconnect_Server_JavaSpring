@@ -18,12 +18,9 @@ public class AcademicService {
 
     public AcademicService(AcademicRepository calendarRepository) {
         this.academicRepository = calendarRepository;
-//        logger.info("AcademicService 실행");
     }
 
     public List<HashMap<String, String>> getAcademicContents(int currentMonth) {
-//        logger.info("getAcademicContents 실행");
-
         List<AcademicEntity> entities = academicRepository.findCalendarEntities(currentMonth);
         List<HashMap<String, String>> academicList = new ArrayList<>();
 
@@ -32,10 +29,6 @@ public class AcademicService {
             for (AcademicEntity entity : entities) {
                 HashMap<String, String> academicMap = new HashMap<>();
 
-//                logger.info("type: {}", entity.getCalendarType());
-//                logger.info("content: {}", entity.getContent());
-//                logger.info("end_date: {}", entity.getEndDate());
-//                logger.info("start_date: {}", entity.getStartDate());
                 academicMap.put("type", String.valueOf(entity.getCalendarType()));
                 academicMap.put("content", entity.getContent());
                 academicMap.put("end_date", entity.getEndDate());
