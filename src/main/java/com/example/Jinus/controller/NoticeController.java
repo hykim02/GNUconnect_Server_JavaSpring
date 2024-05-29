@@ -56,8 +56,12 @@ public class NoticeController {
 
         // 학과 인증 메시지 리턴
         if (departmentId == -1) {
-//            logger.info("userId: null");
-            return simpleTextResponseWithButton();
+//
+            List<ButtonDto> buttonList = new ArrayList<>();
+            // 블록 버튼 생성
+            ButtonDto buttonDto = new ButtonDto("학과 인증하기", "block", null,"6623de277e38b92310022cd8");
+            buttonList.add(buttonDto);
+            return simpleTextResponseWithButton("학과 인증이 필요한 서비스야! 학과 인증을 진행해줘.", buttonList);
         } else {
 //            logger.info("userId: {}", userId);
             return findNotice(departmentId);
@@ -69,7 +73,7 @@ public class NoticeController {
         boolean isActive = departmentService.checkDepartmentActive(departmentId);
         String departmentKor = departmentService.getDepartmentKor(departmentId);
         if (!isActive) {
-            return simpleTextResponse("아직 공지사항 서비스를 지원하지 않는 학과입니다. 조금만 기다려주세요!", departmentKor);
+            return simpleTextResponse("아직 공지사항 서비스를 지원하지 않는 학과야. 조금만 기다려줘!");
         }
         List<Integer> categoryIdList = new ArrayList<>();
         List<Map<String, String>> noticeList;
@@ -84,23 +88,22 @@ public class NoticeController {
 //        logger.info("departmentId: {}", departmentId); // 학과id
 //        logger.info("collegeId: {}", collegeId); // 단과대학id
 //        logger.info("collegeEng: {}", collegeEng); // 단과대학 영문명
-        logger.error("{} {}", departmentId, collegeEng);
         Map<Integer, Map<String, String>> categories = categoryService.getCategory(departmentId, collegeEng); // 카테고리 찾기
         // 부모 학과가 존재할 경우 추가적으로 부모 학과 게시판 조회
         if (parentDepartmentId != null) {
-            logger.error("{}, {}", parentDepartmentId, collegeEng);
             Map<Integer, Map<String, String>> parentCategories = categoryService.getCategory(parentDepartmentId, collegeEng);
-            logger.error("parentCategories: {}", parentCategories);
 
             for (Map.Entry<Integer, Map<String, String>> entry : parentCategories.entrySet()) {
                 categories.put(entry.getKey(), entry.getValue());
             }
-            logger.error("categories: {}", categories);
         }
 
         // 학과에 존재하는 카테고리가 없을 때 예외처리
         if (categories.size() == 0) {
-            return simpleTextResponse("활성화된 학과 공지사항 게시판을 찾지 못했습니다.", departmentKor);
+            List<ButtonDto> buttonList = new ArrayList<>();
+            ButtonDto buttonDto = new ButtonDto("게시판 등록 요청", "webLink", "https://forms.gle/x8mDzL5J7aKQhfYo8");
+            buttonList.add(buttonDto);
+            return simpleTextResponseWithButton("최근에 등록된 공지사항이 없는 학과인 것 같아!", buttonList);
         }
 
         // 카테고리 id 추출
@@ -117,6 +120,11 @@ public class NoticeController {
             noticeList = noticeService.getNotice(categoryId, collegeEng);
             if (noticeList.size() != 0) {
                 noticeMap.put(categoryId, noticeList);
+            } else {
+                List<ButtonDto> buttonList = new ArrayList<>();
+                ButtonDto buttonDto = new ButtonDto("게시판 등록 요청", "webLink", "https://forms.gle/x8mDzL5J7aKQhfYo8");
+                buttonList.add(buttonDto);
+                return simpleTextResponseWithButton("최근에 등록된 공지사항이 없는 학과인 것 같아!", buttonList);
             }
         }
 //        logger.info("noticeMap: {}", noticeMap);
@@ -125,14 +133,10 @@ public class NoticeController {
     }
 
     // userId 존재하지 않는 경우 학과인증 블록 리턴(예외처리)
-    public String simpleTextResponseWithButton() {
+    public String simpleTextResponseWithButton(String title, List<ButtonDto> buttonList) {
         List<ComponentDto> componentDtoList = new ArrayList<>();
-        List<ButtonDto> buttonList = new ArrayList<>();
-        // 블록 버튼 생성
-        ButtonDto buttonDto = new ButtonDto("학과 인증하기", "block", null,"6623de277e38b92310022cd8");
-        buttonList.add(buttonDto);
 
-        TextCardDto textCardDto = new TextCardDto("학과 인증을 진행해주세요.", buttonList);
+        TextCardDto textCardDto = new TextCardDto(title, buttonList);
         ComponentDto componentDto = new ComponentDto(textCardDto);
         componentDtoList.add(componentDto);
         TemplateDto templateDto = new TemplateDto(componentDtoList);
@@ -142,7 +146,7 @@ public class NoticeController {
     }
     
     // 학과 카테고리가 존재하지 않는 경우 카테고리가 존재않다고 블록 리턴(예외처리)
-    public String simpleTextResponse(String message, String departmentKor) {
+    public String simpleTextResponse(String message) {
         List<ComponentDto> componentDtoList = new ArrayList<>();
         TextCardDto textCardDto = new TextCardDto(message);
         ComponentDto componentDto = new ComponentDto(textCardDto);
