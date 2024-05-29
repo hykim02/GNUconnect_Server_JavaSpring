@@ -5,6 +5,7 @@ import com.example.Jinus.dto.response.*;
 import com.example.Jinus.service.*;
 import com.example.Jinus.service.notice.CategoryService;
 import com.example.Jinus.service.notice.NoticeService;
+import com.example.Jinus.utility.JsonUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -44,6 +45,7 @@ public class NoticeController {
         this.noticeService = noticeService;
     }
 
+    // post 요청 처리
     @PostMapping("/api/spring/department-notice")
     public String handleRequest(@RequestBody RequestDto requestDto) throws ParseException {
         return findUserId(requestDto);
@@ -56,14 +58,12 @@ public class NoticeController {
 
         // 학과 인증 메시지 리턴
         if (departmentId == -1) {
-//
             List<ButtonDto> buttonList = new ArrayList<>();
             // 블록 버튼 생성
             ButtonDto buttonDto = new ButtonDto("학과 인증하기", "block", null,"6623de277e38b92310022cd8");
             buttonList.add(buttonDto);
-            return simpleTextResponseWithButton("학과 인증이 필요한 서비스야! 학과 인증을 진행해줘.", buttonList);
+            return textCardResponseWithButton("학과 인증이 필요한 서비스야! 학과 인증을 진행해줘.", buttonList);
         } else {
-//            logger.info("userId: {}", userId);
             return findNotice(departmentId);
         }
     }
@@ -71,9 +71,9 @@ public class NoticeController {
     // userId 존재하는 경우 공지 찾기
     public String findNotice(int departmentId) throws ParseException {
         boolean isActive = departmentService.checkDepartmentActive(departmentId);
-        String departmentKor = departmentService.getDepartmentKor(departmentId);
+
         if (!isActive) {
-            return simpleTextResponse("아직 공지사항 서비스를 지원하지 않는 학과야. 조금만 기다려줘!");
+            return textCardResponse("아직 공지사항 서비스를 지원하지 않는 학과야. 조금만 기다려줘!");
         }
         List<Integer> categoryIdList = new ArrayList<>();
         List<Map<String, String>> noticeList;
@@ -84,26 +84,20 @@ public class NoticeController {
         String collegeEng = collegeService.getCollegeName(collegeId); // 영문명 찾기(테이블 조회 위함)
         collegeEng = collegeService.checkEtcValue(collegeId) ? "etc" : collegeEng;
         Integer parentDepartmentId = departmentService.getParentDepartmentId(departmentId); // 부모학과 찾기
-
-//        logger.info("departmentId: {}", departmentId); // 학과id
-//        logger.info("collegeId: {}", collegeId); // 단과대학id
-//        logger.info("collegeEng: {}", collegeEng); // 단과대학 영문명
         Map<Integer, Map<String, String>> categories = categoryService.getCategory(departmentId, collegeEng); // 카테고리 찾기
+
         // 부모 학과가 존재할 경우 추가적으로 부모 학과 게시판 조회
         if (parentDepartmentId != null) {
             Map<Integer, Map<String, String>> parentCategories = categoryService.getCategory(parentDepartmentId, collegeEng);
-
-            for (Map.Entry<Integer, Map<String, String>> entry : parentCategories.entrySet()) {
-                categories.put(entry.getKey(), entry.getValue());
-            }
+            categories.putAll(parentCategories);
         }
 
         // 학과에 존재하는 카테고리가 없을 때 예외처리
-        if (categories.size() == 0) {
+        if (categories.isEmpty()) {
             List<ButtonDto> buttonList = new ArrayList<>();
             ButtonDto buttonDto = new ButtonDto("게시판 등록 요청", "webLink", "https://forms.gle/x8mDzL5J7aKQhfYo8");
             buttonList.add(buttonDto);
-            return simpleTextResponseWithButton("최근에 등록된 공지사항이 없는 학과인 것 같아!", buttonList);
+            return textCardResponseWithButton("최근에 등록된 공지사항이 없어!", buttonList);
         }
 
         // 카테고리 id 추출
@@ -112,48 +106,47 @@ public class NoticeController {
             categoryIdList.add(key);
         });
 
-//        logger.info("categoryIdList: {}", categoryIdList);
-//        logger.info("categories: {}", categories);
-
         // 공지 가져오기
         for (int categoryId : categoryIdList) {
             noticeList = noticeService.getNotice(categoryId, collegeEng);
-            if (noticeList.size() != 0) {
+            if (!noticeList.isEmpty()) {
                 noticeMap.put(categoryId, noticeList);
             } else {
                 List<ButtonDto> buttonList = new ArrayList<>();
                 ButtonDto buttonDto = new ButtonDto("게시판 등록 요청", "webLink", "https://forms.gle/x8mDzL5J7aKQhfYo8");
                 buttonList.add(buttonDto);
-                return simpleTextResponseWithButton("최근에 등록된 공지사항이 없는 학과인 것 같아!", buttonList);
+                return textCardResponseWithButton("최근에 등록된 공지사항이 없어!", buttonList);
             }
         }
-//        logger.info("noticeMap: {}", noticeMap);
-
         return noticeResponse(noticeMap, categories, departmentEng);
     }
 
     // userId 존재하지 않는 경우 학과인증 블록 리턴(예외처리)
-    public String simpleTextResponseWithButton(String title, List<ButtonDto> buttonList) {
+    public String textCardResponseWithButton(String title, List<ButtonDto> buttonList) {
         List<ComponentDto> componentDtoList = new ArrayList<>();
-
         TextCardDto textCardDto = new TextCardDto(title, buttonList);
+
         ComponentDto componentDto = new ComponentDto(textCardDto);
         componentDtoList.add(componentDto);
+
         TemplateDto templateDto = new TemplateDto(componentDtoList);
         ResponseDto responseDto = new ResponseDto("2.0", templateDto);
 
-        return toJsonResponse(responseDto);
+        return JsonUtils.toJsonResponse(responseDto);
     }
-    
+
     // 학과 카테고리가 존재하지 않는 경우 카테고리가 존재않다고 블록 리턴(예외처리)
-    public String simpleTextResponse(String message) {
+    public String textCardResponse(String message) {
         List<ComponentDto> componentDtoList = new ArrayList<>();
         TextCardDto textCardDto = new TextCardDto(message);
+
         ComponentDto componentDto = new ComponentDto(textCardDto);
         componentDtoList.add(componentDto);
+
         TemplateDto templateDto = new TemplateDto(componentDtoList);
         ResponseDto responseDto = new ResponseDto("2.0", templateDto);
-        return toJsonResponse(responseDto);
+
+        return JsonUtils.toJsonResponse(responseDto);
     }
 
     // userId 존재하는 경우
@@ -166,8 +159,6 @@ public class NoticeController {
         // 카테고리 생성
         categories.forEach((categoryId, type) -> {
             // 카테고리 제목 생성
-//            logger.info("categoryId: {}", categoryId);
-//            logger.info("type: {}", type);
             String categoryType = type.get("category");
             String mi = type.get("mi");
             String bbsId = type.get("bbs_id");
@@ -176,11 +167,9 @@ public class NoticeController {
             // 동일한 카테고리 id가 존재한다면
             if(noticeMap.containsKey(categoryId)) {
                 List<Map<String, String>> noticeList = noticeMap.get(categoryId);
-//                logger.info("noticeList: {}", noticeList);
                 List<ListItemDto> listItems = new ArrayList<>(); // 공지 4개씩
                 // 공지 리스트 생성
                 noticeList.stream().limit(4).forEach(notice -> {
-//                    logger.info("notice: {}", notice);
                     String title = notice.get("title");
                     String createdAt = notice.get("created_at");
                     String spltCreatedAt = createdAt.substring(0, 10); // 날짜 문자열 자르기
@@ -189,7 +178,6 @@ public class NoticeController {
                     ListItemDto noticeListItem = new ListItemDto(title, spltCreatedAt, detailLink);
                     listItems.add(noticeListItem);
                 });
-//                logger.info("listItems: {}", listItems);
 
                 List<ButtonDto> buttonDto = new ArrayList<>();
                 // 공지 버튼 생성
@@ -212,28 +200,7 @@ public class NoticeController {
         TemplateDto template = new TemplateDto(outputs);
         ResponseDto responseDto = new ResponseDto("2.0", template);
 
-        return toJsonResponse(responseDto);
-    }
-
-    // ObjectMapper를 사용하여 ResponseDto 객체를 JSON 문자열로 변환
-    public String toJsonResponse(ResponseDto responseDto) {
-        String jsonResponse;
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        // null 값 무시 설정
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-
-        try {
-            jsonResponse = objectMapper.writeValueAsString(responseDto);
-        } catch (JsonProcessingException e) {
-            // JSON 변환 중 오류가 발생한 경우 처리
-            e.printStackTrace();
-            jsonResponse = "{}"; // 빈 JSON 응답 반환(오류 메시지 출력하기)
-        }
-
-        // jsonResponse를 클라이언트로 보내는 코드
-        System.out.println(jsonResponse);
-        return jsonResponse;
+        return JsonUtils.toJsonResponse(responseDto);
     }
 
     // 공지 상세페이지 주소

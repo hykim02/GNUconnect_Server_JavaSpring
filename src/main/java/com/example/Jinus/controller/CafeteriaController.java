@@ -9,6 +9,7 @@ import com.example.Jinus.service.UserService;
 import com.example.Jinus.service.cafeteria.CafeteriaDietService;
 import com.example.Jinus.service.cafeteria.CafeteriaService;
 import com.example.Jinus.service.cafeteria.CampusService;
+import com.example.Jinus.utility.JsonUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,14 +35,7 @@ public class CafeteriaController {
     private final UserService userService;
     private final DepartmentService departmentService;
     private final CollegeService collegeService;
-    private final CafeteriaDietService cafeteriaDietService;
     private final CampusService campusService;
-
-//    @PostMapping("/cafeteria")
-//    public void handleRequest(@RequestBody String jsonPayload) {
-//        // jsonPayload를 출력하여 확인
-//        System.out.println("Received JSON Payload: " + jsonPayload);
-//    }
 
     public CafeteriaController(
             CafeteriaService cafeteriaService,
@@ -53,7 +47,6 @@ public class CafeteriaController {
         this.userService = userService;
         this.departmentService = departmentService;
         this.collegeService = collegeService;
-        this.cafeteriaDietService = cafeteriaDietService;
         this.campusService = campusService;
     }
 
@@ -105,7 +98,7 @@ public class CafeteriaController {
             return cafeteriaName1.compareTo(cafeteriaName2);
         });
 
-        HeaderDto header = new HeaderDto("어떤 교내 식당 정보가 궁금하세요?");
+        HeaderDto header = new HeaderDto("어떤 교내 식당 정보가 알고싶어 ?");
         List<ListItemDto> listItems = new ArrayList<>();
 
         for (Object[] cafeteria : cafeteriaList) {
@@ -135,11 +128,11 @@ public class CafeteriaController {
         TemplateDto template = new TemplateDto(outputs);
         ResponseDto responseDto = new ResponseDto("2.0", template);
 
-        return toJsonResponse(responseDto);
+        return JsonUtils.toJsonResponse(responseDto);
     }
 
     public String campusResponse(List<CampusEntity> campusList) {
-        HeaderDto header = new HeaderDto("어떤 캠퍼스 식당 정보가 궁금하신가요?");
+        HeaderDto header = new HeaderDto("어떤 캠퍼스 식당 정보가 궁금해 ?");
         List<ListItemDto> listItems = new ArrayList<>();
 
         for (CampusEntity campus : campusList) {
@@ -149,13 +142,11 @@ public class CafeteriaController {
             Map<String, Object> extra = new HashMap<>();
             extra.put("sys_campus_id", campus.getId());
 
-
             ListItemDto listItem = new ListItemDto(campusName, "", imageUrl, "block", "66067167cdd882158c759fc2", extra);
             listItems.add(listItem);
         }
 
         CarouselItemDto carouselItem = new CarouselItemDto(header, listItems);
-
         List<ComponentDto> outputs = new ArrayList<>();
 
         // 캐로셀 컴포넌트
@@ -166,28 +157,6 @@ public class CafeteriaController {
         TemplateDto template = new TemplateDto(outputs);
         ResponseDto responseDto = new ResponseDto("2.0", template);
 
-        return toJsonResponse(responseDto);
+        return JsonUtils.toJsonResponse(responseDto);
     }
-
-    // ObjectMapper를 사용하여 ResponseDto 객체를 JSON 문자열로 변환
-    public String toJsonResponse(ResponseDto responseDto) {
-        String jsonResponse;
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        // null 값 무시 설정
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-
-        try {
-            jsonResponse = objectMapper.writeValueAsString(responseDto);
-        } catch (JsonProcessingException e) {
-            // JSON 변환 중 오류가 발생한 경우 처리
-            e.printStackTrace();
-            jsonResponse = "{}"; // 빈 JSON 응답 반환(오류 메시지 출력하기)
-        }
-
-        // jsonResponse를 클라이언트로 보내는 코드
-        System.out.println(jsonResponse);
-        return jsonResponse;
-    }
-
 }
