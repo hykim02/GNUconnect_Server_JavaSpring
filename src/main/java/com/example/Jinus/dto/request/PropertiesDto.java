@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class PropertiesDto {
     private String botUserKey;
-    private String isFriend;
+    private Boolean isFriend;
     private String plusfriendUserKey;
     private String bot_user_key;
     private String plusfriend_user_key;

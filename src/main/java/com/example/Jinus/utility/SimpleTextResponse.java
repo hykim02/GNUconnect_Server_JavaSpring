@@ -1,9 +1,6 @@
 package com.example.Jinus.utility;
 
-import com.example.Jinus.dto.response.ComponentDto;
-import com.example.Jinus.dto.response.ResponseDto;
-import com.example.Jinus.dto.response.SimpleTextDto;
-import com.example.Jinus.dto.response.TemplateDto;
+import com.example.Jinus.dto.response.*;
 
 import java.util.ArrayList;
 import java.util.List;
