@@ -48,11 +48,11 @@ public class NoticeController {
     // post 요청 처리
     @PostMapping("/api/spring/department-notice")
     public String handleRequest(@RequestBody RequestDto requestDto) throws ParseException {
-        return findUserId(requestDto);
+        return confirmDepartment(requestDto);
     }
 
-    // userId 존재 여부 확인
-    public String findUserId(@RequestBody RequestDto requestDto) throws ParseException {
+    // userId 존재 여부 확인 후 학과 인증 블록 리턴
+    public String confirmDepartment(@RequestBody RequestDto requestDto) throws ParseException {
         String userId = requestDto.getUserRequest().getUser().getId();
         int departmentId = userService.getDepartmentId(userId); // 학과 찾기(userId가 null인 경우 -1 리턴)
 
