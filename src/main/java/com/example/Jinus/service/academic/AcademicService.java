@@ -1,5 +1,6 @@
 package com.example.Jinus.service.academic;
 
+import com.example.Jinus.dto.request.RequestDto;
 import com.example.Jinus.entity.academic.AcademicEntity;
 import com.example.Jinus.repository.academic.AcademicRepository;
 import com.example.Jinus.service.CollegeService;
@@ -7,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +22,16 @@ public class AcademicService {
         this.academicRepository = calendarRepository;
     }
 
+    // db에서 일정 찾아오는 함수
+    public List<HashMap<String, String>> getAcademicCalendar(RequestDto requestDto) {
+        List<HashMap<String, String>> academicList;
+        int currentMonth = getCurrentMonth(requestDto);
+        academicList = getAcademicContents(currentMonth);
+
+        return academicList;
+    }
+
+    // 학사일정 리스트 반환 함수
     public List<HashMap<String, String>> getAcademicContents(int currentMonth) {
         List<AcademicEntity> entities = academicRepository.findCalendarEntities(currentMonth);
         List<HashMap<String, String>> academicList = new ArrayList<>();
@@ -39,7 +51,65 @@ public class AcademicService {
             logger.debug("db에 해당 월의 학사일정이 존재하지 않음");
             academicList = null;
         }
-
         return academicList;
+    }
+
+    // 현재 월 추출 함수
+    public int getCurrentMonth(RequestDto requestDto) {
+        String extractedMonth = checkUserUtterance(requestDto);
+        int currentMonth;
+
+        // 현재 월에 해당하는 공지 들고옴
+        if (extractedMonth == null) {
+            currentMonth = LocalDate.now().getMonthValue();
+        } else {
+            currentMonth = Integer.parseInt(extractedMonth);
+        }
+        return currentMonth;
+    }
+
+    // 사용자 발화문에 월이 포함되어 있는지 여부 확인
+    public String checkUserUtterance(RequestDto requestDto) {
+        String userMsg = requestDto.getUserRequest().getUtterance();
+        String extractedInt = userMsg.replaceAll("[^0-9]", "");
+
+        if (extractedInt.isEmpty()) {
+            return null;
+        } else {
+            return extractedInt;
+        }
+    }
+
+    // 학사일정 리스트 개별 처리
+    public String handleAcademicList(List<HashMap<String, String>> academicList,
+                                     List<String> descriptionList) {
+        StringBuilder descriptions = new StringBuilder();
+
+        for (HashMap<String, String> academic: academicList) {
+            String startDate = spltDate(academic.get("start_date")); // 시작 날짜
+            String endDate = spltDate(academic.get("end_date")); // 끝 날짜
+            String content = academic.get("content");
+            descriptionList.add(joinAllAcademics(startDate, endDate, content));
+        }
+
+        for (String description: descriptionList) {
+            descriptions.append(description);
+        }
+
+        return descriptions.toString();
+    }
+
+    // 해당 월의 학사일정 내용 합치기
+    public static String joinAllAcademics(String startDate, String endDate, String content) {
+        String duration = "[" + startDate + " ~ " + endDate + "]" + "\n";
+        return duration + "\uD83D\uDDD3\uFE0F" + content + "\n\n";
+    }
+
+    // 날짜 추출
+    public static String spltDate(String date) {
+        String[] spltDate = date.split(" ");
+        String[] spltMonth = spltDate[0].split("-");
+
+        return spltMonth[1] + "/" + spltMonth[2];
     }
 }
