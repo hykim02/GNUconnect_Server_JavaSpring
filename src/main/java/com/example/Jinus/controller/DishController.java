@@ -231,19 +231,17 @@ public class DishController {
     // 조회할 날짜 찾는 함수
     public String getCurrentDate(String currentDay) {
         LocalDateTime currentDateTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-        String[] dateTimeParts = currentDateTime.toString().split("T"); // 2024-05-13
-        String[] dateSplt = dateTimeParts[0].split("-");
+        LocalDate currentDate = currentDateTime.toLocalDate(); // 현재 날짜
 
         if (currentDay.isEmpty()) {
-            currentDay = getDay(dateTimeParts[1]); // 오늘, 내일
+            currentDay = getDay(currentDateTime.toString().split("T")[1]); // 오늘, 내일을 결정하는 로직이 있는 함수
         }
 
         if (currentDay.equals("오늘")) {
-            return dateTimeParts[0];
+            return currentDate.toString();
         } else { // 내일
-            int day = Integer.parseInt(dateSplt[2]);
-            int tomorrow = day + 1;
-            return dateSplt[0] + "-" + dateSplt[1] + "-" + tomorrow;
+            LocalDate tomorrowDate = currentDate.plusDays(1);
+            return tomorrowDate.toString();
         }
     }
 

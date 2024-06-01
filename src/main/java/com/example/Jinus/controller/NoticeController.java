@@ -45,7 +45,31 @@ public class NoticeController {
         this.noticeService = noticeService;
     }
 
-    // post 요청 처리
+    // 학교 공지사항 조회
+    @PostMapping("/api/spring/main-notice")
+    public String getMainNotice() throws ParseException {
+        int departmentId = 117; // 학교 공지사항 id
+        String collegeEng = "etc"; // 단과대학 영문명
+        String departmentEng = "main"; // 학과 영문명
+
+        Map<Integer, Map<String, String>> categories = categoryService.getCategory(departmentId, collegeEng); // 카테고리 찾기
+        List<Integer> categoryIdList = new ArrayList<>();
+        categories.forEach((key, value) -> {
+            // key와 value를 사용하여 작업 수행
+            categoryIdList.add(key);
+        });
+
+        List<Map<String, String>> noticeList;
+        Map<Integer, List<Map<String, String>>> noticeMap = new HashMap<>();
+        for (int categoryId : categoryIdList) {
+            noticeList = noticeService.getNotice(categoryId, collegeEng);
+            noticeMap.put(categoryId, noticeList);
+        }
+
+        return noticeResponse(noticeMap, categories, departmentEng);
+    }
+
+    // 학과 공지사항 조회
     @PostMapping("/api/spring/department-notice")
     public String handleRequest(@RequestBody RequestDto requestDto) throws ParseException {
         return confirmDepartment(requestDto);
