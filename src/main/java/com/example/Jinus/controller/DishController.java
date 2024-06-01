@@ -124,7 +124,7 @@ public class DishController {
     }
 
 
-    // 식단 데이터 조회
+    // 사용자 발화문의 파라미터값에 따른 식단 데이터 조회
     public String getCafeteriaData(String detailParamsDate, String detailParamsPeriod,
                                    String currentDate, String paramsPeriod, int cafeteriaId,
                                    String paramsCampusName, String originCafeteriaName,
@@ -165,7 +165,7 @@ public class DishController {
         }
     }
 
-    // 식단 return 블록
+    // 식단 return 블록 생성
     public String responseMapping(int cafeteriaId, HashMap<String, List<String>> categoryMenuMap,
                                   String campus, String day, String originCafeteriaName, String period) {
         String url = cafeteriaService.getCampusThumnail(cafeteriaId);
