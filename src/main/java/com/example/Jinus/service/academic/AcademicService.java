@@ -89,7 +89,12 @@ public class AcademicService {
             String startDate = spltDate(academic.get("start_date")); // 시작 날짜
             String endDate = spltDate(academic.get("end_date")); // 끝 날짜
             String content = academic.get("content");
-            descriptionList.add(joinAllAcademics(startDate, endDate, content));
+
+            if (startDate.equals(endDate)) { // 시작날짜와 끝날짜가 같은 경우 시작날짜만 출력
+                descriptionList.add(joinAllAcademics(startDate, null, content));
+            } else {
+                descriptionList.add(joinAllAcademics(startDate, endDate, content));
+            }
         }
 
         for (String description: descriptionList) {
