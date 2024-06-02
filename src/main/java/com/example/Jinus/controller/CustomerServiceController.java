@@ -76,7 +76,7 @@ public class CustomerServiceController {
             return TextCardResponse.textCardResponse(title, buttons);
         } else {
             title = String.format("[이벤트 참가 코드]\n%s", userId);
-            buttonDto = new ButtonDto("설문지 폼 작성", "webLink", "http://test.com/");
+            buttonDto = new ButtonDto("설문지 폼 작성", "webLink", "https://forms.gle/LhxRbemjoH2auyoe7");
             buttons.add(buttonDto);
         }
         return TextCardResponse.textCardResponse(title, buttons);
