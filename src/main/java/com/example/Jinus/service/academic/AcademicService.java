@@ -106,7 +106,13 @@ public class AcademicService {
 
     // 해당 월의 학사일정 내용 합치기
     public static String joinAllAcademics(String startDate, String endDate, String content) {
-        String duration = "[" + startDate + " ~ " + endDate + "]" + "\n";
+        String duration;
+
+        if (endDate == null) {
+            duration = "[" + startDate + "]" + "\n";
+        } else {
+            duration = "[" + startDate + " ~ " + endDate + "]" + "\n";
+        }
         return duration + "\uD83D\uDDD3\uFE0F" + content + "\n\n";
     }
 
