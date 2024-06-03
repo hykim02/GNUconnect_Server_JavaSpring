@@ -34,7 +34,7 @@ public class CustomerServiceController {
         int roomId = requestDto.getAction().getClientExtra().getSys_room_id();
         String imageUrl = String.format("https://zppxqcdwhqqzbwpmcjjt.supabase.co/storage/v1/object/public/clicker/clicker/%s.png", roomId);
         String altText = "클리커 이미지";
-        String message = "🟩: 사용 가능\n🟪: 사용한 시간\n🟦: 남은 시간\n\n기본 3시간(최대 4회 연장가능)\n2시간 경과 후 연장가능";
+        String message = "🟩: 사용 가능\n🟪: 사용한 시간\n🟦: 남은 시간\n\n기본 3시간(최대 4회 연장가능)";
         return clickerResponse(imageUrl, altText, message);
     }
 
