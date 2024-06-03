@@ -7,4 +7,5 @@ import lombok.Setter;
 @Setter
 public class ClientExtraDto {
     private int sys_campus_id;
+    private int sys_room_id;
 }

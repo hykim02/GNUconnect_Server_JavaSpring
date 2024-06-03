@@ -5,6 +5,7 @@ import com.example.Jinus.dto.response.*;
 import com.example.Jinus.service.DepartmentService;
 import com.example.Jinus.service.UserService;
 import com.example.Jinus.utility.JsonUtils;
+import com.example.Jinus.utility.SimpleImageResponse;
 import com.example.Jinus.utility.SimpleTextResponse;
 import com.example.Jinus.utility.TextCardResponse;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -29,6 +30,18 @@ public class CustomerServiceController {
     public CustomerServiceController(UserService userService, DepartmentService departmentService) {
         this.userService = userService;
         this.departmentService = departmentService;
+    }
+
+    @PostMapping("/api/spring/clicker")
+    public String clicker(@RequestBody RequestDto requestDto) {
+        int roomId = requestDto.getAction().getClientExtra().getSys_room_id();
+        String imageUrl = String.format("https://zppxqcdwhqqzbwpmcjjt.supabase.co/storage/v1/object/public/clicker/clicker/%s.png", roomId);
+        String altText = "클리커 이미지";
+        return clickerResponse(imageUrl, altText);
+    }
+
+    public String clickerResponse(String imageUrl, String altText) {
+        return SimpleImageResponse.simpleImageResponse(imageUrl, altText);
     }
 
     @PostMapping("/api/spring/getUserId")
