@@ -4,10 +4,7 @@ import com.example.Jinus.dto.request.RequestDto;
 import com.example.Jinus.dto.response.*;
 import com.example.Jinus.service.DepartmentService;
 import com.example.Jinus.service.UserService;
-import com.example.Jinus.utility.JsonUtils;
-import com.example.Jinus.utility.SimpleImageResponse;
-import com.example.Jinus.utility.SimpleTextResponse;
-import com.example.Jinus.utility.TextCardResponse;
+import com.example.Jinus.utility.*;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,11 +34,15 @@ public class CustomerServiceController {
         int roomId = requestDto.getAction().getClientExtra().getSys_room_id();
         String imageUrl = String.format("https://zppxqcdwhqqzbwpmcjjt.supabase.co/storage/v1/object/public/clicker/clicker/%s.png", roomId);
         String altText = "클리커 이미지";
-        return clickerResponse(imageUrl, altText);
+        String message = "🟩: 사용 가능\n🟪: 사용한 시간\n🟦: 남은 시간";
+        return clickerResponse(imageUrl, altText, message);
     }
 
-    public String clickerResponse(String imageUrl, String altText) {
-        return SimpleImageResponse.simpleImageResponse(imageUrl, altText);
+    public String clickerResponse(String imageUrl, String altText, String message) {
+        List<ButtonDto> buttons = new ArrayList<>();
+        ButtonDto buttonDto = new ButtonDto("뒤로가기", "block", null, "665dc46a27a8f26cde73d835", null);
+        buttons.add(buttonDto);
+        return SimpleImageWithTextCardResponse.simpleImageWithTextCardResponse(imageUrl, altText, message, buttons);
     }
 
     @PostMapping("/api/spring/getUserId")
