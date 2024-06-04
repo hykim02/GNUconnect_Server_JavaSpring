@@ -119,7 +119,7 @@ public class NoticeController {
         // 학과에 존재하는 카테고리가 없을 때 예외처리
         if (categories.isEmpty()) {
             List<ButtonDto> buttonList = new ArrayList<>();
-            ButtonDto buttonDto = new ButtonDto("게시판 등록 요청", "webLink", "https://forms.gle/x8mDzL5J7aKQhfYo8");
+            ButtonDto buttonDto = new ButtonDto("게시판 등록 요청", "webLink", "https://forms.gle/cSMheFmmGDe7P3RD6");
             buttonList.add(buttonDto);
             return textCardResponseWithButton("최근에 등록된 공지사항이 없어!", buttonList);
         }
@@ -133,15 +133,19 @@ public class NoticeController {
         // 공지 가져오기
         for (int categoryId : categoryIdList) {
             noticeList = noticeService.getNotice(categoryId, collegeEng);
+            logger.error("noticeList: " + noticeList);
             if (!noticeList.isEmpty()) {
                 noticeMap.put(categoryId, noticeList);
-            } else {
-                List<ButtonDto> buttonList = new ArrayList<>();
-                ButtonDto buttonDto = new ButtonDto("게시판 등록 요청", "webLink", "https://forms.gle/x8mDzL5J7aKQhfYo8");
-                buttonList.add(buttonDto);
-                return textCardResponseWithButton("최근에 등록된 공지사항이 없어!", buttonList);
             }
         }
+
+        if (noticeMap.isEmpty()) {
+            List<ButtonDto> buttonList = new ArrayList<>();
+            ButtonDto buttonDto = new ButtonDto("게시판 등록 요청", "webLink", "https://forms.gle/cSMheFmmGDe7P3RD6");
+            buttonList.add(buttonDto);
+            return textCardResponseWithButton("최근에 등록된 공지사항이 없어!", buttonList);
+        }
+
         return noticeResponse(noticeMap, categories, departmentEng);
     }
 
