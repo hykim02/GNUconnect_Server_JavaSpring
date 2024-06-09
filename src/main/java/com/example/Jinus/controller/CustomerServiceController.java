@@ -54,10 +54,6 @@ public class CustomerServiceController {
     @PostMapping("/api/spring/event")
     public String event(@RequestBody RequestDto requestDto) {
         String userId = requestDto.getUserRequest().getUser().getId();
-        Boolean isFriend = requestDto.getUserRequest().getUser().getProperties().getIsFriend();
-        if (isFriend == null) {
-            return SimpleTextResponse.simpleTextResponse("잠깐! 이벤트에 참여하기 위해서는 채널 친구가 돼있어야해!");
-        }
         return getUserEventResponse(userId);
     }
 
@@ -80,19 +76,10 @@ public class CustomerServiceController {
     public String getUserEventResponse(String userId) {
         int departmentId = userService.getDepartmentId(userId);
         List<ButtonDto> buttons = new ArrayList<>();
-        String title;
+        String title = String.format("이벤트에 참가해주셔서 감사합니다 😀 \n\n [이벤트 참가 코드 앞 4자리]\n%s\n", userId.substring(0, 4));
         ButtonDto buttonDto;
-        // 예외 처리: 학과 인증을 진행하지 않았을 경우
-        if (departmentId == -1) {
-            title = "잠깐! 이벤트에 참여하기 위해서는 학과 인증을 진행해야해!";
-            buttonDto = new ButtonDto("학과 인증하기", "block", null, "6623de277e38b92310022cd8");
-            buttons.add(buttonDto);
-            return TextCardResponse.textCardResponse(title, buttons);
-        } else {
-            title = String.format("[이벤트 참가 코드]\n%s", userId);
-            buttonDto = new ButtonDto("설문지 폼 작성", "webLink", "https://forms.gle/LhxRbemjoH2auyoe7");
-            buttons.add(buttonDto);
-        }
+        buttonDto = new ButtonDto("당첨자 확인", "webLink", "https://pf.kakao.com/_bikxiG");
+        buttons.add(buttonDto);
         return TextCardResponse.textCardResponse(title, buttons);
     }
 }
