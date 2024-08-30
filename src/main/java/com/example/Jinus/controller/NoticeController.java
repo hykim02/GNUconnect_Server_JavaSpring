@@ -84,7 +84,7 @@ public class NoticeController {
         if (departmentId == -1) {
             List<ButtonDto> buttonList = new ArrayList<>();
             // 블록 버튼 생성
-            ButtonDto buttonDto = new ButtonDto("학과 인증하기", "block", null,"6623de277e38b92310022cd8");
+            ButtonDto buttonDto = new ButtonDto("학과 등록", "block", null,"6623de277e38b92310022cd8");
             buttonList.add(buttonDto);
             return textCardResponseWithButton("학과 등록이 필요한 서비스야! 학과 등록을 진행해줘.", buttonList);
         } else {
