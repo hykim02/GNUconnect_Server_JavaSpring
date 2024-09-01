@@ -137,7 +137,7 @@ public class DishController {
             categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), paramsPeriod, cafeteriaId);
 
             return responseMapping(cafeteriaId, categoryMenuMap,
-                    paramsCampusName, currentDay, originCafeteriaName, paramsPeriod);
+                    paramsCampusName, currentDay, originCafeteriaName, paramsPeriod, currentDate);
 
         } else { // 사용자의 입력값 있는 경우(직접 입력하는 경우)
             // date값이 오늘이나 내일이 아닌 경우 -> 예외처리
@@ -148,31 +148,31 @@ public class DishController {
                 categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), detailParamsPeriod, cafeteriaId);
 
                 return responseMapping(cafeteriaId, categoryMenuMap,
-                        paramsCampusName, detailParamsDate, originCafeteriaName, detailParamsPeriod);
+                        paramsCampusName, detailParamsDate, originCafeteriaName, detailParamsPeriod, currentDate);
 
             } else if (!detailParamsDate.isEmpty()) { // date값만 입력된 경우
                 categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), paramsPeriod, cafeteriaId);
 
                 return responseMapping(cafeteriaId, categoryMenuMap,
-                        paramsCampusName, detailParamsDate, originCafeteriaName, paramsPeriod);
+                        paramsCampusName, detailParamsDate, originCafeteriaName, paramsPeriod, currentDate);
 
             } else { // period 값만 입력된 경우
                 categoryMenuMap = cafeteriaDietService.getCafeteriaDiet(LocalDate.parse(currentDate), detailParamsPeriod, cafeteriaId);
 
                 return responseMapping(cafeteriaId, categoryMenuMap,
-                        paramsCampusName, currentDay, originCafeteriaName, detailParamsPeriod);
+                        paramsCampusName, currentDay, originCafeteriaName, detailParamsPeriod, currentDate);
             }
         }
     }
 
     // 식단 return 블록 생성
     public String responseMapping(int cafeteriaId, HashMap<String, List<String>> categoryMenuMap,
-                                  String campus, String day, String originCafeteriaName, String period) {
+                                  String campus, String day, String originCafeteriaName, String period, String currentDate) {
         String url = cafeteriaService.getCampusThumnail(cafeteriaId);
         ThumbnailDto thumbnailDto = new ThumbnailDto(url);
 
-        String title = "\uD83C\uDF71" + originCafeteriaName + " 메뉴";
-        String description = handleCafeteriaDiet(categoryMenuMap, campus, day, period);
+        String title = "\uD83C\uDF71" + originCafeteriaName + "(" + campus.substring(0, 2) + ") " + period + " 메뉴";
+        String description = handleCafeteriaDiet(categoryMenuMap, currentDate);
 
         ArrayList<ButtonDto> buttons = new ArrayList<>();
         ButtonDto buttonDto = new ButtonDto("공유하기", "share");
@@ -203,8 +203,8 @@ public class DishController {
     }
 
     // 식단 메뉴 블록 내용 정리
-    public String handleCafeteriaDiet(HashMap<String, List<String>> categoryMenuMap, String campus, String day, String period) {
-        String menuDescription = campus + " " + day + " " + period + " 메뉴 기준\n\n";
+    public String handleCafeteriaDiet(HashMap<String, List<String>> categoryMenuMap, String currentDate) {
+        String menuDescription = currentDate + " 식단\n\n";
 
         if (categoryMenuMap.isEmpty()) { // 메뉴가 존재하지 않는다면
             return menuDescription + "메뉴가 존재하지 않습니다.";
