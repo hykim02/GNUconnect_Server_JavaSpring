@@ -184,7 +184,19 @@ public class DishController {
         List<ComponentDto> componentDtoList = new ArrayList<>();
         componentDtoList.add(componentDto);
 
-        TemplateDto templateDto = new TemplateDto(componentDtoList);
+        List<QuickReplyDto> quickReplies = new ArrayList<>();
+        if (period.equals("아침")) {
+            quickReplies.add(new QuickReplyDto("점심", "message", campus+" "+originCafeteriaName+" "+day+" 점심 메뉴"));
+            quickReplies.add(new QuickReplyDto("저녁", "message", campus+" "+originCafeteriaName+" "+day+" 저녁 메뉴"));
+        } else if (period.equals("점심")) {
+            quickReplies.add(new QuickReplyDto("아침", "message", campus+" "+originCafeteriaName+" "+day+" 아침 메뉴"));
+            quickReplies.add(new QuickReplyDto("저녁", "message", campus+" "+originCafeteriaName+" "+day+" 저녁 메뉴"));
+        } else {
+            quickReplies.add(new QuickReplyDto("아침", "message", campus+" "+originCafeteriaName+" "+day+" 아침 메뉴"));
+            quickReplies.add(new QuickReplyDto("점심", "message", campus+" "+originCafeteriaName+" "+day+" 점심 메뉴"));
+        }
+
+        TemplateDto templateDto = new TemplateDto(componentDtoList, quickReplies);
         ResponseDto responseDto = new ResponseDto("2.0", templateDto);
 
         return JsonUtils.toJsonResponse(responseDto);
