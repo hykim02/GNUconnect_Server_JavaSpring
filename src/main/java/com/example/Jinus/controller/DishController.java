@@ -179,7 +179,7 @@ public class DishController {
         extra.put("cafeteriaId", cafeteriaId);
         extra.put("date", currentDate);
         extra.put("time", period);
-        ButtonDto buttonDto1 = new ButtonDto("영양성분 분석 [Beta]", "action", "", "66d3d585e0379151197871df", extra);
+        ButtonDto buttonDto1 = new ButtonDto("영양성분 확인하기", "action", "", "66d3d585e0379151197871df", extra);
         buttons.add(buttonDto1);
         ButtonDto buttonDto2 = new ButtonDto("공유하기", "share");
         buttons.add(buttonDto2);
