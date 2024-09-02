@@ -174,9 +174,15 @@ public class DishController {
         String title = "\uD83C\uDF71" + originCafeteriaName + "(" + campus.substring(0, 2) + ") " + period + " 메뉴";
         String description = handleCafeteriaDiet(categoryMenuMap, currentDate);
 
-        ArrayList<ButtonDto> buttons = new ArrayList<>();
-        ButtonDto buttonDto = new ButtonDto("공유하기", "share");
-        buttons.add(buttonDto);
+        List<ButtonDto> buttons = new ArrayList<>();
+        Map<String, Object> extra = new HashMap<>();
+        extra.put("cafeteriaId", cafeteriaId);
+        extra.put("date", currentDate);
+        extra.put("time", period);
+        ButtonDto buttonDto1 = new ButtonDto("영양성분 분석 [Beta]", "action", "", "66d3d585e0379151197871df", extra);
+        buttons.add(buttonDto1);
+        ButtonDto buttonDto2 = new ButtonDto("공유하기", "share");
+        buttons.add(buttonDto2);
 
         BasicCardDto basicCardDto = new BasicCardDto(title, description, thumbnailDto, buttons);
         ComponentDto componentDto = new ComponentDto(basicCardDto);
