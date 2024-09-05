@@ -171,8 +171,8 @@ public class DishController {
         String url = cafeteriaService.getCampusThumnail(cafeteriaId);
         ThumbnailDto thumbnailDto = new ThumbnailDto(url);
 
-        String title = "\uD83C\uDF71" + originCafeteriaName + "(" + campus.substring(0, 2) + ") " + period + " 메뉴";
-        String description = handleCafeteriaDiet(categoryMenuMap, currentDate);
+        String title = "\uD83C\uDF71" + originCafeteriaName + "(" + campus.substring(0, 2) + ") " + " 메뉴";
+        String description = handleCafeteriaDiet(categoryMenuMap, period, currentDate);
 
         List<ButtonDto> buttons = new ArrayList<>();
         Map<String, Object> extra = new HashMap<>();
@@ -209,8 +209,8 @@ public class DishController {
     }
 
     // 식단 메뉴 블록 내용 정리
-    public String handleCafeteriaDiet(HashMap<String, List<String>> categoryMenuMap, String currentDate) {
-        String menuDescription = currentDate + " 식단\n\n";
+    public String handleCafeteriaDiet(HashMap<String, List<String>> categoryMenuMap, String period, String currentDate) {
+        String menuDescription = currentDate + " " + period + " 식단\n\n";
 
         if (categoryMenuMap.isEmpty()) { // 메뉴가 존재하지 않는다면
             return menuDescription + "메뉴가 존재하지 않습니다.";
