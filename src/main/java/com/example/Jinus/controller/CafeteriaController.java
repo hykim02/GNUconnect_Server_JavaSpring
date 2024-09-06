@@ -53,14 +53,14 @@ public class CafeteriaController {
     @PostMapping("/api/spring/cafeteria")
     public String getCafeteria(@RequestBody RequestDto requestDto) {
         String userId = requestDto.getUserRequest().getUser().getId();
-        int departmentId = userService.getDepartmentId(userId);
+        int campusId = userService.getCampusId(userId);
         int userWantedCampusId = requestDto.getAction().getClientExtra().getSys_campus_id();
         // 더보기를 누른 경우
         if (userWantedCampusId == -1) {
             return campusResponse(campusService.getCampusList());
         }
         // 유저 인증 X
-        if (departmentId == -1) {
+        if (campusId == -1) {
             // 원하는 캠퍼스가 있는 경우
             if (userWantedCampusId > 0) {
                 String campusName = campusService.getCampusName(userWantedCampusId);
@@ -81,8 +81,6 @@ public class CafeteriaController {
             }
             // 원하는 캠퍼스가 없는 경우
             else {
-                int collegeId = departmentService.getCollegeId(departmentId);
-                int campusId = collegeService.getCampusId(collegeId);
                 String campusName = campusService.getCampusName(campusId);
                 return cafeteriaResponse(cafeteriaService.getCafeteriaList(campusId), campusName);
 

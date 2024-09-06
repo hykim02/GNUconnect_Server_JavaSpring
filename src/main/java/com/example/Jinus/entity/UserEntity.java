@@ -13,6 +13,9 @@ public class UserEntity {
     @Column(name = "id")
     private String kakaoId;
 
+    @Column(name = "campus_id")
+    private int campusId;
+
     @Column(name = "department_id")
     private int departmentId;
 }

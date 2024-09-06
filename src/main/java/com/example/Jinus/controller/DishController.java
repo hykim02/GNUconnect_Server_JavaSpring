@@ -60,7 +60,7 @@ public class DishController {
         // 식당 이름 (원본)
         String originCafeteriaName = requestDto.getAction().getDetailParams().getSys_cafeteria_name().getOrigin();
 
-        int campusId = getUserId(requestDto);
+        int campusId = getUserCampusId(requestDto);
         int cafeteriaId = cafeteriaService.getCafeteriaIdByCampusId(paramsCafeteriaName, campusId);
         // 캠퍼스 값이 존재하는 경우
         if (paramsCampusName != null) {
@@ -231,17 +231,15 @@ public class DishController {
         return menuDescription + coveredCategory + "\n" + joinedMenu + "\n\n";
     }
 
-    // user 테이블에 userId 존재 여부 확인
-    public int getUserId(@RequestBody RequestDto requestDto) {
+    // 사용자의 캠퍼스 id 조회
+    public int getUserCampusId(@RequestBody RequestDto requestDto) {
         String userId = requestDto.getUserRequest().getUser().getId();
-        int departmentId = userService.getDepartmentId(userId);
+        int campusId = userService.getCampusId(userId);
 
         // user 없는 경우
-        if (departmentId == -1) {
+        if (campusId == -1) {
             return 0;
         } else { // user 존재하는 경우
-            int collegeId = departmentService.getCollegeId(departmentId); // 단과대학 찾기
-            int campusId = collegeService.getCampusId(collegeId);
             return campusId;
         }
     }

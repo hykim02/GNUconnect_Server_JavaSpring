@@ -33,4 +33,14 @@ public class UserService {
             return -1;
         }
     }
+
+    public int getCampusId(String userId) {
+        UserEntity userEntity = userRepository.findById(userId).orElse(null);
+        if (userEntity != null) {
+            return userEntity.getCampusId();
+        } else {
+            logger.warn("UserService: user를 찾을 수 없습니다.");
+            return -1;
+        }
+    }
 }
