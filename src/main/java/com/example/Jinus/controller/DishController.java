@@ -226,7 +226,7 @@ public class DishController {
 
     public String joinAllMenus(List<String> cafeteriaDishes, String categoryName, String menuDescription) {
         String coveredCategory = "[" + categoryName + "]"; // 카테고리 괄호로 감싸기
-        String joinedMenu = String.join(",", cafeteriaDishes); // 메뉴들 컴마로 연결
+        String joinedMenu = String.join("\n", cafeteriaDishes); // 메뉴들 컴마로 연결
 
         return menuDescription + coveredCategory + "\n" + joinedMenu + "\n\n";
     }
