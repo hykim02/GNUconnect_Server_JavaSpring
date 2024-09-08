@@ -67,7 +67,7 @@ public class CafeteriaDietService {
     public List<String> getDishNameByCategory(List<CafeteriaDietEntity> dishCategory, List<String> menuList, String category) {
 
         for (CafeteriaDietEntity dish : dishCategory) {
-            if (dish.getDishCategory().equals(category)) {
+            if (dish.getDishCategory() != null && dish.getDishCategory().equals(category)) {
                 menuList.add(dish.getDishName());
             } else {
                 logger.debug("해당 카테고리의 메뉴가 없습니다.");
