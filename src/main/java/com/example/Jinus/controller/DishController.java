@@ -179,10 +179,8 @@ public class DishController {
         extra.put("cafeteriaId", cafeteriaId);
         extra.put("date", currentDate);
         extra.put("time", period);
-        ButtonDto buttonDto1 = new ButtonDto("영양성분 확인하기", "block", "", "66d3d585e0379151197871df", extra);
-        buttons.add(buttonDto1);
-        ButtonDto buttonDto2 = new ButtonDto("공유하기", "share");
-        buttons.add(buttonDto2);
+        ButtonDto buttonDto = new ButtonDto("공유하기", "share");
+        buttons.add(buttonDto);
 
         BasicCardDto basicCardDto = new BasicCardDto(title, description, thumbnailDto, buttons);
         ComponentDto componentDto = new ComponentDto(basicCardDto);
