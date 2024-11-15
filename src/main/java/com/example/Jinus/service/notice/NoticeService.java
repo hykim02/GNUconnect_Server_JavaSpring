@@ -50,32 +50,23 @@ public class NoticeService {
 
     // 공지 가져오기
     public List<Map<String, String>> getNotice(int categoryId, String collegeEng) throws ParseException {
-//        logger.info("getNotice 실행");
-//        logger.info("collegeEng:{}", collegeEng);
         List<Map<String, String>> noticeList = new ArrayList<>(); // 공지 리스트
 
         switch(collegeEng) {
             case "biz" -> {
                 // categoryId 일치하는 공지를 조회
                 List<BizNoticeEntity> notices = bizNoticeRepository.findByCategoryId(categoryId);
-//                logger.info("categoryId:{}", categoryId);
-//                logger.info("biz-notices:{}", notices);
-//                logger.info("biz-notices 개수:{}", notices.size());
 
                 int i = 0;
                 // 조회된 공지들을 해시맵에 저장
                 for (BizNoticeEntity notice : notices) {
                     ++i;
-//                    logger.info("notice:{}", i);
-//                    logger.info("biz-notice:{}", notice);
                     Map<String, String> noticeInfo = new HashMap<>(); // 공지 객체 하나
                     noticeInfo.put("title", notice.getTitle());
                     noticeInfo.put("created_at", notice.getCreatedAt());
                     noticeInfo.put("ntt_sn", String.valueOf(notice.getNttSn()));
                     noticeList.add(noticeInfo);
-//                    logger.info("biz-noticeInfo:{}", noticeInfo);
                 }
-//                logger.info("biz-noticeList:{}", noticeList);
             }
             case "cals" -> {
                 // categoryId 일치하는 공지를 조회

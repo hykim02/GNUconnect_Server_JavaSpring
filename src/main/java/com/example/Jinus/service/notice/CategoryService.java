@@ -44,26 +44,18 @@ public class CategoryService {
         this.itCategoryRepository = itCategoryRepository;
         this.marsciCategoryRepository = marsciCategoryRepository;
         this.sadaeCategoryRepository = sadaeCategoryRepository;
-//        logger.info("CategoryService 실행");
     }
 
     public Map<Integer, Map<String, String>> getCategory(int departmentId, String collegeEng) {
-//        logger.info("getCategory 실행");
-//        logger.info("collegeEng: {}", collegeEng);
         // 결과를 담을 해시맵 생성
         Map<Integer, Map<String, String>> categoryMap = new HashMap<>();
 
         switch(collegeEng) {
             case "biz" -> {
                 List<BizCategoryEntity> bizCategoryEntities = bizCategoryRepository.findByDepartmentId(departmentId);
-//                logger.info("biz: {}", bizCategoryEntities.toString());
 
                 for (BizCategoryEntity entity : bizCategoryEntities) {
                     Map<String, String> map = new HashMap<>();
-//                    logger.info("entity.getId():{}", entity.getId());
-//                    logger.info("entity.getCategory():{}", entity.getCategory());
-//                    logger.info("entity.getMi():{}", entity.getMi());
-//                    logger.info("entity.getBbsId():{}", entity.getBbsId());
                     map.put("category", entity.getCategory());
                     map.put("mi", String.valueOf(entity.getMi()));
                     map.put("bbs_id", String.valueOf(entity.getBbsId()));
@@ -72,14 +64,9 @@ public class CategoryService {
             }
             case "cals" -> {
                 List<CalsCategoryEntity> calsCategoryEntities = calsCategoryRepository.findByDepartmentId(departmentId);
-//                logger.info("cals: {}", calsCategoryEntities.toString());
 
                 for (CalsCategoryEntity entity : calsCategoryEntities) {
                     Map<String, String> map = new HashMap<>();
-//                    logger.info("entity.getId():{}", entity.getId());
-//                    logger.info("entity.getCategory():{}", entity.getCategory());
-//                    logger.info("entity.getMi():{}", entity.getMi());
-//                    logger.info("entity.getBbsId():{}", entity.getBbsId());
                     map.put("category", entity.getCategory());
                     map.put("mi", String.valueOf(entity.getMi()));
                     map.put("bbs_id", String.valueOf(entity.getBbsId()));
