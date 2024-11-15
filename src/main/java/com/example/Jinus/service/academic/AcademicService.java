@@ -116,7 +116,7 @@ public class AcademicService {
         return duration + "\uD83D\uDDD3\uFE0F" + content + "\n\n";
     }
 
-    // 날짜 추출(월/일)a
+    // 날짜 추출(월/일)
     public static String spltDate(String date) {
         String[] spltDate = date.split(" ");
         String[] spltMonth = spltDate[0].split("-");
