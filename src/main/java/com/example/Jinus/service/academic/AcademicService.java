@@ -124,6 +124,7 @@ public class AcademicService {
         return spltMonth[1] + "/" + spltMonth[2];
     }
 
+    // 년도 추출
     public String getYear(List<HashMap<String, String>> academicList) {
         HashMap<String, String> first_academic = academicList.getFirst();
         logger.info("first_academic:"+ first_academic);
