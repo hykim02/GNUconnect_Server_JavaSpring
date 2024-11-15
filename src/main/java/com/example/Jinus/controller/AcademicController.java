@@ -41,7 +41,7 @@ public class AcademicController {
         // 해당 월의 학사일정이 존재하는 경우
         if (!academicList.isEmpty()) {
             descriptions = academicService.handleAcademicList(academicList, descriptionList);
-            responseDto = handleResponse(descriptions, requestDto);
+            responseDto = handleResponse(academicList, descriptions, requestDto);
         } else { // 일정 존재하지 않는 경우
             String msg = "해당 월에는 학사일정이 없어\uD83D\uDE05";
             responseDto = SimpleTextResponse.simpleTextResponse(msg);
@@ -51,14 +51,17 @@ public class AcademicController {
 
 
     // 학사일정 return 블록 생성 함수
-    public String handleResponse(String descriptions, RequestDto requestDto) {
+    public String handleResponse(List<HashMap<String, String>> academicList,
+                                 String descriptions,
+                                 RequestDto requestDto) {
         List<ButtonDto> buttons = new ArrayList<>();
         ButtonDto buttonDto = new ButtonDto("더보기", "webLink", "https://www.gnu.ac.kr/main/ps/schdul/selectSchdulMainList.do");
         buttons.add(buttonDto);
 
-        int year = LocalDate.now().getYear();
+        String currentYear = academicService.getYear(academicList);
         int currentMonth = academicService.getCurrentMonth(requestDto);
-        String title = year + "년 " + currentMonth + "월 학사일정";
+        String title = currentYear + "년 " + currentMonth + "월 학사일정";
+
         TextCardDto textCardDto = new TextCardDto(title, descriptions, buttons);
 
         List<ComponentDto> components = new ArrayList<>();
@@ -78,16 +81,17 @@ public class AcademicController {
     // quickReplies 생성 (월 생성)
     public List<QuickReplyDto> handleQuickReplies(List<QuickReplyDto> quickReplies, int currentMonth) {
         for (int i = 1; i <= 4; i++) {
-            int replyMonth = currentMonth + i;
+            int replyMonth = ++ currentMonth;
 
             if (replyMonth == 13) {
-                break;
-            } else {
-                String label = replyMonth + "월";
-                String msg = label + " 학사일정";
-                QuickReplyDto quickReplyDto = new QuickReplyDto(label, "message", msg);
-                quickReplies.add(quickReplyDto);
+                currentMonth = 0;
+                ++ currentMonth;
+                replyMonth = currentMonth;
             }
+            String label = replyMonth + "월";
+            String msg = label + " 학사일정";
+            QuickReplyDto quickReplyDto = new QuickReplyDto(label, "message", msg);
+            quickReplies.add(quickReplyDto);
         }
         return quickReplies;
     }

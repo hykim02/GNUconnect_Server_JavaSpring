@@ -36,7 +36,7 @@ public class AcademicService {
         List<AcademicEntity> entities = academicRepository.findCalendarEntities(currentMonth);
         List<HashMap<String, String>> academicList = new ArrayList<>();
 
-        // 해당 월의 학사일정이 존재하지 않는 경우
+        // 해당 월의 학사일정이 존재하는 경우
         if (entities != null) {
             for (AcademicEntity entity : entities) {
                 HashMap<String, String> academicMap = new HashMap<>();
@@ -47,7 +47,7 @@ public class AcademicService {
                 academicMap.put("start_date", entity.getStartDate());
                 academicList.add(academicMap);
             }
-        } else {
+        } else { // 해당 월의 학사일정이 존재하지 않는 경우
             logger.debug("db에 해당 월의 학사일정이 존재하지 않음");
             academicList = null;
         }
@@ -116,11 +116,18 @@ public class AcademicService {
         return duration + "\uD83D\uDDD3\uFE0F" + content + "\n\n";
     }
 
-    // 날짜 추출
+    // 날짜 추출(월/일)
     public static String spltDate(String date) {
         String[] spltDate = date.split(" ");
         String[] spltMonth = spltDate[0].split("-");
 
         return spltMonth[1] + "/" + spltMonth[2];
+    }
+
+    public String getYear(List<HashMap<String, String>> academicList) {
+        HashMap<String, String> first_academic = academicList.getFirst();
+        logger.info("first_academic:"+ first_academic);
+        String endDate = first_academic.get("end_date"); // 끝 날짜
+        return endDate.split(" ")[0].split("-")[0];
     }
 }
