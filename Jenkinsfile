@@ -7,6 +7,9 @@ pipeline {
 
     environment {
         JAVA_HOME = "tool jdk21"
+        DOCKER_IMAGE_NAME = 'connect-gnu-spring'
+        DOCKER_TAG = 'latest'
+        DOCKER_REGISTRY = 'dongho18'
         DOCKERHUB_CREDENTIALS = credentials('docker-hub')
     }
 
@@ -43,21 +46,12 @@ pipeline {
             }
         }
 
-        stage('Tag') {
-            steps {
-                script {
-                    sh 'docker tag ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:${BUILD_NUMBER}'
-                    sh 'docker tag ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:latest'
-                }
-            }
-        }
-
         stage('Push') {
             steps {
                 script {
+                    sh 'docker tag ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME} ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_TAG}'
                     sh 'docker login -u ${DOCKERHUB_CREDENTIALS_USR} -p ${DOCKERHUB_CREDENTIALS_PSW}'
-                    sh 'docker push ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:${BUILD_NUMBER}'
-                    sh 'docker push ${DOCKERHUB_CREDENTIALS_USR}/connect-gnu-spring:latest'
+                    sh 'docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_TAG}'
                 }
             }
         }
@@ -95,6 +89,9 @@ pipeline {
     }
 
     post {
+        always {
+            sh 'docker system prune -af'
+        }
         success {
             slackSend(channel: '#build-notification', color: 'good', message: "빌드 성공: 야호! ${env.JOB_NAME} 서버 ${env.BUILD_NUMBER} 버전이 성공적으로 배포되었어!")
         }
