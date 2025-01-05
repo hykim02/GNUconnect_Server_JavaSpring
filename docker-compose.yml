@@ -8,6 +8,14 @@ services:
       - connect-gnu-network
     environment:
       TZ: "Asia/Seoul"
+    deploy:
+      resources:
+        limits:
+          memory: 512Mi
+          cpus: "0.5"
+        reservations:
+          memory: 256Mi
+          cpus: "0.25"
 networks:
   connect-gnu-network:
     external: true
