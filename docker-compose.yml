@@ -1,5 +1,5 @@
 services:
-  backend_spring_server:
+  connect-gnu-spring:
     build: .
     image: dongho18/connect-gnu-spring:latest
     container_name: backend_spring_server
