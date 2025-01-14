@@ -2,7 +2,7 @@ services:
   connect-gnu-spring:
     build: .
     image: dongho18/connect-gnu-spring:latest
-    container_name: backend_spring_server
+    container_name: connect-gnu-spring
     restart: unless-stopped
     networks:
       - connect-gnu-network
