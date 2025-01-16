@@ -7,10 +7,10 @@ services:
     networks:
       - connect-gnu-network
     environment:
-      - spring.config.additional-location=file:/application.properties
+      - spring.config.additional-location=file:/app/application.properties
       - TZ=Asia/Seoul
     volumes:
-      - ./application.properties:/application.properties
+      - ./application.properties:/app/application.properties
     deploy:
       resources:
         limits:
