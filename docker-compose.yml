@@ -7,7 +7,10 @@ services:
     networks:
       - connect-gnu-network
     environment:
-      TZ: "Asia/Seoul"
+      - SPRING_CONFIG_LOCATION=./application.properties
+      - TZ: "Asia/Seoul"
+    volumes:
+      - /application.properties:/application.properties
     deploy:
       resources:
         limits:
