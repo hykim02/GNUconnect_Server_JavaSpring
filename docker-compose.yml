@@ -1,6 +1,5 @@
 services:
   connect-gnu-spring:
-    build: .
     image: dongho18/connect-gnu-spring:latest
     container_name: connect-gnu-spring
     restart: unless-stopped
