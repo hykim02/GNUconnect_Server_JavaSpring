@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -61,7 +64,58 @@ public class WarmUpService {
                         String url = baseUrl + pattern;
                         try {
                             logger.debug("Warming up endpoint: {} {}", RequestMethod.POST, url);
-                            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+                            // POST 요청을 위한 빈 요청 본문 생성
+                            HttpHeaders headers = new HttpHeaders();
+                            headers.setContentType(MediaType.APPLICATION_JSON);
+
+                            String requestBody = """
+                                    {
+                                      "intent": {
+                                        "id": "yvm1dtgi7nym54z0aaid71pl",
+                                        "name": "블록 이름"
+                                      },
+                                      "userRequest": {
+                                        "timezone": "Asia/Seoul",
+                                        "params": {
+                                          "ignoreMe": "true"
+                                        },
+                                        "block": {
+                                          "id": "yvm1dtgi7nym54z0aaid71pl",
+                                          "name": "블록 이름"
+                                        },
+                                        "utterance": "발화 내용",
+                                        "lang": null,
+                                        "user": {
+                                          "id": "74f7e7ab2bf19e63bb1ec845b760631259d7615440a2d3db7b344ac48ed1bbcde5",
+                                          "type": "accountId",
+                                          "properties": {}
+                                        }
+                                      },
+                                      "bot": {
+                                        "id": "65e8142d0a73415ce0694943",
+                                        "name": "봇 이름"
+                                      },
+                                      "action": {
+                                        "name": "g7e6t8yqcr",
+                                        "clientExtra": {
+                                          "sys_campus_id": "1"
+                                        },
+                                        "params": {
+                                            "sys_date": "오늘",
+                                            "sys_cafeteria_name": "아람관"
+                                        },
+                                        "id": "yvy3cqsh14brsvm9uf55cktv",
+                                        "detailParams": {
+                                            "sys_cafeteria_name": {
+                                                "origin": "아람관"
+                                            }
+                                        }
+                                      }
+                                    }""";
+
+                            HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
+
+                            ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
                             logger.debug("Warm-up response status: {}", response.getStatusCode());
                         } catch (Exception e) {
                             logger.warn("Failed to warm up endpoint: {} - {}", url, e.getMessage());
