@@ -1,8 +1,8 @@
 package com.example.Jinus.service;
 
-import ch.qos.logback.classic.Logger;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -13,12 +13,12 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "warmup.enabled", havingValue = "true")
 public class WarmUpService {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(WarmUpService.class);
     private final RequestMappingHandlerMapping requestMappingHandlerMapping;
@@ -33,6 +33,7 @@ public class WarmUpService {
     }
 
     @Scheduled(fixedDelayString = "${warmup.delay:3600000}")
+    @ConditionalOnProperty(name = "warmup.scheduled.enabled", havingValue = "true")
     public void warmUpEndpoints() {
         logger.info("Starting warm-up process...");
         RestTemplate restTemplate = new RestTemplate();
@@ -59,7 +60,9 @@ public class WarmUpService {
                     if (methods.contains(RequestMethod.POST)) {
                         String url = baseUrl + pattern;
                         try {
-                            logger.info("{}", url);
+                            logger.debug("Warming up endpoint: {} {}", RequestMethod.POST, url);
+                            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+                            logger.debug("Warm-up response status: {}", response.getStatusCode());
                         } catch (Exception e) {
                             logger.warn("Failed to warm up endpoint: {} - {}", url, e.getMessage());
                         }
