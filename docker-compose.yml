@@ -9,8 +9,10 @@ services:
     environment:
       - spring.config.additional-location=file:/app/application.properties
       - TZ=Asia/Seoul
+      - JAVA_OPTS="-Xms64m -Xmx512m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/dumps"
     volumes:
       - ./application.properties:/app/application.properties
+      - ./dumps:/dumps
     deploy:
       resources:
         limits:
