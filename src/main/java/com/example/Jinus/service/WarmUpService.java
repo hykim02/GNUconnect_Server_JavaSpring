@@ -35,7 +35,7 @@ public class WarmUpService {
         }
     }
 
-    @Scheduled(fixedDelayString = "${warmup.delay:3600000}")
+    @Scheduled(fixedDelayString = "${warmup.delay:600000}")
     @ConditionalOnProperty(name = "warmup.scheduled.enabled", havingValue = "true")
     public void warmUpEndpoints() {
         logger.info("Starting warm-up process...");
