@@ -1,6 +1,7 @@
 services:
   connect-gnu-spring:
     image: dongho18/connect-gnu-spring:latest
+    pull_policy: always
     container_name: connect-gnu-spring
     restart: unless-stopped
     networks:
