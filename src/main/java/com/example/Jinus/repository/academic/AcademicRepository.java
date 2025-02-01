@@ -14,7 +14,9 @@ public interface AcademicRepository extends JpaRepository<AcademicEntity, Intege
                     "FROM academic_calendar a " +
                     "WHERE (EXTRACT(MONTH FROM a.end_date ) = :currentMonth " +
                     "OR EXTRACT(MONTH FROM a.start_date) = :currentMonth) " +
+                    "AND EXTRACT(YEAR FROM a.start_date) = :currentYear " +
                     "AND a.calendar_type = 1 ",
             nativeQuery = true)
-    List<AcademicEntity> findCalendarEntities(@Param("currentMonth") int currentMonth);
+    List<AcademicEntity> findCalendarEntities(@Param("currentMonth") int currentMonth,
+                                              @Param("currentYear") int currentYear);
 }

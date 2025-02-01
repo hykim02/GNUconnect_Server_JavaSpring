@@ -33,7 +33,8 @@ public class AcademicService {
 
     // 학사일정 리스트 반환 함수
     public List<HashMap<String, String>> getAcademicContents(int currentMonth) {
-        List<AcademicEntity> entities = academicRepository.findCalendarEntities(currentMonth);
+        int currentYear = LocalDate.now().getYear();
+        List<AcademicEntity> entities = academicRepository.findCalendarEntities(currentMonth, currentYear);
         List<HashMap<String, String>> academicList = new ArrayList<>();
 
         // 해당 월의 학사일정이 존재하는 경우
