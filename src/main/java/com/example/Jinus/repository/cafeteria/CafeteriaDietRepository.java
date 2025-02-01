@@ -17,8 +17,9 @@ public interface CafeteriaDietRepository extends JpaRepository<CafeteriaDietEnti
     @Query(
             value = "SELECT * " +
                     "FROM cafeteria_diet c " +
-                    "WHERE DATE_TRUNC('day', c.date) = :date " +
-                    "AND c.time = :time AND c.cafeteria_id = :cafeteriaId",
+                    "WHERE c.cafeteria_id = :cafeteriaId " +
+                    "AND c.date = :date " +
+                    "AND c.time = :time ",
             nativeQuery = true)
 
     List<CafeteriaDietEntity> findCategoryOrType(@Param("date") LocalDate date,
