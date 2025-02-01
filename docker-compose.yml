@@ -16,11 +16,8 @@ services:
     deploy:
       resources:
         limits:
-          memory: 512m
+          memory: 640m
           cpus: "0.5"
-        reservations:
-          memory: 256m
-          cpus: "0.25"
 networks:
   connect-gnu-network:
     external: true
