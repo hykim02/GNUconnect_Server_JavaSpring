@@ -6,6 +6,7 @@ import com.example.Jinus.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,6 +25,7 @@ public class CafeteriaDietService {
         this.cafeteriaDietRepository = cafeteriaDietRepository;
     }
 
+    @Cacheable(value = "cafeteriaDietCache", key = "#date + '-' + #time + '-' + #cafeteriaId", cacheManager = "contentCacheManager")
     public HashMap<String, List<String>> getCafeteriaDiet(LocalDate date, String time, int cafeteriaId) {
 
         List<CafeteriaDietEntity> dishCategory = cafeteriaDietRepository.findCategoryOrType(date, time, cafeteriaId);
