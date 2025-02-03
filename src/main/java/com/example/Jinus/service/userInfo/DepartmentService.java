@@ -1,14 +1,11 @@
-package com.example.Jinus.service;
+package com.example.Jinus.service.userInfo;
 
-import com.example.Jinus.controller.NoticeController;
-import com.example.Jinus.entity.DepartmentEntity;
-import com.example.Jinus.repository.DepartmentRepository;
+import com.example.Jinus.entity.userInfo.DepartmentEntity;
+import com.example.Jinus.repository.userInfo.DepartmentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class DepartmentService {

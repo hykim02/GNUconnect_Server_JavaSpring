@@ -1,29 +1,17 @@
 package com.example.Jinus.controller;
 
 import com.example.Jinus.dto.request.RequestDto;
-import com.example.Jinus.dto.response.*;
-import com.example.Jinus.service.CollegeService;
-import com.example.Jinus.service.DepartmentService;
-import com.example.Jinus.service.UserService;
+import com.example.Jinus.service.userInfo.CollegeService;
+import com.example.Jinus.service.userInfo.DepartmentService;
 import com.example.Jinus.service.cafeteria.CafeteriaDietService;
 import com.example.Jinus.service.cafeteria.CafeteriaService;
 import com.example.Jinus.service.cafeteria.CampusService;
-import com.example.Jinus.utility.JsonUtils;
 import com.example.Jinus.utility.SimpleTextResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 public class DishController {

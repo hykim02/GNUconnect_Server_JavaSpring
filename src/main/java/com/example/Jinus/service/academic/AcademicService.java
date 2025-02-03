@@ -3,7 +3,7 @@ package com.example.Jinus.service.academic;
 import com.example.Jinus.dto.request.RequestDto;
 import com.example.Jinus.entity.academic.AcademicEntity;
 import com.example.Jinus.repository.academic.AcademicRepository;
-import com.example.Jinus.service.CollegeService;
+import com.example.Jinus.service.userInfo.CollegeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

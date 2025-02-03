@@ -1,7 +1,7 @@
 package com.example.Jinus.service.cafeteria;
 
 import com.example.Jinus.repository.cafeteria.CafeteriaRepository;
-import com.example.Jinus.service.UserService;
+import com.example.Jinus.service.userInfo.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

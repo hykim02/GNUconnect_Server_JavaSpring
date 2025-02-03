@@ -1,7 +1,7 @@
-package com.example.Jinus.service;
+package com.example.Jinus.service.userInfo;
 
-import com.example.Jinus.entity.UserEntity;
-import com.example.Jinus.repository.UserRepository;
+import com.example.Jinus.entity.userInfo.UserEntity;
+import com.example.Jinus.repository.userInfo.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

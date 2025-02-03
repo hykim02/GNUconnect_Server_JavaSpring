@@ -3,7 +3,7 @@ package com.example.Jinus.service.cafeteria;
 import com.example.Jinus.dto.response.*;
 import com.example.Jinus.entity.cafeteria.CafeteriaDietEntity;
 import com.example.Jinus.repository.cafeteria.CafeteriaDietRepository;
-import com.example.Jinus.service.UserService;
+import com.example.Jinus.service.userInfo.UserService;
 import com.example.Jinus.utility.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package com.example.Jinus.entity;
+package com.example.Jinus.entity.userInfo;
 
 import jakarta.persistence.*;
 import lombok.Getter;

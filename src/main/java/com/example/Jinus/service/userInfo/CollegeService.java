@@ -1,7 +1,7 @@
-package com.example.Jinus.service;
+package com.example.Jinus.service.userInfo;
 
-import com.example.Jinus.entity.CollegeEntity;
-import com.example.Jinus.repository.CollegeRepository;
+import com.example.Jinus.entity.userInfo.CollegeEntity;
+import com.example.Jinus.repository.userInfo.CollegeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
