@@ -100,14 +100,13 @@ public class WarmUpService {
                                         "clientExtra": {
                                           "sys_campus_id": "1"
                                         },
-                                        "params": {
-                                            "sys_date": "오늘",
-                                            "sys_cafeteria_name": "아람관"
-                                        },
                                         "id": "yvy3cqsh14brsvm9uf55cktv",
                                         "detailParams": {
                                             "sys_cafeteria_name": {
                                                 "origin": "아람관"
+                                            },
+                                            "sys_date" : {
+                                                "origin": "오늘"
                                             }
                                         }
                                       }
