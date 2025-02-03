@@ -34,7 +34,7 @@ public class UserService {
         }
     }
 
-    public int getCampusId(String userId) {
+    public int getUserCampusId(String userId) {
         UserEntity userEntity = userRepository.findById(userId).orElse(null);
         if (userEntity != null) {
             return userEntity.getCampusId();

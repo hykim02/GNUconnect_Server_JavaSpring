@@ -31,11 +31,4 @@ public class CampusService {
 
         return campusName;
     }
-
-    public int getCampusId(String campusName) {
-        int campusId = campusRepository.findCampusIdByName(campusName);
-
-        return campusId;
-    }
-
 }

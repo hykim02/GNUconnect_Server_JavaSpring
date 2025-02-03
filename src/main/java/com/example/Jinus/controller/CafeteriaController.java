@@ -53,7 +53,7 @@ public class CafeteriaController {
     @PostMapping("/api/spring/cafeteria")
     public String getCafeteria(@RequestBody RequestDto requestDto) {
         String userId = requestDto.getUserRequest().getUser().getId();
-        int campusId = userService.getCampusId(userId);
+        int campusId = userService.getUserCampusId(userId);
         int userWantedCampusId = requestDto.getAction().getClientExtra().getSys_campus_id();
         // 더보기를 누른 경우
         if (userWantedCampusId == -1) {
