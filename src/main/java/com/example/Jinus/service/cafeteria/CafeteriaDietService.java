@@ -49,7 +49,7 @@ public class CafeteriaDietService {
         String date = getCurrentDate(rawDate);
         int userCampusId = userService.getUserCampusId(userId);
         userCampusId = (userCampusId == -1) ? 1 : userCampusId;
-        campusName = (campusName == null) ? campusService.getCampusName(userCampusId) : campusName;
+        campusName = (campusName.isEmpty()) ? campusService.getCampusName(userCampusId) : campusName;
         String period = (rawPeriod.isEmpty()) ? getPeriodOfDay() : rawPeriod;
 
         int cafeteriaId = cafeteriaService.getCafeteriaIdByCampusId(cafeteriaName, userCampusId);
