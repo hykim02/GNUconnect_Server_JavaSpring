@@ -100,6 +100,9 @@ public class WarmUpService {
                                         "clientExtra": {
                                           "sys_campus_id": "1"
                                         },
+                                        "params": {
+                                            "sys_cafeteria_name": "아람관"
+                                        },
                                         "id": "yvy3cqsh14brsvm9uf55cktv",
                                         "detailParams": {
                                             "sys_cafeteria_name": {
