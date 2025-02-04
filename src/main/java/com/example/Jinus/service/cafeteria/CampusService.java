@@ -29,4 +29,8 @@ public class CampusService {
 
         return campusName;
     }
+
+    public int getCampusIdByName(String campusName) {
+        return campusRepository.findCampusIdByName(campusName);
+    }
 }
