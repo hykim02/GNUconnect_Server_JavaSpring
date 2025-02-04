@@ -5,6 +5,7 @@ import com.example.Jinus.entity.cafeteria.CafeteriaDietEntity;
 import com.example.Jinus.repository.cafeteria.CafeteriaDietRepository;
 import com.example.Jinus.service.userInfo.UserService;
 import com.example.Jinus.utility.JsonUtils;
+import com.example.Jinus.utility.SimpleTextResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,11 +49,20 @@ public class CafeteriaDietService {
         // 데이터 전처리
         String date = getCurrentDate(rawDate);
         int userCampusId = userService.getUserCampusId(userId);
-        userCampusId = (userCampusId == -1) ? 1 : userCampusId;
-        campusName = (campusName == null) ? campusService.getCampusName(userCampusId) : campusName;
-        String period = (rawPeriod.isEmpty()) ? getPeriodOfDay() : rawPeriod;
+        int cafeteriaId;
 
-        int cafeteriaId = cafeteriaService.getCafeteriaIdByCampusId(cafeteriaName, userCampusId);
+        if (campusName == null) {
+            campusName = userCampusId != -1 ? campusService.getCampusName(userCampusId) : "가좌캠퍼스";
+        }
+
+        int campusId = campusService.getCampusIdByName(campusName);
+        cafeteriaId = cafeteriaService.getCafeteriaIdByCampusId(cafeteriaName, campusId);
+
+        if (cafeteriaId == 0) {
+            return SimpleTextResponse.simpleTextResponse("식당을 찾지 못했어!\n어떤 캠퍼스에 있는 식당인지 정확히 알려줘!");
+        }
+
+        String period = (rawPeriod.isEmpty()) ? getPeriodOfDay() : rawPeriod;
 
         HashMap<String, List<String>> categoryMenuMap = getCafeteriaDiet(LocalDate.parse(date), period, cafeteriaId);
 
