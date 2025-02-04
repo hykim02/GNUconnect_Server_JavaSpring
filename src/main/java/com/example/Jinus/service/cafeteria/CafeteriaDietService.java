@@ -67,7 +67,7 @@ public class CafeteriaDietService {
         HashMap<String, List<String>> categoryMenuMap = getCafeteriaDiet(LocalDate.parse(date), period, cafeteriaId);
 
         return responseMapping(cafeteriaId, categoryMenuMap,
-                        campusName, rawDate, cafeteriaName, period, date);
+                campusName, rawDate, cafeteriaName, period, date);
     }
 
     public boolean validateDate(String date) {
