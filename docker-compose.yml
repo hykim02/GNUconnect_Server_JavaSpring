@@ -9,7 +9,7 @@ services:
     environment:
       - spring.config.additional-location=file:/app/application.properties
       - TZ=Asia/Seoul
-      - JAVA_OPTS=-Xms128m -Xmx256m -XX:MaxMetaspaceSize=128m -XX:+UseSerialGC
+      - JAVA_OPTS=-Xms128m -Xmx256m
     volumes:
       - ./application.properties:/app/application.properties
       - ./dumps:/dumps
