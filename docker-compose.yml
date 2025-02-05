@@ -18,6 +18,8 @@ services:
         limits:
           memory: 512m
           cpus: "0.5"
+    memswap_limit: 0
+    
 networks:
   connect-gnu-network:
     external: true
