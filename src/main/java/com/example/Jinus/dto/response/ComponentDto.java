@@ -11,6 +11,7 @@ public class ComponentDto {
     private BasicCardDto basicCard;
     private SimpleTextDto simpleText;
     private SimpleImageDto simpleImage;
+    private ListCardDto listCard;
 
     public ComponentDto(CarouselDto carousel) {
         this.carousel = carousel;

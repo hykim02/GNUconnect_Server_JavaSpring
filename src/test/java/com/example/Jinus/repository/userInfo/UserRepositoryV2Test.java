@@ -1,4 +1,4 @@
-package com.example.Jinus.repository;
+package com.example.Jinus.repository.userInfo;
 
 import com.example.Jinus.entity.userInfo.UserEntity;
 import com.example.Jinus.repository.v2.userInfo.UserRepositoryV2;

@@ -1,18 +1,14 @@
-package com.example.Jinus.service;
+package com.example.Jinus.service.userInfo;
 
-import com.example.Jinus.entity.userInfo.UserEntity;
 import com.example.Jinus.repository.v2.userInfo.UserRepositoryV2;
 import com.example.Jinus.service.v2.userInfo.UserServiceV2;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
@@ -23,8 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-@ActiveProfiles("test")  // application-test.properties 적용
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)  // H2 사용
 public class UserServiceV2Test {
 
     @Autowired
