@@ -207,7 +207,7 @@ public class NoticeController {
 
                 List<ButtonDto> buttonDto = new ArrayList<>();
                 // 공지 버튼 생성
-                ButtonDto button = new ButtonDto("더보기", "webLink", noticeCategoryUrl(departmentEng, mi, bbsId), null);
+                ButtonDto button = new ButtonDto("더보기", "webLink", noticeCategoryUrl(departmentEng, mi, bbsId));
                 buttonDto.add(button); // 버튼 1개
 
                 // 캐로셀 아이템

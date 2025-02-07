@@ -43,4 +43,12 @@ public class ListItemDto {
         this.blockId = blockId;
         this.extra = extra;
     }
+
+    public ListItemDto(String title, String imageUrl, String action, String blockId, Map<String, Object> extra) {
+        this.title = title;
+        this.imageUrl = imageUrl;
+        this.action = action;
+        this.blockId = blockId;
+        this.extra = extra;
+    }
 }

@@ -29,5 +29,9 @@ public class ComponentDto {
         this.simpleText = simpleText;
     }
 
+    public ComponentDto(ListCardDto listCard) {
+        this.listCard = listCard;
+    }
+
     public ComponentDto(SimpleImageDto simpleImage) { this.simpleImage = simpleImage; }
 }

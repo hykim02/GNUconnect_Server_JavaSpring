@@ -1,5 +1,6 @@
 package com.example.Jinus.service.cafeteria;
 
+import com.example.Jinus.entity.cafeteria.CampusEntity;
 import com.example.Jinus.repository.v2.cafeteria.CampusRepositoryV2;
 import com.example.Jinus.repository.v2.userInfo.UserRepositoryV2;
 import com.example.Jinus.service.v2.cafeteria.CampusServiceV2;
@@ -15,6 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,5 +45,21 @@ public class CampusServiceV2Test {
 
         // then
         assertThat(result).isEqualTo(campusName);
+    }
+
+    @Test
+    @DisplayName("id < 5인 캠퍼스 리스트 찾기")
+    public void checkCampusList_campusIdLessThan5() {
+        // given - 예상 데이터
+        List<CampusEntity> campusList = new ArrayList<>();
+        campusList.add(new CampusEntity(1, "가좌", "url1"));
+        campusList.add(new CampusEntity(2, "칠암", "url2"));
+
+        // when
+        Mockito.when(campusRepositoryV2.findCampusList()).thenReturn(campusList);
+        List<CampusEntity> result = campusServiceV2.findCampusList();
+
+        // then
+        assertThat(result).usingRecursiveComparison().isEqualTo(campusList);
     }
 }

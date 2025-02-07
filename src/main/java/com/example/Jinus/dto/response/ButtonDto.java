@@ -40,4 +40,11 @@ public class ButtonDto {
         this.blockId = blockId;
         this.extra = extra;
     }
+
+    public ButtonDto(String label, String action, String blockId, Map<String, Object> extra) {
+        this.label = label;
+        this.action = action;
+        this.blockId = blockId;
+        this.extra = extra;
+    }
 }

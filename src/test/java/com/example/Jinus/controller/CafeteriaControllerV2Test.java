@@ -37,13 +37,15 @@ public class CafeteriaControllerV2Test {
     @DisplayName("식당 리스트 반환")
     public void checkCafeteriaListReturn() {
         // given
-        int campusId = 1;
         String campusName = "가좌캠퍼스";
         List<Object[]> cafeteriaList = new ArrayList<>();
         Object[] row1 = {"아람관", "url"};
         Object[] row2 = {"교직원식당", "url"};
         cafeteriaList.add(row1);
         cafeteriaList.add(row2);
+
+        // 예상 데이터
+
 
 
     }

@@ -15,7 +15,6 @@ import lombok.Setter;
 public class CampusEntity {
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "campus_name_ko")

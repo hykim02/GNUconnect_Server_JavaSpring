@@ -104,7 +104,7 @@ public class CafeteriaController {
         List<ButtonDto> buttonDto = new ArrayList<>();
         Map<String, Object> extra = new HashMap<>();
         extra.put("sys_campus_id", -1);
-        ButtonDto button = new ButtonDto("더보기", "block", "", "66067167cdd882158c759fc2", extra);
+        ButtonDto button = new ButtonDto("더보기", "block", "66067167cdd882158c759fc2", extra);
         buttonDto.add(button);
 
         CarouselItemDto carouselItem = new CarouselItemDto(header, listItems, buttonDto);
