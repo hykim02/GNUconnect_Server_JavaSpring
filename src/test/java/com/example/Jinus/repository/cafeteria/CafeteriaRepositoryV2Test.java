@@ -50,4 +50,18 @@ public class CafeteriaRepositoryV2Test {
         // 객체이므로 isEqualTo만 사용하면 메모리 주소를 비교함
         assertThat(result).usingRecursiveComparison().isEqualTo(resultList);
     }
+
+    @Test
+    @DisplayName("식당 id 찾기")
+    public void checkCafeteriaId() {
+        // given
+        String cafeteriaName = "아람관";
+        int userCampusId = 2;
+
+        // when
+        int result = cafeteriaRepositoryV2.findCafeteriaId(cafeteriaName, userCampusId);
+
+        // then
+        assertThat(result).isEqualTo(1);
+    }
 }
