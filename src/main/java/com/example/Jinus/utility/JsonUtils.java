@@ -23,7 +23,6 @@ public class JsonUtils {
         }
 
         // jsonResponse를 클라이언트로 보내는 코드
-        System.out.println(jsonResponse);
         return jsonResponse;
     }
 }
