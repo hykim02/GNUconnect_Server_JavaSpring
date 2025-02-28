@@ -21,5 +21,10 @@ public class UserServiceV2 {
         return campusId.orElse(-1);
     }
 
-
+    // 사용자 학과id 찾기
+    public int getUserDepartmentId(String userId) {
+        Optional<Integer> departmentId = userRepositoryV2.findDepartmentIdById(userId);
+        // 존재한다면 departmentId, 존재하지 않는다면 -1 반환
+        return departmentId.orElse(-1);
+    }
 }

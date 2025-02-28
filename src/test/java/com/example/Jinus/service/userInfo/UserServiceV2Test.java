@@ -36,7 +36,6 @@ public class UserServiceV2Test {
         // when
         Mockito.when(userRepositoryV2.findCampusIdById(kakaoId)).thenReturn(Optional.of(campusId)); // Mocking
         int result = userServiceV2.getUserCampusId(kakaoId);
-        System.out.println("result:" + result);
 
         // then - 존재하면 campusId 반환
         assertThat(result).isEqualTo(1);
@@ -51,7 +50,35 @@ public class UserServiceV2Test {
         // when
         Mockito.when(userRepositoryV2.findCampusIdById(kakaoId)).thenReturn(Optional.empty()); // Mocking
         int result = userServiceV2.getUserCampusId(kakaoId);
-        System.out.println("result:" + result);
+
+        // then
+        assertThat(result).isEqualTo(-1);
+    }
+
+    @Test
+    @DisplayName("존재하는 사용자 학과id 찾기")
+    public void checkExistsUserDepartmentId() {
+        // then
+        String kakaoId = "test_user_1234";
+        int departmentId = 1;
+
+        // when
+        Mockito.when(userRepositoryV2.findDepartmentIdById(kakaoId)).thenReturn(Optional.of(departmentId));
+        int result = userServiceV2.getUserDepartmentId(kakaoId);
+
+        // then
+        assertThat(result).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 사용자 학과id 찾기")
+    public void checkDoesNotExistUserDepartmentId() {
+        // then
+        String kakaoId = "not_exist_user_1234";
+
+        // when
+        Mockito.when(userRepositoryV2.findDepartmentIdById(kakaoId)).thenReturn(Optional.empty());
+        int result = userServiceV2.getUserDepartmentId(kakaoId);
 
         // then
         assertThat(result).isEqualTo(-1);

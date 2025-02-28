@@ -13,4 +13,8 @@ public interface UserRepositoryV2 extends JpaRepository<UserEntity, String> {
     // 사용자 등록여부 확인(존재한다면 campusId 찾기)
     @Query("SELECT u.campusId FROM UserEntity u WHERE u.kakaoId = :kakaoId")
     Optional<Integer> findCampusIdById(@Param("kakaoId") String id);
+
+    // 사용자 학과id 찾기
+    @Query("SELECT u.departmentId FROM UserEntity u WHERE u.kakaoId = :kakaoId")
+    Optional<Integer> findDepartmentIdById(@Param("kakaoId") String id);
 }
