@@ -39,7 +39,7 @@ public class CafeteriaServiceV2Test {
 
         // when
         Mockito.when(cafeteriaRepositoryV2.findCafeteriaListByCampusId(campusId)).thenReturn(resultList);
-        List<Object[]> result = cafeteriaServiceV2.findCafeteriaList(campusId);
+        List<Object[]> result = cafeteriaServiceV2.getCafeteriaList(campusId);
 
         // then
         assertThat(result).usingRecursiveComparison().isEqualTo(resultList);

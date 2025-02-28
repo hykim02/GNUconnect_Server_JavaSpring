@@ -40,7 +40,7 @@ public class CampusServiceV2Test {
 
         // when
         Mockito.when(campusRepositoryV2.findCampusNameById(campusId)).thenReturn(campusName); // Mocking
-        String result = campusServiceV2.findUserCampusName(campusId);
+        String result = campusServiceV2.getUserCampusName(campusId);
         System.out.println("result:" + result);
 
         // then
@@ -57,7 +57,7 @@ public class CampusServiceV2Test {
 
         // when
         Mockito.when(campusRepositoryV2.findCampusList()).thenReturn(campusList);
-        List<CampusEntity> result = campusServiceV2.findCampusList();
+        List<CampusEntity> result = campusServiceV2.getCampusList();
 
         // then
         assertThat(result).usingRecursiveComparison().isEqualTo(campusList);

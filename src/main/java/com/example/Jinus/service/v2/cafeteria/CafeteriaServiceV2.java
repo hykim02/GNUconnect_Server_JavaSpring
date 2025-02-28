@@ -27,14 +27,14 @@ public class CafeteriaServiceV2 {
     }
 
     // 사용자의 campusId와 동일한 식당리스트 찾기
-    public List<Object[]> findCafeteriaList(int campusId) {
+    public List<Object[]> getCafeteriaList(int campusId) {
         return cafeteriaRepositoryV2.findCafeteriaListByCampusId(campusId);
     }
 
     // 식당 리스트 반환 메소드
     public String makeCafeteriaListCard(int campusId) {
-        String campusName = campusServiceV2.findUserCampusName(campusId);
-        List<Object[]> cafeteriaList = findCafeteriaList(campusId);
+        String campusName = campusServiceV2.getUserCampusName(campusId);
+        List<Object[]> cafeteriaList = getCafeteriaList(campusId);
 
         // 식당 리스트 객체 생성
         List<ListItemDto> listItems = mappingCafeteriaList(campusName, cafeteriaList);
