@@ -58,7 +58,7 @@ public class UserServiceV2Test {
     @Test
     @DisplayName("존재하는 사용자 학과id 찾기")
     public void checkExistsUserDepartmentId() {
-        // then
+        // given
         String kakaoId = "test_user_1234";
         int departmentId = 1;
 
@@ -73,7 +73,7 @@ public class UserServiceV2Test {
     @Test
     @DisplayName("존재하지 않는 사용자 학과id 찾기")
     public void checkDoesNotExistUserDepartmentId() {
-        // then
+        // given
         String kakaoId = "not_exist_user_1234";
 
         // when
