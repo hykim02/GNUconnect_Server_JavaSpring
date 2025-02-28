@@ -45,7 +45,7 @@ public class CafeteriaControllerV2 {
         // 사용자가 존재 & 식당 블록에서 캠퍼스 눌렀을 때 -> 식당 리스트
         if (campusId != -1 && sysCampusId != -1) {
             return cafeteriaServiceV2.makeCafeteriaListCard(campusId);
-        } else { // 사용자가 존재 X & 식당 블록에서 더보기 버튼 눌렀을 때(-1 반환)-> 캠퍼스 리스트
+        } else { // 사용자가 존재 X & 식당 블록에서 더보기 버튼 눌렀을 때 -> 캠퍼스 리스트
             return campusServiceV2.makeCampusListCard();
         }
     }

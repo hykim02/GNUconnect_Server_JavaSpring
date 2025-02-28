@@ -3,7 +3,6 @@ package com.example.Jinus.service.v2.cafeteria;
 import com.example.Jinus.dto.response.ButtonDto;
 import com.example.Jinus.dto.response.ListItemDto;
 import com.example.Jinus.dto.response.ResponseDto;
-import com.example.Jinus.repository.cafeteria.CafeteriaRepository;
 import com.example.Jinus.repository.v2.cafeteria.CafeteriaRepositoryV2;
 import com.example.Jinus.utility.JsonUtils;
 import com.example.Jinus.utility.ListCardResponse;

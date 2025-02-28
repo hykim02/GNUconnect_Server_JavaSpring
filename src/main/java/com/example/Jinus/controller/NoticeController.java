@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.util.*;
 import java.util.List;
+import io.sentry.Sentry;
 
 @RestController
 public class NoticeController {
@@ -46,6 +47,12 @@ public class NoticeController {
     // 학교 공지사항 조회
     @PostMapping("/api/spring/main-notice")
     public String getMainNotice() throws ParseException {
+        try {
+            throw new Exception("This is a test.");
+        } catch (Exception e) {
+            Sentry.captureException(e);
+        }
+
         int departmentId = 117; // 학교 공지사항 id
         String collegeEng = "etc"; // 단과대학 영문명
         String departmentEng = "main"; // 학과 영문명
