@@ -1,12 +1,16 @@
 package com.example.Jinus.entity.userInfo;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "department")
 public class DepartmentEntity {
     @Id
