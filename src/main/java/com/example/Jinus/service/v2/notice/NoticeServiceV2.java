@@ -31,7 +31,6 @@ public class NoticeServiceV2 {
         return makeNoticeItemList(noticeEntities, mi, bbsId, departmentEng);
     }
 
-
     // 공지 아이템 리스트 dto 매핑
     public List<ListItemDto> makeNoticeItemList(List<NoticeEntity> noticeEntities,
                                    String mi, String bbsId, String departmentEng) {
