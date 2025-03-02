@@ -28,8 +28,6 @@ public class NoticeController {
     private final CategoryService categoryService;
     private final NoticeService noticeService;
 
-
-    @Autowired
     public NoticeController(
             UserService userService,
             CollegeService collegeService,

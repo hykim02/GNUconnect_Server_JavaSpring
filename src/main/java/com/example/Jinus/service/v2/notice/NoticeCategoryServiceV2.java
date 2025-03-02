@@ -20,26 +20,24 @@ public class NoticeCategoryServiceV2 {
     }
 
     // 사용자 학과id와 일치하는 카테고리 찾기
-    public List<Map<String, Object>> getCategoryEntity(int departmentId) {
-        List<NoticeCategoryEntity> categoryEntities =
-                noticeCategoryRepository.findCategoryListByDepartmentId(departmentId);
-        return categoryListToMapList(categoryEntities);
+    public List<NoticeCategoryEntity> getCategoryEntity(int departmentId) {
+        return noticeCategoryRepository.findCategoryListByDepartmentId(departmentId);
     }
 
     // 카테고리 엔티티들 하나씩 hashmap으로 만들어 리스트로 저장하기
-    public List<Map<String, Object>> categoryListToMapList(
-            List<NoticeCategoryEntity> categoryEntities) {
-
-        List<Map<String, Object>> categoryHashMapList = new ArrayList<>();
-
-        for (NoticeCategoryEntity categoryEntity : categoryEntities) {
-            Map<String, Object> hashMap = new HashMap<>();
-            hashMap.put("id", categoryEntity.getId());
-            hashMap.put("category", categoryEntity.getCategory());
-            hashMap.put("mi", categoryEntity.getMi());
-            hashMap.put("bbsId", categoryEntity.getBbsId());
-            categoryHashMapList.add(hashMap);
-        }
-        return categoryHashMapList;
-    }
+//    public List<Map<String, Object>> categoryListToMapList(
+//            List<NoticeCategoryEntity> categoryEntities) {
+//
+//        List<Map<String, Object>> categoryHashMapList = new ArrayList<>();
+//
+//        for (NoticeCategoryEntity categoryEntity : categoryEntities) {
+//            Map<String, Object> hashMap = new HashMap<>();
+//            hashMap.put("id", categoryEntity.getId());
+//            hashMap.put("category", categoryEntity.getCategory());
+//            hashMap.put("mi", categoryEntity.getMi());
+//            hashMap.put("bbsId", categoryEntity.getBbsId());
+//            categoryHashMapList.add(hashMap);
+//        }
+//        return categoryHashMapList;
+//    }
  }
