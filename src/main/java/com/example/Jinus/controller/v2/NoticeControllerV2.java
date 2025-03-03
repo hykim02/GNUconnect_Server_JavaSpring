@@ -55,7 +55,7 @@ public class NoticeControllerV2 {
         if (departmentId != -1) {
             return existUserReturnNotice(departmentEng, departmentId);
         } else {
-            return doesNotExistUserReturnBlock(departmentId);
+            return doesNotExistUserReturnBlock();
         }
     }
 
@@ -106,7 +106,7 @@ public class NoticeControllerV2 {
     }
 
     // 사용자 학과 정보가 없는 경우 학과인증 블록 리턴 예외처리
-    public String doesNotExistUserReturnBlock(int departmentId) {
+    public String doesNotExistUserReturnBlock() {
         List<ButtonDto> buttonList = new ArrayList<>();
         // 블록 버튼 생성
         ButtonDto buttonDto = new ButtonDto("학과 등록", "block", null,"66cf0c8ae5715f75b254dfea");

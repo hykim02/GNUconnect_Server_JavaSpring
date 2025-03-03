@@ -2,19 +2,13 @@ package com.example.Jinus.service.v2.notice;
 
 import com.example.Jinus.dto.response.ButtonDto;
 import com.example.Jinus.dto.response.LinkItemDto;
-import com.example.Jinus.dto.response.ListCardDto;
 import com.example.Jinus.dto.response.ListItemDto;
 import com.example.Jinus.entity.notice.NoticeEntity;
 import com.example.Jinus.repository.v2.notice.NoticeRepositoryV2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import static java.lang.String.valueOf;
 
 @Service
 public class NoticeServiceV2 {
