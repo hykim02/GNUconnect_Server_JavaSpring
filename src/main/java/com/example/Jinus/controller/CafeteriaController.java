@@ -23,7 +23,6 @@ import java.util.Map;
 
 @RestController
 public class CafeteriaController {
-    private static final Logger logger = LoggerFactory.getLogger(NoticeController.class);
     private final CafeteriaService cafeteriaService;
     private final UserService userService;
     private final DepartmentService departmentService;

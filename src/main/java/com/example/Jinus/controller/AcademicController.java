@@ -18,7 +18,6 @@ import java.util.List;
 
 @RestController
 public class AcademicController {
-    private static final Logger logger = LoggerFactory.getLogger(NoticeController.class);
     private final AcademicService academicService;
 
     public AcademicController(AcademicService academicService) {

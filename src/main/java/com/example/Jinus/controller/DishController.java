@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class DishController {
-    private static final Logger logger = LoggerFactory.getLogger(NoticeController.class);
     private final CafeteriaService cafeteriaService;
     private final DepartmentService departmentService;
     private final CollegeService collegeService;
