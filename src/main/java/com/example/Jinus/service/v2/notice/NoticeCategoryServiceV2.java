@@ -2,13 +2,9 @@ package com.example.Jinus.service.v2.notice;
 
 import com.example.Jinus.entity.notice.NoticeCategoryEntity;
 import com.example.Jinus.repository.v2.notice.NoticeCategoryRepositoryV2;
-import com.example.Jinus.service.v2.userInfo.UserServiceV2;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class NoticeCategoryServiceV2 {

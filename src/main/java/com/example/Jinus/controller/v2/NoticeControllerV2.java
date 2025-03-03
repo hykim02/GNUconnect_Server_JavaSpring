@@ -3,23 +3,18 @@ package com.example.Jinus.controller.v2;
 import com.example.Jinus.dto.request.RequestDto;
 import com.example.Jinus.dto.response.*;
 import com.example.Jinus.entity.notice.NoticeCategoryEntity;
-import com.example.Jinus.service.notice.NoticeService;
 import com.example.Jinus.service.v2.notice.NoticeCategoryServiceV2;
 import com.example.Jinus.service.v2.notice.NoticeServiceV2;
 import com.example.Jinus.service.v2.userInfo.DepartmentServiceV2;
 import com.example.Jinus.service.v2.userInfo.UserServiceV2;
 import com.example.Jinus.utility.JsonUtils;
 import com.example.Jinus.utility.TextCardResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static java.lang.String.valueOf;
 
@@ -110,7 +105,7 @@ public class NoticeControllerV2 {
         return TextCardResponse.textCardResponse("최근에 등록된 공지사항이 없어!", buttonList);
     }
 
-    // 사용자 학과 정보가 없는 경우 학과인증 블록 리턴
+    // 사용자 학과 정보가 없는 경우 학과인증 블록 리턴 예외처리
     public String doesNotExistUserReturnBlock(int departmentId) {
         List<ButtonDto> buttonList = new ArrayList<>();
         // 블록 버튼 생성
