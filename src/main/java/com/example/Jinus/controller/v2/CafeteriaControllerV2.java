@@ -10,6 +10,7 @@ import com.example.Jinus.utility.JsonUtils;
 import com.example.Jinus.utility.ListCardResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api/spring")
 public class CafeteriaControllerV2 {
 
     private final UserServiceV2 userServiceV2;
@@ -35,7 +37,7 @@ public class CafeteriaControllerV2 {
 
 
     // 사용자 존재 여부에 따라 응답
-    @PostMapping("/api/spring/cafeteria/v2")
+    @PostMapping("/cafeteria/v2")
     public String responseCafeteriaOrCampusListCard(@RequestBody RequestDto requestDto) {
         // userId로 campusId 찾기
         String userId = requestDto.getUserRequest().getUser().getId();

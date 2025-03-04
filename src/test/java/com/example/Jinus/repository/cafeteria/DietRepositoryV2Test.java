@@ -43,7 +43,7 @@ public class DietRepositoryV2Test {
     @DisplayName("조건에 맞는 식단 찾기")
     public void checkDiet_meetConditions() {
         //given
-        LocalDateTime dateTime = LocalDateTime.of(25, 2, 11, 0, 0, 0);
+        String dateTime = "2025-03-09 00:00:00.000000 +09:00";
         String period = "점심";
         int cafeteriaId = 7;
 

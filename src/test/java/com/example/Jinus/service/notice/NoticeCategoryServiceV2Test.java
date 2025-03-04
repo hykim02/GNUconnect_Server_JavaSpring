@@ -1,20 +1,12 @@
 package com.example.Jinus.service.notice;
 
-import com.example.Jinus.entity.notice.NoticeCategoryEntity;
-import com.example.Jinus.repository.v2.notice.NoticeCategoryRepositoryV2;
-import com.example.Jinus.service.v2.notice.NoticeCategoryServiceV2;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.example.Jinus.repository.v2.notice.CategoryRepositoryV2;
+import com.example.Jinus.service.v2.notice.CategoryServiceV2;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,9 +17,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class NoticeCategoryServiceV2Test {
 
     @Autowired
-    NoticeCategoryServiceV2 categoryService;
+    CategoryServiceV2 categoryService;
     @MockBean
-    NoticeCategoryRepositoryV2 noticeCategoryRepository;
+    CategoryRepositoryV2 noticeCategoryRepository;
 
 //    @Test
 //    @DisplayName("사용자 학과id와 일치하는 카테고리 찾기")

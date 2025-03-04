@@ -1,7 +1,7 @@
 package com.example.Jinus.repository.notice;
 
 import com.example.Jinus.entity.notice.NoticeCategoryEntity;
-import com.example.Jinus.repository.v2.notice.NoticeCategoryRepositoryV2;
+import com.example.Jinus.repository.v2.notice.CategoryRepositoryV2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class NoticeCategoryRepositoryV2Test {
 
     @Autowired
-    private NoticeCategoryRepositoryV2 noticeCategoryRepository;
+    private CategoryRepositoryV2 noticeCategoryRepository;
 
     @BeforeEach
     void setUp() {

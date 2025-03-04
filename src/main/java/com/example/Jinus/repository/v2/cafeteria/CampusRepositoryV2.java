@@ -12,7 +12,7 @@ import java.util.List;
 public interface CampusRepositoryV2 extends JpaRepository<CampusEntity, Integer> {
     // 사용자 campusId로 캠퍼스 이름 찾기
     @Query("SELECT c.campusNameKo FROM CampusEntity c WHERE c.id = :campusId")
-    String findCampusNameById(@Param("campusId") int campusId);
+    String findCampusNameByCampusId(@Param("campusId") int campusId);
 
     // campusId가 5보다 작은 캠퍼스들 찾기
     @Query("SELECT c FROM CampusEntity c WHERE c.id < 5")

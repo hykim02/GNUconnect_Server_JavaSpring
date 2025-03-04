@@ -39,7 +39,7 @@ public class CampusServiceV2Test {
         String campusName = "가좌캠퍼스";
 
         // when
-        Mockito.when(campusRepositoryV2.findCampusNameById(campusId)).thenReturn(campusName); // Mocking
+        Mockito.when(campusRepositoryV2.findCampusNameByCampusId(campusId)).thenReturn(campusName); // Mocking
         String result = campusServiceV2.getUserCampusName(campusId);
         System.out.println("result:" + result);
 

@@ -12,10 +12,10 @@ import java.util.List;
 
 @Repository
 public interface DietRepositoryV2 extends JpaRepository<CafeteriaDietEntity, Integer> {
-    @Query("SELECT c.dishName, c.dishCategory, c.dishType FROM CafeteriaDietEntity c " +
-            "WHERE c.dateTime = :date " +
+    @Query("SELECT c.dishCategory, c.dishType, c.dishName FROM CafeteriaDietEntity c " +
+            "WHERE c.dateTime = :dateTime " +
             "AND c.time = :period AND c.cafeteriaId = :cafeteriaId")
-    List<Object[]> findDietList(@Param("date") LocalDateTime date,
+    List<Object[]> findDietList(@Param("dateTime") String dateTime,
                                 @Param("period") String period,
                                 @Param("cafeteriaId") int cafeteriaId);
 }

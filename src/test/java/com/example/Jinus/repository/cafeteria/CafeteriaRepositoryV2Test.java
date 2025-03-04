@@ -14,6 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -58,7 +59,7 @@ public class CafeteriaRepositoryV2Test {
         int userCampusId = 2;
 
         // when
-        int result = cafeteriaRepositoryV2.findCafeteriaId(cafeteriaName, userCampusId);
+        Optional<Integer> result = cafeteriaRepositoryV2.findCafeteriaId(cafeteriaName, userCampusId);
 
         // then
         assertThat(result).isEqualTo(1);
