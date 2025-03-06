@@ -4,7 +4,6 @@ import com.example.Jinus.dto.request.DetailParamsItemFieldDto;
 import com.example.Jinus.dto.request.HandleRequestDto;
 import com.example.Jinus.dto.request.RequestDto;
 import com.example.Jinus.dto.response.*;
-import com.example.Jinus.repository.v2.cafeteria.CafeteriaRepositoryV2;
 import com.example.Jinus.repository.v2.cafeteria.CampusRepositoryV2;
 import com.example.Jinus.repository.v2.cafeteria.DietRepositoryV2;
 import com.example.Jinus.repository.v2.userInfo.UserRepositoryV2;
@@ -14,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.servlet.View;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -32,8 +32,9 @@ public class DietServiceV2 {
     private final CampusRepositoryV2 campusRepositoryV2;
     private final CampusServiceV2 campusServiceV2;
     private final CafeteriaServiceV2 cafeteriaServiceV2;
+    private final View error;
 
-    // request data 받아오기
+    // 식단 데이터 찾기 위해 필요한 파라미터 추출 및 초기화
     public String requestHandler(RequestDto requestDto) {
         String kakaoId = requestDto.getUserRequest().getUser().getId();
 
@@ -45,49 +46,110 @@ public class DietServiceV2 {
         DetailParamsItemFieldDto day = requestDto.getAction().getDetailParams().getSys_date();
         DetailParamsItemFieldDto period = requestDto.getAction().getDetailParams().getSys_time_period();
         // null이면 값 초기화하기
-        String campusNameValue = (campusName != null) ? campusName.getOrigin() : getCampusName(kakaoId);
-        String dayValue = (day != null) ? day.getOrigin() : getDay(time); // 오늘, 내일
-        // 아침, 점심, 저녁
-        String periodValue = (period != null) ? period.getOrigin() : getPeriodOfDay(time);
-
+        String campusNameValue = (campusName != null) ? campusName.getValue() : getCampusName(kakaoId);
+        String dayValue = (day != null) ? day.getValue() : getDay(time); // 오늘, 내일
+        String periodValue = (period != null) ? period.getValue() : getPeriodOfDay(time); // 아침, 점심, 저녁
         // 요청 필수 파라미터 추출
         String cafeteriaName = requestDto.getAction().getParams().getSys_cafeteria_name();
-
-        System.out.println("sysCampusName:" + requestDto.getAction().getDetailParams().getSys_campus_name());
-        System.out.println("sysDate:" + requestDto.getAction().getDetailParams().getSys_date());
-        System.out.println("sysTimePeriod:" + requestDto.getAction().getDetailParams().getSys_time_period());
-
-        System.out.println("campusName: " + campusNameValue);
-        System.out.println("day: " + dayValue);
-        System.out.println("period: " + periodValue);
-        System.out.println("cafeteriaName: " + cafeteriaName);
 
         // 요청 파라미터 객체 생성
         HandleRequestDto parameters = new HandleRequestDto(kakaoId, campusNameValue, dayValue, periodValue, cafeteriaName);
 
-        return makeContentsToFindDiet(parameters);
+        return makeResponse(parameters);
+    }
+
+    // response 생성 로직
+    public String makeResponse(HandleRequestDto parameters) {
+        int campusId = campusServiceV2.getCampusId(parameters.getCampusName());
+        int cafeteriaId = cafeteriaServiceV2.getCafeteriaId(parameters.getCafeteriaName(), campusId);
+        // 캠퍼스에 식당이 존재하는 경우
+        if (checkIsThereCafeteria(parameters) != -1) {
+            // 식당 메뉴가 존재하는 경우
+            if (checkThereIsDiet(parameters, cafeteriaId) != -1) {
+                // 메뉴 찾기
+                MultiValueMap<String, String> dietList = getDiets(parameters, cafeteriaId);
+                StringBuilder diets = processDietList(dietList);
+                return makeContents(parameters, cafeteriaId, diets);
+            } else { // 메뉴 존재하지 않는 경우
+                StringBuilder diets = new StringBuilder("\n\n").append("메뉴가 존재하지 않습니다.");
+                return makeContents(parameters, cafeteriaId, diets);
+            }
+        } else { // 식당 존재하지 않는 경우
+            return errorMsgThereIsNoCafeteria();
+        }
+    }
+
+    // 캠퍼스에 식당 존재여부 확인 -> cafeteriaId 찾기
+    // cafeteriaId가 -1이면 존재하지 않음
+    private int checkIsThereCafeteria(HandleRequestDto parameters) {
+        int campusId = campusServiceV2.getCampusId(parameters.getCampusName());
+        return cafeteriaServiceV2.getCafeteriaId(parameters.getCafeteriaName(), campusId);
+    }
+
+    // 캠퍼스에 식당이 존재하지 않는 경우 메시지 출력
+    private String errorMsgThereIsNoCafeteria() {
+        return SimpleTextResponse
+                .simpleTextResponse("식당을 찾지 못했어!\n어떤 캠퍼스에 있는 식당인지 정확히 알려줘!");
+    }
+
+    // 식당 메뉴 존재여부 확인
+    private int checkThereIsDiet(HandleRequestDto parameters, int cafeteriaId) {
+        // 오늘, 내일 문자열로 날짜 설정하기
+        Date dietDate = getCurrentDate(parameters.getDay());
+        List<Object[]> dietObject =
+                dietRepositoryV2.findDietList(dietDate, parameters.getPeriod(), cafeteriaId);
+        return (!dietObject.isEmpty()) ? 1 : -1;
+    }
+
+    // 카테고리별 메뉴 리스트 생성하기
+    private MultiValueMap<String, String> getDiets(HandleRequestDto parameters, int cafeteriaId) {
+        // 오늘, 내일 문자열로 날짜 설정하기
+        Date dietDate = getCurrentDate(parameters.getDay());
+        List<Object[]> dietObject =
+                dietRepositoryV2.findDietList(dietDate, parameters.getPeriod(), cafeteriaId);
+        MultiValueMap<String, String> dietList = new LinkedMultiValueMap<>(); // 중복 키 허용(값을 리스트로 반환)
+
+        for (Object[] o : dietObject) {
+            String key = (o[0] != null) ? (String)o[0] // dishCategory
+                    : (o[1] != null) ? (String) o[1] // dishType
+                    : "메뉴";
+
+            String dishName = (String) o[2];
+            dietList.add(key, dishName);
+        }
+        return dietList;
+    }
+
+    // 카테고리별 메뉴 문자열로 나열하기
+    public StringBuilder processDietList(MultiValueMap<String, String> dietList) {
+        // 키 추출
+        Set<String> keys = new TreeSet<>(dietList.keySet()); // 순서 보장 - 오름차순
+        StringBuilder description = new StringBuilder();
+
+        for (String key : keys) {
+            description.append("\n[").append(key).append("]").append("\n");
+            dietList.get(key).forEach(diet -> description.append(diet).append("\n"));
+        }
+        return description;
     }
 
 
-    // 식단 데이터 찾기 위해 필요한 파라미터들 초기화
-    // 식당 id, 날짜, 식사 시간대(아침/점심/저녁)
-    private String makeContentsToFindDiet(HandleRequestDto parameters) {
-        int campusId = campusServiceV2.getCampusId(parameters.getCampusName());
-
-        // sysDay로 식단 날짜 설정하기
-        Date dietDate = getCurrentDate(parameters.getDay());
-        String dietDescription = getDietDescription(parameters, campusId, dietDate);
-        // 식당 imgUrl 찾기
-        String imgUrl = campusServiceV2.getCampusImgUrl(parameters.getCampusName());
+    // 응답 내용 초기화
+    private String makeContents(HandleRequestDto parameters, int cafeteriaId, StringBuilder diets) {
+        // 식당 img 찾기
+        String imgUrl = cafeteriaServiceV2.getImgUrl(cafeteriaId);
 
         // title 데이터 연결
         StringBuilder title = new StringBuilder("\uD83C\uDF71 ")
                 .append(parameters.getCafeteriaName()).append("(")
                 .append(parameters.getCampusName(), 0, 2).append(") 메뉴");
 
+        // 식단 날짜
+        Date dietDate = getCurrentDate(parameters.getDay());
         // 메뉴 연결
-        StringBuilder description = new StringBuilder(String.valueOf(dietDate))
-                .append(" ").append(parameters.getPeriod()).append(dietDescription);
+        StringBuilder description = new StringBuilder(String.valueOf(dietDate)).append(" ")
+                .append(parameters.getPeriod()).append(diets);
+        System.out.println("description: " +description);
 
         return mappingResponse(parameters, imgUrl, title.toString(), description.toString());
     }
@@ -112,6 +174,40 @@ public class DietServiceV2 {
         return JsonUtils.toJsonResponse(responseDto);
     }
 
+
+
+
+
+//    private String makeContentsToFindDiet(HandleRequestDto parameters) {
+//        int campusId = campusServiceV2.getCampusId(parameters.getCampusName());
+//
+//        // sysDay로 식단 날짜 설정하기
+//        Date dietDate = getCurrentDate(parameters.getDay());
+//        String dietDescription = getDietDescription(parameters, campusId, dietDate);
+//        // 식당 imgUrl 찾기
+//        String imgUrl = campusServiceV2.getCampusImgUrl(parameters.getCampusName());
+//
+//        // title 데이터 연결
+//        StringBuilder title = new StringBuilder("\uD83C\uDF71 ")
+//                .append(parameters.getCafeteriaName()).append("(")
+//                .append(parameters.getCampusName(), 0, 2).append(") 메뉴");
+//
+//        // 메뉴 연결
+//        StringBuilder description = new StringBuilder();
+//
+//        if (!dietDescription.equals("none")) {
+//            // 메뉴 연결
+//            description.append(dietDate)
+//                    .append(" ").append(parameters.getPeriod()).append(dietDescription);
+//
+//            return mappingResponse(parameters, imgUrl, title.toString(), description.toString());
+//        } else {
+//            return SimpleTextResponse.simpleTextResponse("식당을 찾지 못했어!\n어떤 캠퍼스에 있는 식당인지 정확히 알려줘!");
+//        }
+//    }
+
+
+
     // quickReply 객체 생성
     private List<QuickReplyDto> mappingQuickReply(HandleRequestDto parameters) {
         return switch (parameters.getPeriod()) {
@@ -130,54 +226,37 @@ public class DietServiceV2 {
         };
     }
 
-    // cafeteria_id 존재여부 확인(캠퍼스에 식당이 존재하는지)
-    public String getDietDescription(HandleRequestDto parameters, int campusId,Date dietDate) {
-        int cafeteriaId = cafeteriaServiceV2.getCafeteriaId(parameters.getCafeteriaName(), campusId);
-        // 존재한다면
-        if (cafeteriaId != -1) {
-            // 해당 식당 메뉴 찾아오기
-            return getDietList(cafeteriaId, parameters.getPeriod(), dietDate).toString();
-        } else { // 존재하지 않는다면
-            // 오류메시지 반환
-            return SimpleTextResponse.simpleTextResponse("\"식당을 찾지 못했어!\\n어떤 캠퍼스에 있는 식당인지 정확히 알려줘!\"");
-        }
-    }
+//    // cafeteria_id 존재여부 확인(캠퍼스에 식당이 존재하는지)
+//    public String getDietDescription(HandleRequestDto parameters, int campusId,Date dietDate) {
+//        int cafeteriaId = cafeteriaServiceV2.getCafeteriaId(parameters.getCafeteriaName(), campusId);
+//        String diets = getDietList(cafeteriaId, parameters.getPeriod(), dietDate).toString();
+//        return (cafeteriaId != -1) ? diets : "none";
+//    }
 
     // 해당 식당 메뉴 찾아오기
-    public StringBuilder getDietList(int cafeteriaId, String period, Date dietDate) {
-        List<Object[]> dietObject = dietRepositoryV2.findDietList(dietDate, period, cafeteriaId);
-        MultiValueMap<String, String> dietList = new LinkedMultiValueMap<>(); // 중복 키 허용(값을 리스트로 반환)
+//    public StringBuilder getDietList(int cafeteriaId, String period, Date dietDate) {
+//        List<Object[]> dietObject = dietRepositoryV2.findDietList(dietDate, period, cafeteriaId);
+//
+//        MultiValueMap<String, String> dietList = new LinkedMultiValueMap<>(); // 중복 키 허용(값을 리스트로 반환)
+//
+//        for (Object[] o : dietObject) {
+//            String dishName = (String) o[2];
+//
+//            String key = (o[0] != null) ? (String)o[0] // dishCategory
+//                    : (o[1] != null) ? (String) o[1] // dishType
+//                    : "메뉴";
+//
+//            dietList.add(key, dishName);
+//        }
+//        return processDietList(dietList);
+//    }
 
-        for (Object[] o : dietObject) {
-            String dishName = (String) o[2];
 
-            String key = (o[0] != null) ? (String)o[0] // dishCategory
-                    : (o[1] != null) ? (String) o[1] // dishType
-                    : "메뉴";
-
-            dietList.add(key, dishName);
-        }
-        return processDietList(dietList);
-    }
-
-    // 식당 리스트 가공
-    public StringBuilder processDietList(MultiValueMap<String, String> dietList) {
-        // 키 추출
-        Set<String> keys = new TreeSet<>(dietList.keySet()); // 순서 보장 - 오름차순
-        StringBuilder description = new StringBuilder();
-
-        for (String key : keys) {
-            description.append("\n[").append(key).append("]").append("\n");
-            dietList.get(key).forEach(diet -> description.append(diet).append("\n"));
-        }
-        return description;
-    }
 
 
     // 일반 파라미터 값 채우기
     // sys_campus_name 파라미터 초기화
     public String getCampusName(String kakaoId) {
-        System.out.println("getCampusName 실행");
         // 학과 등록 여부 확인
         int campusId = userRepositoryV2.findCampusIdById(kakaoId).orElse(-1);
         // 학과 등록한 경우 campusId가 존재함
@@ -190,7 +269,6 @@ public class DietServiceV2 {
 
     // sys_date 파라미터 초기화 - 시간 범위에 따라 오늘, 내일 판별
     public String getDay(LocalTime time) {
-        System.out.println("getDay 실행");
         if (time.isAfter(LocalTime.parse("00:00:00")) && time.isBefore(LocalTime.parse("19:00:00"))) {
             return "오늘";
         } else {
@@ -200,8 +278,6 @@ public class DietServiceV2 {
 
     // sys_period 파라미터 초기화 - 시간 범위에 따라 아침, 점심, 저녁을 판별
     public static String getPeriodOfDay(LocalTime time) {
-        System.out.println("getPeriodOfDay 실행");
-
         if (time.isAfter(LocalTime.parse("19:00:00")) || time.isBefore(LocalTime.parse("09:30:00"))) {
             return "아침";
         } else if (!time.isBefore(LocalTime.parse("09:30:00")) && time.isBefore(LocalTime.parse("13:30:00"))) {

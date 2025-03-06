@@ -19,4 +19,8 @@ public interface CafeteriaRepositoryV2 extends JpaRepository<CafeteriaEntity, In
             "WHERE c.campusId = :campusId AND c.cafeteriaNameKo = :cafeteriaName")
     Optional<Integer> findCafeteriaId(@Param("cafeteriaName") String cafeteriaName,
                                       @Param("campusId") int campusId);
+
+    // cafeteriaId로 imgUrl 찾기
+    @Query("SELECT c.thumbnailUrl FROM CafeteriaEntity c WHERE c.id = :cafeteriaId")
+    String findImgUrlByCafeteriaId(@Param("cafeteriaId")int cafeteriaId);
 }

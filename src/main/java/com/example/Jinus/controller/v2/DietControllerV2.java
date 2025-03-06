@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/spring")
 @RequiredArgsConstructor
-public class DishControllerV2 {
+public class DietControllerV2 {
     private final DietServiceV2 dietServiceV2;
 
     @PostMapping("/dish/v2")
