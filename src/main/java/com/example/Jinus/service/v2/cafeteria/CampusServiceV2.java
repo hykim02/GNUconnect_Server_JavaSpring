@@ -33,6 +33,16 @@ public class CampusServiceV2 {
         return campusRepositoryV2.findCampusList();
     }
 
+    // 캠퍼스 이름으로 url 찾기
+    public String getCampusImgUrl(String campusName) {
+        return campusRepositoryV2.findCampusImgUrlByCampusName(campusName);
+    }
+
+    // 캠퍼스 이름으로 id 찾기
+    public int getCampusId(String campusName) {
+        return campusRepositoryV2.findCampusIdByName(campusName);
+    }
+
     // 캠퍼스 리스트 반환 메소드
     public String makeCampusListCard() {
         List<CampusEntity> campusList = getCampusList();

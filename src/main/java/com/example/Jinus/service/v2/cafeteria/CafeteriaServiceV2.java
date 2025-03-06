@@ -31,6 +31,11 @@ public class CafeteriaServiceV2 {
         return cafeteriaRepositoryV2.findCafeteriaListByCampusId(campusId);
     }
 
+    // 캠퍼스에 식당이 존재한다면 cafeteriaId 찾기
+    public int getCafeteriaId(String cafeteriaName, int campusId) {
+        return cafeteriaRepositoryV2.findCafeteriaId(cafeteriaName, campusId).orElse(-1);
+    }
+
     // 식당 리스트 반환 메소드
     public String makeCafeteriaListCard(int campusId) {
         String campusName = campusServiceV2.getUserCampusName(campusId);
