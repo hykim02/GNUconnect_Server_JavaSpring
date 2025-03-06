@@ -1,5 +1,6 @@
 package com.example.Jinus.service.v2.cafeteria;
 
+import com.example.Jinus.dto.request.HandleRequestDto;
 import com.example.Jinus.dto.request.RequestDto;
 import com.example.Jinus.dto.response.*;
 import com.example.Jinus.repository.v2.cafeteria.CafeteriaRepositoryV2;
@@ -18,8 +19,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Service
 @RequiredArgsConstructor
@@ -47,30 +50,31 @@ public class DietServiceV2 {
         // 요청 필수 파라미터 추출
         String cafeteriaName = requestDto.getAction().getParams().getSys_cafeteria_name();
 
-        return makeParametersToFindDiet(kakaoId, day, cafeteriaName, period, campusName);
+        // 요청 파라미터 객체 생성
+        HandleRequestDto parameters = new HandleRequestDto(kakaoId, campusName, day, period, cafeteriaName);
+
+        return makeParametersToFindDiet(parameters);
     }
 
     // 식단 데이터 찾기 위해 필요한 파라미터들 초기화
     // 식당 id, 날짜, 식사 시간대(아침/점심/저녁)
-    private String makeParametersToFindDiet(String kakaoId, String day, String cafeteriaName,
-                                          String period, String campusName) {
-        int campusId = userServiceV2.getUserCampusId(kakaoId);
+    private String makeParametersToFindDiet(HandleRequestDto parameters) {
+        int campusId = userServiceV2.getUserCampusId(parameters.getKakaoId());
 
         // sysDay로 식단 날짜 설정하기
-        String dietDate = getCurrentDateTime(day);
-        String dietDescription = getDietDescription(cafeteriaName, campusId, period, dietDate);
+        String dietDate = getCurrentDateTime(parameters.getDay());
+        String dietDescription = getDietDescription(parameters, campusId, dietDate);
         // 식당 imgUrl 찾기
         String imgUrl = getImageUrl(campusId);
 
-        String title = "\uD83C\uDF71 " + cafeteriaName + "(" + campusName.substring(0,2) + ") 메뉴";
+        String title = "\uD83C\uDF71 " + parameters.getCafeteriaName() + "(" + parameters.getCampusName().substring(0,2) + ") 메뉴";
         String description = dietDate + "\n\n" + dietDescription;
 
-        return mappingResponse(cafeteriaName, campusName, imgUrl, period, day, title, description);
+        return mappingResponse(parameters, imgUrl, title, description);
     }
 
     // 응답 객체 매핑
-    public String mappingResponse(String cafeteriaName, String campusName, String imgUrl,
-                                  String period, String day, String title, String description) {
+    public String mappingResponse(HandleRequestDto parameters, String imgUrl, String title, String description) {
         // imgUrl 객체 생성
         ThumbnailDto thumbnail = new ThumbnailDto(imgUrl);
 
@@ -81,7 +85,7 @@ public class DietServiceV2 {
         BasicCardDto basicCardDto = new BasicCardDto(title, description, thumbnail, buttonList);
         List<ComponentDto> outputs = List.of(new ComponentDto(basicCardDto));
 
-        List<QuickReplyDto> quickReplies = mappingQuickReply(period, campusName, cafeteriaName, day);
+        List<QuickReplyDto> quickReplies = mappingQuickReply(parameters);
 
         TemplateDto templateDto = new TemplateDto(outputs, quickReplies);
         ResponseDto responseDto = new ResponseDto("2.0", templateDto);
@@ -90,19 +94,19 @@ public class DietServiceV2 {
     }
 
     // quickReply 객체 생성
-    private List<QuickReplyDto> mappingQuickReply(String period, String campusName, String cafeteriaName, String day) {
-        return switch (period) {
+    private List<QuickReplyDto> mappingQuickReply(HandleRequestDto parameters) {
+        return switch (parameters.getPeriod()) {
             case "아침" -> List.of(
-                    new QuickReplyDto("점심", "message", campusName + " " + cafeteriaName + " " + day + " 점심 메뉴"),
-                    new QuickReplyDto("저녁", "message", campusName + " " + cafeteriaName + " " + day + " 저녁 메뉴")
+                    new QuickReplyDto("점심", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 점심 메뉴"),
+                    new QuickReplyDto("저녁", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 저녁 메뉴")
             );
             case "점심" -> List.of(
-                    new QuickReplyDto("아침", "message", campusName + " " + cafeteriaName + " " + day + " 아침 메뉴"),
-                    new QuickReplyDto("저녁", "message", campusName + " " + cafeteriaName + " " + day + " 저녁 메뉴")
+                    new QuickReplyDto("아침", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 아침 메뉴"),
+                    new QuickReplyDto("저녁", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 저녁 메뉴")
             );
             default -> List.of(
-                    new QuickReplyDto("아침", "message", campusName + " " + cafeteriaName + " " + day + " 아침 메뉴"),
-                    new QuickReplyDto("점심", "message", campusName + " " + cafeteriaName + " " + day + " 점심 메뉴")
+                    new QuickReplyDto("아침", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 아침 메뉴"),
+                    new QuickReplyDto("점심", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 점심 메뉴")
             );
         };
     }
@@ -115,12 +119,12 @@ public class DietServiceV2 {
 
 
     // cafeteria_id 존재여부 확인(캠퍼스에 식당이 존재하는지)
-    public String getDietDescription(String cafeteriaName, int campusId, String period, String dateTime) {
-        int cafeteriaId = cafeteriaRepositoryV2.findCafeteriaId(cafeteriaName, campusId).orElse(-1);
+    public String getDietDescription(HandleRequestDto parameters, int campusId,String dateTime) {
+        int cafeteriaId = cafeteriaRepositoryV2.findCafeteriaId(parameters.getCafeteriaName(), campusId).orElse(-1);
         // 존재한다면
         if (cafeteriaId != -1) {
             // 해당 식당 메뉴 찾아오기
-            return getDietList(cafeteriaId, period, dateTime).toString();
+            return getDietList(cafeteriaId, parameters.getPeriod(), dateTime).toString();
         } else { // 존재하지 않는다면
             // 오류메시지 반환
             return SimpleTextResponse.simpleTextResponse("\"식당을 찾지 못했어!\\n어떤 캠퍼스에 있는 식당인지 정확히 알려줘!\"");
@@ -130,9 +134,12 @@ public class DietServiceV2 {
     // 해당 식당 메뉴 찾아오기
     public StringBuilder getDietList(int cafeteriaId, String period, String dateTime) {
         List<Object[]> dietObject = dietRepositoryV2.findDietList(dateTime, period, cafeteriaId);
+        System.out.println("dietObject: " + dietObject);
+        System.out.println("dietObject.size: " + dietObject.size());
         MultiValueMap<String, String> dietList = new LinkedMultiValueMap<>(); // 중복 키 허용(값을 리스트로 반환)
 
         for (Object[] o : dietObject) {
+            System.out.println("o: "+ Arrays.toString(o));
             String dishName = (String) o[2];
 
             String key = (o[0] != null) ? (String)o[0] // dishCategory

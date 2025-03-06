@@ -20,8 +20,8 @@ public class CafeteriaDietEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int dietId;
 
-    @Column(name = "date", columnDefinition = "TIMESTAMP WITH TIME ZONE")
-    private LocalDateTime dateTime;  // 날짜 + 시간 + 시간대
+    @Column(name = "date")
+    private String dateTime;  // 날짜 + 시간 + 시간대
 
 //    @Column(name = "date")
 //    private LocalTime date;
