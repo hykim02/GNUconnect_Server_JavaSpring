@@ -9,7 +9,8 @@ on:
   pull_request:
     paths-ignore:
       - '.github/workflows/**'
-
+  workflow_dispatch:
+  
 jobs:
   build:
     runs-on: ubuntu-latest
