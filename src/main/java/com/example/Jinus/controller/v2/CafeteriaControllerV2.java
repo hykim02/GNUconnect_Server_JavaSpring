@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/spring")
+@RequestMapping("/api/v2/spring")
 public class CafeteriaControllerV2 {
 
     private final UserServiceV2 userServiceV2;
@@ -37,18 +37,34 @@ public class CafeteriaControllerV2 {
 
 
     // 사용자 존재 여부에 따라 응답
-    @PostMapping("/cafeteria/v2")
+    @PostMapping("/cafeteria")
     public String responseCafeteriaOrCampusListCard(@RequestBody RequestDto requestDto) {
         // userId로 campusId 찾기
         String userId = requestDto.getUserRequest().getUser().getId();
         int campusId = userServiceV2.getUserCampusId(userId);
         int sysCampusId = requestDto.getAction().getClientExtra().getSys_campus_id();
 
-        // 사용자가 존재 & 식당 블록에서 캠퍼스 눌렀을 때 -> 식당 리스트
-        if (campusId != -1 && sysCampusId != -1) {
-            return cafeteriaServiceV2.makeCafeteriaListCard(campusId);
-        } else { // 사용자가 존재 X & 식당 블록에서 더보기 버튼 눌렀을 때 -> 캠퍼스 리스트
+        return campusOrCafeteria(campusId, sysCampusId);
+    }
+
+
+    // 반환 조건 설정
+    private String campusOrCafeteria(int campusId, int sysCampusId) {
+        // 더보기 버튼 누른 경우
+        if (sysCampusId == -1) {
             return campusServiceV2.makeCampusListCard();
         }
+
+        // 사용자가 원하는 캠퍼스가 있을 때
+        if (sysCampusId > 0) {
+            return cafeteriaServiceV2.makeCafeteriaListCard(sysCampusId);
+        }
+
+        // 사용자가 원하는 캠퍼스가 없을 때
+        return (campusId != -1)
+                ? cafeteriaServiceV2.makeCafeteriaListCard(campusId)
+                : campusServiceV2.makeCampusListCard();
     }
+
+
 }

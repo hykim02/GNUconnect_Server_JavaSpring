@@ -33,11 +33,6 @@ public class CampusServiceV2 {
         return campusRepositoryV2.findCampusList();
     }
 
-    // 캠퍼스 이름으로 url 찾기
-    public String getCampusImgUrl(String campusName) {
-        return campusRepositoryV2.findCampusImgUrlByCampusName(campusName);
-    }
-
     // 캠퍼스 이름으로 id 찾기
     public int getCampusId(String campusName) {
         return campusRepositoryV2.findCampusIdByName(campusName);
@@ -63,6 +58,7 @@ public class CampusServiceV2 {
             String imageUrl = campus.getThumbnailUrl();
             Map<String, Object> extra = new HashMap<>();
             extra.put("sys_campus_id", campus.getId());
+            System.out.println("campusId: " + campus.getId());
 
             // 캠퍼스 아이템 객체 생성
             ListItemDto listItem = new ListItemDto(campusName, imageUrl, "block", "66067167cdd882158c759fc2", extra);

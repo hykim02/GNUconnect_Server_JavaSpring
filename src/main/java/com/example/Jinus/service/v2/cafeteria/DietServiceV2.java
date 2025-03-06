@@ -79,6 +79,7 @@ public class DietServiceV2 {
         }
     }
 
+
     // 캠퍼스에 식당 존재여부 확인 -> cafeteriaId 찾기
     // cafeteriaId가 -1이면 존재하지 않음
     private int checkIsThereCafeteria(HandleRequestDto parameters) {
@@ -86,11 +87,13 @@ public class DietServiceV2 {
         return cafeteriaServiceV2.getCafeteriaId(parameters.getCafeteriaName(), campusId);
     }
 
+
     // 캠퍼스에 식당이 존재하지 않는 경우 메시지 출력
     private String errorMsgThereIsNoCafeteria() {
         return SimpleTextResponse
                 .simpleTextResponse("식당을 찾지 못했어!\n어떤 캠퍼스에 있는 식당인지 정확히 알려줘!");
     }
+
 
     // 식당 메뉴 존재여부 확인
     private int checkThereIsDiet(HandleRequestDto parameters, int cafeteriaId) {
@@ -100,6 +103,7 @@ public class DietServiceV2 {
                 dietRepositoryV2.findDietList(dietDate, parameters.getPeriod(), cafeteriaId);
         return (!dietObject.isEmpty()) ? 1 : -1;
     }
+
 
     // 카테고리별 메뉴 리스트 생성하기
     private MultiValueMap<String, String> getDiets(HandleRequestDto parameters, int cafeteriaId) {
@@ -119,6 +123,7 @@ public class DietServiceV2 {
         }
         return dietList;
     }
+
 
     // 카테고리별 메뉴 문자열로 나열하기
     public StringBuilder processDietList(MultiValueMap<String, String> dietList) {
@@ -149,7 +154,6 @@ public class DietServiceV2 {
         // 메뉴 연결
         StringBuilder description = new StringBuilder(String.valueOf(dietDate)).append(" ")
                 .append(parameters.getPeriod()).append(diets);
-        System.out.println("description: " +description);
 
         return mappingResponse(parameters, imgUrl, title.toString(), description.toString());
     }
@@ -175,39 +179,6 @@ public class DietServiceV2 {
     }
 
 
-
-
-
-//    private String makeContentsToFindDiet(HandleRequestDto parameters) {
-//        int campusId = campusServiceV2.getCampusId(parameters.getCampusName());
-//
-//        // sysDay로 식단 날짜 설정하기
-//        Date dietDate = getCurrentDate(parameters.getDay());
-//        String dietDescription = getDietDescription(parameters, campusId, dietDate);
-//        // 식당 imgUrl 찾기
-//        String imgUrl = campusServiceV2.getCampusImgUrl(parameters.getCampusName());
-//
-//        // title 데이터 연결
-//        StringBuilder title = new StringBuilder("\uD83C\uDF71 ")
-//                .append(parameters.getCafeteriaName()).append("(")
-//                .append(parameters.getCampusName(), 0, 2).append(") 메뉴");
-//
-//        // 메뉴 연결
-//        StringBuilder description = new StringBuilder();
-//
-//        if (!dietDescription.equals("none")) {
-//            // 메뉴 연결
-//            description.append(dietDate)
-//                    .append(" ").append(parameters.getPeriod()).append(dietDescription);
-//
-//            return mappingResponse(parameters, imgUrl, title.toString(), description.toString());
-//        } else {
-//            return SimpleTextResponse.simpleTextResponse("식당을 찾지 못했어!\n어떤 캠퍼스에 있는 식당인지 정확히 알려줘!");
-//        }
-//    }
-
-
-
     // quickReply 객체 생성
     private List<QuickReplyDto> mappingQuickReply(HandleRequestDto parameters) {
         return switch (parameters.getPeriod()) {
@@ -225,33 +196,6 @@ public class DietServiceV2 {
             );
         };
     }
-
-//    // cafeteria_id 존재여부 확인(캠퍼스에 식당이 존재하는지)
-//    public String getDietDescription(HandleRequestDto parameters, int campusId,Date dietDate) {
-//        int cafeteriaId = cafeteriaServiceV2.getCafeteriaId(parameters.getCafeteriaName(), campusId);
-//        String diets = getDietList(cafeteriaId, parameters.getPeriod(), dietDate).toString();
-//        return (cafeteriaId != -1) ? diets : "none";
-//    }
-
-    // 해당 식당 메뉴 찾아오기
-//    public StringBuilder getDietList(int cafeteriaId, String period, Date dietDate) {
-//        List<Object[]> dietObject = dietRepositoryV2.findDietList(dietDate, period, cafeteriaId);
-//
-//        MultiValueMap<String, String> dietList = new LinkedMultiValueMap<>(); // 중복 키 허용(값을 리스트로 반환)
-//
-//        for (Object[] o : dietObject) {
-//            String dishName = (String) o[2];
-//
-//            String key = (o[0] != null) ? (String)o[0] // dishCategory
-//                    : (o[1] != null) ? (String) o[1] // dishType
-//                    : "메뉴";
-//
-//            dietList.add(key, dishName);
-//        }
-//        return processDietList(dietList);
-//    }
-
-
 
 
     // 일반 파라미터 값 채우기

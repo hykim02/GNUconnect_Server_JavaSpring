@@ -9,18 +9,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/spring")
+@RequestMapping("/api/v2/spring")
 @RequiredArgsConstructor
 public class DietControllerV2 {
     private final DietServiceV2 dietServiceV2;
 
-    @PostMapping("/dish/v2")
+    @PostMapping("/dish")
     public String handleRequest(@RequestBody RequestDto requestDto) {
         return dietServiceV2.requestHandler(requestDto);
     }
-
-//    @PostMapping("/dish/v2")
-//    public void handleRequest(@RequestBody String request) {
-//        System.out.println(request);
-//    }
 }
