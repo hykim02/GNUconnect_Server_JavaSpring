@@ -1,79 +1,200 @@
 package com.example.Jinus.service.v2.cafeteria;
 
-import com.example.Jinus.repository.v2.cafeteria.CafeteriaRepositoryV2;
+import com.example.Jinus.dto.request.DetailParamsItemFieldDto;
+import com.example.Jinus.dto.request.HandleRequestDto;
+import com.example.Jinus.dto.request.RequestDto;
+import com.example.Jinus.dto.response.*;
 import com.example.Jinus.repository.v2.cafeteria.CampusRepositoryV2;
 import com.example.Jinus.repository.v2.cafeteria.DietRepositoryV2;
 import com.example.Jinus.repository.v2.userInfo.UserRepositoryV2;
+import com.example.Jinus.utility.JsonUtils;
 import com.example.Jinus.utility.SimpleTextResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.servlet.View;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Service
+@RequiredArgsConstructor
 public class DietServiceV2 {
     private final DietRepositoryV2 dietRepositoryV2;
     private final UserRepositoryV2 userRepositoryV2;
     private final CampusRepositoryV2 campusRepositoryV2;
-    private final CafeteriaRepositoryV2 cafeteriaRepositoryV2;
+    private final CampusServiceV2 campusServiceV2;
+    private final CafeteriaServiceV2 cafeteriaServiceV2;
+    private final View error;
 
-    public DietServiceV2(DietRepositoryV2 dietRepositoryV2,
-                         UserRepositoryV2 userRepositoryV2,
-                         CampusRepositoryV2 campusRepositoryV2,
-                         CafeteriaRepositoryV2 cafeteriaRepositoryV2) {
-        this.dietRepositoryV2 = dietRepositoryV2;
-        this.userRepositoryV2 = userRepositoryV2;
-        this.campusRepositoryV2 = campusRepositoryV2;
-        this.cafeteriaRepositoryV2 = cafeteriaRepositoryV2;
+    // 식단 데이터 찾기 위해 필요한 파라미터 추출 및 초기화
+    public String requestHandler(RequestDto requestDto) {
+        String kakaoId = requestDto.getUserRequest().getUser().getId();
+
+        // 현재 시간 파악
+        LocalTime time = getCurrentTime();
+
+        // 요청 일반 파라미터 추출
+        DetailParamsItemFieldDto campusName = requestDto.getAction().getDetailParams().getSys_campus_name();
+        DetailParamsItemFieldDto day = requestDto.getAction().getDetailParams().getSys_date();
+        DetailParamsItemFieldDto period = requestDto.getAction().getDetailParams().getSys_time_period();
+        // null이면 값 초기화하기
+        String campusNameValue = (campusName != null) ? campusName.getValue() : getCampusName(kakaoId);
+        String dayValue = (day != null) ? day.getValue() : getDay(time); // 오늘, 내일
+        String periodValue = (period != null) ? period.getValue() : getPeriodOfDay(time); // 아침, 점심, 저녁
+        // 요청 필수 파라미터 추출
+        String cafeteriaName = requestDto.getAction().getParams().getSys_cafeteria_name();
+
+        // 요청 파라미터 객체 생성
+        HandleRequestDto parameters = new HandleRequestDto(kakaoId, campusNameValue, dayValue, periodValue, cafeteriaName);
+
+        return makeResponse(parameters);
     }
 
-    // cafeteria_id 존재여부 확인(캠퍼스에 식당이 존재하는지)
-    public String getDietDescription(String cafeteriaName, int campusId, String period, String dateTime) {
-        int cafeteriaId = cafeteriaRepositoryV2.findCafeteriaId(cafeteriaName, campusId).orElse(-1);
-        // 존재한다면
-        if (cafeteriaId != -1) {
-            // 해당 식당 메뉴 찾아오기
-            return getDietList(cafeteriaId, period, dateTime).toString();
-        } else { // 존재하지 않는다면
-            // 오류메시지 반환
-            return SimpleTextResponse.simpleTextResponse("\"식당을 찾지 못했어!\\n어떤 캠퍼스에 있는 식당인지 정확히 알려줘!\"");
+    // response 생성 로직
+    public String makeResponse(HandleRequestDto parameters) {
+        int campusId = campusServiceV2.getCampusId(parameters.getCampusName());
+        int cafeteriaId = cafeteriaServiceV2.getCafeteriaId(parameters.getCafeteriaName(), campusId);
+        // 캠퍼스에 식당이 존재하는 경우
+        if (checkIsThereCafeteria(parameters) != -1) {
+            // 식당 메뉴가 존재하는 경우
+            if (checkThereIsDiet(parameters, cafeteriaId) != -1) {
+                // 메뉴 찾기
+                MultiValueMap<String, String> dietList = getDiets(parameters, cafeteriaId);
+                StringBuilder diets = processDietList(dietList);
+                return makeContents(parameters, cafeteriaId, diets);
+            } else { // 메뉴 존재하지 않는 경우
+                StringBuilder diets = new StringBuilder("\n\n").append("메뉴가 존재하지 않습니다.");
+                return makeContents(parameters, cafeteriaId, diets);
+            }
+        } else { // 식당 존재하지 않는 경우
+            return errorMsgThereIsNoCafeteria();
         }
     }
 
-    // 해당 식당 메뉴 찾아오기
-    public StringBuilder getDietList(int cafeteriaId, String period, String dateTime) {
-        List<Object[]> dietObject = dietRepositoryV2.findDietList(dateTime, period, cafeteriaId);
+
+    // 캠퍼스에 식당 존재여부 확인 -> cafeteriaId 찾기
+    // cafeteriaId가 -1이면 존재하지 않음
+    private int checkIsThereCafeteria(HandleRequestDto parameters) {
+        int campusId = campusServiceV2.getCampusId(parameters.getCampusName());
+        return cafeteriaServiceV2.getCafeteriaId(parameters.getCafeteriaName(), campusId);
+    }
+
+
+    // 캠퍼스에 식당이 존재하지 않는 경우 메시지 출력
+    private String errorMsgThereIsNoCafeteria() {
+        return SimpleTextResponse
+                .simpleTextResponse("식당을 찾지 못했어!\n어떤 캠퍼스에 있는 식당인지 정확히 알려줘!");
+    }
+
+
+    // 식당 메뉴 존재여부 확인
+    private int checkThereIsDiet(HandleRequestDto parameters, int cafeteriaId) {
+        // 오늘, 내일 문자열로 날짜 설정하기
+        Date dietDate = getCurrentDate(parameters.getDay());
+        List<Object[]> dietObject =
+                dietRepositoryV2.findDietList(dietDate, parameters.getPeriod(), cafeteriaId);
+        return (!dietObject.isEmpty()) ? 1 : -1;
+    }
+
+
+    // 카테고리별 메뉴 리스트 생성하기
+    private MultiValueMap<String, String> getDiets(HandleRequestDto parameters, int cafeteriaId) {
+        // 오늘, 내일 문자열로 날짜 설정하기
+        Date dietDate = getCurrentDate(parameters.getDay());
+        List<Object[]> dietObject =
+                dietRepositoryV2.findDietList(dietDate, parameters.getPeriod(), cafeteriaId);
         MultiValueMap<String, String> dietList = new LinkedMultiValueMap<>(); // 중복 키 허용(값을 리스트로 반환)
 
         for (Object[] o : dietObject) {
-            String dishName = (String) o[2];
-
             String key = (o[0] != null) ? (String)o[0] // dishCategory
                     : (o[1] != null) ? (String) o[1] // dishType
                     : "메뉴";
 
+            String dishName = (String) o[2];
             dietList.add(key, dishName);
         }
-        return processDietList(dietList);
+        return dietList;
     }
 
-    // 식당 리스트 가공
+
+    // 카테고리별 메뉴 문자열로 나열하기
     public StringBuilder processDietList(MultiValueMap<String, String> dietList) {
         // 키 추출
         Set<String> keys = new TreeSet<>(dietList.keySet()); // 순서 보장 - 오름차순
         StringBuilder description = new StringBuilder();
 
         for (String key : keys) {
-            description.append("[").append(key).append("]").append("\n");
+            description.append("\n[").append(key).append("]").append("\n");
             dietList.get(key).forEach(diet -> description.append(diet).append("\n"));
         }
         return description;
+    }
+
+
+    // 응답 내용 초기화
+    private String makeContents(HandleRequestDto parameters, int cafeteriaId, StringBuilder diets) {
+        // 식당 img 찾기
+        String imgUrl = cafeteriaServiceV2.getImgUrl(cafeteriaId);
+
+        // title 데이터 연결
+        StringBuilder title = new StringBuilder("\uD83C\uDF71 ")
+                .append(parameters.getCafeteriaName()).append("(")
+                .append(parameters.getCampusName(), 0, 2).append(") 메뉴");
+
+        // 식단 날짜
+        Date dietDate = getCurrentDate(parameters.getDay());
+        // 메뉴 연결
+        StringBuilder description = new StringBuilder(String.valueOf(dietDate)).append(" ")
+                .append(parameters.getPeriod()).append(diets);
+
+        return mappingResponse(parameters, imgUrl, title.toString(), description.toString());
+    }
+
+    // 응답 객체 매핑
+    public String mappingResponse(HandleRequestDto parameters, String imgUrl, String title, String description) {
+        // imgUrl 객체 생성
+        ThumbnailDto thumbnail = new ThumbnailDto(imgUrl);
+
+        // 버튼 리스트 객체 생성
+        List<ButtonDto> buttonList = List.of(new ButtonDto("공유하기", "share"));
+
+        // 아이템 객체 생성
+        BasicCardDto basicCardDto = new BasicCardDto(title, description, thumbnail, buttonList);
+        List<ComponentDto> outputs = List.of(new ComponentDto(basicCardDto));
+
+        List<QuickReplyDto> quickReplies = mappingQuickReply(parameters);
+
+        TemplateDto templateDto = new TemplateDto(outputs, quickReplies);
+        ResponseDto responseDto = new ResponseDto("2.0", templateDto);
+
+        return JsonUtils.toJsonResponse(responseDto);
+    }
+
+
+    // quickReply 객체 생성
+    private List<QuickReplyDto> mappingQuickReply(HandleRequestDto parameters) {
+        return switch (parameters.getPeriod()) {
+            case "아침" -> List.of(
+                    new QuickReplyDto("점심", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 점심 메뉴"),
+                    new QuickReplyDto("저녁", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 저녁 메뉴")
+            );
+            case "점심" -> List.of(
+                    new QuickReplyDto("아침", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 아침 메뉴"),
+                    new QuickReplyDto("저녁", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 저녁 메뉴")
+            );
+            default -> List.of(
+                    new QuickReplyDto("아침", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 아침 메뉴"),
+                    new QuickReplyDto("점심", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 점심 메뉴")
+            );
+        };
     }
 
 
@@ -100,10 +221,10 @@ public class DietServiceV2 {
     }
 
     // sys_period 파라미터 초기화 - 시간 범위에 따라 아침, 점심, 저녁을 판별
-    public String getPeriodOfDay(LocalTime time) {
-        if (time.isAfter(LocalTime.parse("19:00:00")) && time.isBefore(LocalTime.parse("09:30:00"))) {
+    public static String getPeriodOfDay(LocalTime time) {
+        if (time.isAfter(LocalTime.parse("19:00:00")) || time.isBefore(LocalTime.parse("09:30:00"))) {
             return "아침";
-        } else if (time.isAfter(LocalTime.parse("09:30:00")) && time.isBefore(LocalTime.parse("13:30:00"))) {
+        } else if (!time.isBefore(LocalTime.parse("09:30:00")) && time.isBefore(LocalTime.parse("13:30:00"))) {
             return "점심";
         } else {
             return "저녁";
@@ -119,22 +240,16 @@ public class DietServiceV2 {
         return LocalTime.parse(timeSplit[0]);
     }
 
-    // sys_date 파라미터 값으로 조회할 날짜 찾는 함수
-    public String getCurrentDateTime(String sysDate) {
+    // sysDay 파라미터 값으로 조회할 날짜 찾는 함수
+    public Date getCurrentDate(String sysDate) {
         // 현재 날짜
-        LocalDate currentDate = LocalDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDate();
+        LocalDate today = LocalDate.now();
+        LocalDate tomorrow = today.plusDays(1); // 하루 뒤 날짜 계산
 
         if (sysDate.equals("오늘")) {
-            return currentDate.toString();
+            return Date.valueOf(today);
         } else { // 내일
-            LocalDate tomorrowDate = currentDate.plusDays(1);
-            return tomorrowDate.toString();
+            return Date.valueOf(tomorrow);
         }
     }
-
-    // 식당 imgUrl 찾기
-    public String getImageUrl(int campusId) {
-        return cafeteriaRepositoryV2.findCafeteriaUrlByCampusId(campusId);
-    }
-
 }

@@ -20,7 +20,7 @@ import java.util.List;
 import static java.lang.String.valueOf;
 
 @RestController
-@RequestMapping("/api/spring")
+@RequestMapping("/api/v2/spring")
 public class NoticeControllerV2 {
 
     private final NoticeServiceV2 noticeServiceV2;
@@ -39,7 +39,7 @@ public class NoticeControllerV2 {
     }
 
     // 학교 공지사항 조회
-    @PostMapping("/main-notice/v2")
+    @PostMapping("/main-notice")
     public String getMainNotice() {
         int departmentId = 117; // 학교 공지사항 id
         String departmentEng = "main"; // 학과 영문명
@@ -47,7 +47,7 @@ public class NoticeControllerV2 {
     }
 
     // 학과 공지사항 조회
-    @PostMapping("/department-notice/v2")
+    @PostMapping("/department-notice")
     public String responseDepartmentNotice(@RequestBody RequestDto requestDto) {
         String userId = requestDto.getUserRequest().getUser().getId();
         int departmentId = userServiceV2.getUserDepartmentId(userId);
