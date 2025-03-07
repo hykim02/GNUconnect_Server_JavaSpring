@@ -35,7 +35,6 @@ public class CafeteriaControllerV2 {
         this.cafeteriaServiceV2 = cafeteriaServiceV2;
     }
 
-
     // 사용자 존재 여부에 따라 응답
     @PostMapping("/cafeteria")
     public String responseCafeteriaOrCampusListCard(@RequestBody RequestDto requestDto) {
@@ -44,27 +43,6 @@ public class CafeteriaControllerV2 {
         int campusId = userServiceV2.getUserCampusId(userId);
         int sysCampusId = requestDto.getAction().getClientExtra().getSys_campus_id();
 
-        return campusOrCafeteria(campusId, sysCampusId);
+        return cafeteriaServiceV2.campusOrCafeteria(campusId, sysCampusId);
     }
-
-
-    // 반환 조건 설정
-    private String campusOrCafeteria(int campusId, int sysCampusId) {
-        // 더보기 버튼 누른 경우
-        if (sysCampusId == -1) {
-            return campusServiceV2.makeCampusListCard();
-        }
-
-        // 사용자가 원하는 캠퍼스가 있을 때
-        if (sysCampusId > 0) {
-            return cafeteriaServiceV2.makeCafeteriaListCard(sysCampusId);
-        }
-
-        // 사용자가 원하는 캠퍼스가 없을 때
-        return (campusId != -1)
-                ? cafeteriaServiceV2.makeCafeteriaListCard(campusId)
-                : campusServiceV2.makeCampusListCard();
-    }
-
-
 }

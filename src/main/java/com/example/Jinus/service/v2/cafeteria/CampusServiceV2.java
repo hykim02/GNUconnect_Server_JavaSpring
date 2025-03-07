@@ -58,7 +58,6 @@ public class CampusServiceV2 {
             String imageUrl = campus.getThumbnailUrl();
             Map<String, Object> extra = new HashMap<>();
             extra.put("sys_campus_id", campus.getId());
-            System.out.println("campusId: " + campus.getId());
 
             // 캠퍼스 아이템 객체 생성
             ListItemDto listItem = new ListItemDto(campusName, imageUrl, "block", "66067167cdd882158c759fc2", extra);
