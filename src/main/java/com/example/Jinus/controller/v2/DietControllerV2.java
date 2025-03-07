@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DietControllerV2 {
     private final DietServiceV2 dietServiceV2;
 
-    @PostMapping("/dish/v2")
+    @PostMapping("/v2/dish")
     public String handleRequest(@RequestBody RequestDto requestDto) {
         return dietServiceV2.requestHandler(requestDto);
     }

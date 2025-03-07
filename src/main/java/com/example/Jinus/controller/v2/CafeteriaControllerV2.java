@@ -36,7 +36,7 @@ public class CafeteriaControllerV2 {
     }
 
     // 사용자 존재 여부에 따라 응답
-    @PostMapping("/cafeteria/v2")
+    @PostMapping("/v2/cafeteria")
     public String responseCafeteriaOrCampusListCard(@RequestBody RequestDto requestDto) {
         // userId로 campusId 찾기
         String userId = requestDto.getUserRequest().getUser().getId();
