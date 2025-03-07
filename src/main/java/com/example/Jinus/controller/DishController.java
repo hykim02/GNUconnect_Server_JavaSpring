@@ -32,10 +32,12 @@ public class DishController {
         this.cafeteriaDietService = cafeteriaDietService;
         this.campusService = campusService;
     }
+
     @PostMapping("/api/spring/dish")
     public String handleRequest(@RequestBody RequestDto requestDto) {
         String userId = requestDto.getUserRequest().getUser().getId(); // 유저 id
         String rawDate = requestDto.getAction().getDetailParams().getSys_date().getOrigin(); // 날짜 (오늘, 내일)
+        System.out.println(rawDate);
         String campusName = requestDto.getAction().getParams().getSys_campus_name(); // 캠퍼스 이름 (동의어 사용)
         String cafeteriaName = requestDto.getAction().getParams().getSys_cafeteria_name(); // 식당 이름 (동의어 사용)
         String rawPeriod = (requestDto.getAction().getDetailParams().getSys_time_period() != null)
@@ -50,4 +52,9 @@ public class DishController {
         String dishInfo = cafeteriaDietService.processRequest(userId, rawDate, campusName, cafeteriaName, rawPeriod);
         return dishInfo;
     }
+
+//    @PostMapping("/api/spring/dish")
+//    public void handleRequest(@RequestBody String requestDto) {
+//        System.out.println(requestDto);
+//    }
 }

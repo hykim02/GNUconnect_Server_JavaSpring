@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v2/spring")
+@RequestMapping("/api/spring")
 public class CafeteriaControllerV2 {
 
     private final UserServiceV2 userServiceV2;
@@ -36,7 +36,7 @@ public class CafeteriaControllerV2 {
     }
 
     // 사용자 존재 여부에 따라 응답
-    @PostMapping("/cafeteria")
+    @PostMapping("/cafeteria/v2")
     public String responseCafeteriaOrCampusListCard(@RequestBody RequestDto requestDto) {
         // userId로 campusId 찾기
         String userId = requestDto.getUserRequest().getUser().getId();
