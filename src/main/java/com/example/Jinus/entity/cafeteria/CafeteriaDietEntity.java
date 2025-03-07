@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.sql.Date;
 
 @Entity
 @Getter
@@ -20,11 +20,8 @@ public class CafeteriaDietEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int dietId;
 
-    @Column(name = "date", columnDefinition = "TIMESTAMP WITH TIME ZONE")
-    private LocalDateTime dateTime;  // 날짜 + 시간 + 시간대
-
-//    @Column(name = "date")
-//    private LocalTime date;
+    @Column(name = "date")
+    private Date dietDate;
 
     @Column(name = "day")
     private String day_of_week;

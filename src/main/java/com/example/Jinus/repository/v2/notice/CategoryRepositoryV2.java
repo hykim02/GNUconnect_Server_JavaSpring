@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface NoticeCategoryRepositoryV2 extends JpaRepository<NoticeCategoryEntity, Integer> {
+public interface CategoryRepositoryV2 extends JpaRepository<NoticeCategoryEntity, Integer> {
     @Query("SELECT n FROM NoticeCategoryEntity n" +
             " WHERE n.departmentId = :departmentId AND n.lastNttSn != 0")
     List<NoticeCategoryEntity> findCategoryListByDepartmentId(@Param("departmentId")int departmentId);

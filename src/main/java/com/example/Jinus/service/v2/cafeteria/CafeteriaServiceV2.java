@@ -31,6 +31,34 @@ public class CafeteriaServiceV2 {
         return cafeteriaRepositoryV2.findCafeteriaListByCampusId(campusId);
     }
 
+    // 캠퍼스에 식당이 존재한다면 cafeteriaId 찾기
+    public int getCafeteriaId(String cafeteriaName, int campusId) {
+        return cafeteriaRepositoryV2.findCafeteriaId(cafeteriaName, campusId).orElse(-1);
+    }
+
+    // 식당 imgUrl 찾기
+    public String getImgUrl(int cafeteriaId) {
+        return cafeteriaRepositoryV2.findImgUrlByCafeteriaId(cafeteriaId);
+    }
+
+    // 반환 조건 설정
+    public String campusOrCafeteria(int campusId, int sysCampusId) {
+        // 더보기 버튼 누른 경우
+        if (sysCampusId == -1) {
+            return campusServiceV2.makeCampusListCard();
+        }
+
+        // 사용자가 원하는 캠퍼스가 있을 때
+        if (sysCampusId > 0) {
+            return makeCafeteriaListCard(sysCampusId);
+        }
+
+        // 사용자가 원하는 캠퍼스가 없을 때
+        return (campusId != -1)
+                ? makeCafeteriaListCard(campusId)
+                : campusServiceV2.makeCampusListCard();
+    }
+
     // 식당 리스트 반환 메소드
     public String makeCafeteriaListCard(int campusId) {
         String campusName = campusServiceV2.getUserCampusName(campusId);

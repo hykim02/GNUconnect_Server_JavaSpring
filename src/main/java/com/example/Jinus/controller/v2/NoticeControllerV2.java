@@ -3,7 +3,7 @@ package com.example.Jinus.controller.v2;
 import com.example.Jinus.dto.request.RequestDto;
 import com.example.Jinus.dto.response.*;
 import com.example.Jinus.entity.notice.NoticeCategoryEntity;
-import com.example.Jinus.service.v2.notice.NoticeCategoryServiceV2;
+import com.example.Jinus.service.v2.notice.CategoryServiceV2;
 import com.example.Jinus.service.v2.notice.NoticeServiceV2;
 import com.example.Jinus.service.v2.userInfo.DepartmentServiceV2;
 import com.example.Jinus.service.v2.userInfo.UserServiceV2;
@@ -11,6 +11,7 @@ import com.example.Jinus.utility.JsonUtils;
 import com.example.Jinus.utility.TextCardResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -19,15 +20,16 @@ import java.util.List;
 import static java.lang.String.valueOf;
 
 @RestController
+@RequestMapping("/api/v2/spring")
 public class NoticeControllerV2 {
 
     private final NoticeServiceV2 noticeServiceV2;
-    private final NoticeCategoryServiceV2 noticeCategoryServiceV2;
+    private final CategoryServiceV2 noticeCategoryServiceV2;
     private final DepartmentServiceV2 departmentServiceV2;
     private final UserServiceV2 userServiceV2;
 
     public NoticeControllerV2(NoticeServiceV2 noticeServiceV2,
-                              NoticeCategoryServiceV2 noticeCategoryServiceV2,
+                              CategoryServiceV2 noticeCategoryServiceV2,
                               DepartmentServiceV2 departmentServiceV2,
                               UserServiceV2 userServiceV2) {
         this.noticeServiceV2 = noticeServiceV2;
@@ -37,7 +39,7 @@ public class NoticeControllerV2 {
     }
 
     // 학교 공지사항 조회
-    @PostMapping("/api/spring/main-notice/v2")
+    @PostMapping("/main-notice")
     public String getMainNotice() {
         int departmentId = 117; // 학교 공지사항 id
         String departmentEng = "main"; // 학과 영문명
@@ -45,7 +47,7 @@ public class NoticeControllerV2 {
     }
 
     // 학과 공지사항 조회
-    @PostMapping("/api/spring/department-notice/v2")
+    @PostMapping("/department-notice")
     public String responseDepartmentNotice(@RequestBody RequestDto requestDto) {
         String userId = requestDto.getUserRequest().getUser().getId();
         int departmentId = userServiceV2.getUserDepartmentId(userId);

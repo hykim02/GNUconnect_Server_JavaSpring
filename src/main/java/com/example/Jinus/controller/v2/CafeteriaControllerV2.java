@@ -10,6 +10,7 @@ import com.example.Jinus.utility.JsonUtils;
 import com.example.Jinus.utility.ListCardResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api/v2/spring")
 public class CafeteriaControllerV2 {
 
     private final UserServiceV2 userServiceV2;
@@ -33,20 +35,14 @@ public class CafeteriaControllerV2 {
         this.cafeteriaServiceV2 = cafeteriaServiceV2;
     }
 
-
     // 사용자 존재 여부에 따라 응답
-    @PostMapping("/api/spring/cafeteria/v2")
+    @PostMapping("/cafeteria")
     public String responseCafeteriaOrCampusListCard(@RequestBody RequestDto requestDto) {
         // userId로 campusId 찾기
         String userId = requestDto.getUserRequest().getUser().getId();
         int campusId = userServiceV2.getUserCampusId(userId);
         int sysCampusId = requestDto.getAction().getClientExtra().getSys_campus_id();
 
-        // 사용자가 존재 & 식당 블록에서 캠퍼스 눌렀을 때 -> 식당 리스트
-        if (campusId != -1 && sysCampusId != -1) {
-            return cafeteriaServiceV2.makeCafeteriaListCard(campusId);
-        } else { // 사용자가 존재 X & 식당 블록에서 더보기 버튼 눌렀을 때 -> 캠퍼스 리스트
-            return campusServiceV2.makeCampusListCard();
-        }
+        return cafeteriaServiceV2.campusOrCafeteria(campusId, sysCampusId);
     }
 }

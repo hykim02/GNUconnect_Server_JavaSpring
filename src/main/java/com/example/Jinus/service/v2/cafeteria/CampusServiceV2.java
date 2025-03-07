@@ -25,12 +25,17 @@ public class CampusServiceV2 {
 
     // 사용자의 campusId 받아 캠퍼스 이름 찾기
     public String getUserCampusName(int campusId) {
-        return campusRepositoryV2.findCampusNameById(campusId);
+        return campusRepositoryV2.findCampusNameByCampusId(campusId);
     }
 
     // id < 5인 캠퍼스 찾아 리스트로 반환
     public List<CampusEntity> getCampusList() {
         return campusRepositoryV2.findCampusList();
+    }
+
+    // 캠퍼스 이름으로 id 찾기
+    public int getCampusId(String campusName) {
+        return campusRepositoryV2.findCampusIdByName(campusName);
     }
 
     // 캠퍼스 리스트 반환 메소드

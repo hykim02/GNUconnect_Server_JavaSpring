@@ -6,16 +6,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
+import java.sql.Date;
 import java.util.List;
 
 @Repository
 public interface DietRepositoryV2 extends JpaRepository<CafeteriaDietEntity, Integer> {
-    @Query("SELECT c.dishName, c.dishCategory, c.dishType FROM CafeteriaDietEntity c " +
-            "WHERE c.dateTime = :date " +
+    @Query("SELECT c.dishCategory, c.dishType, c.dishName FROM CafeteriaDietEntity c " +
+            "WHERE c.dietDate = :dietDate " +
             "AND c.time = :period AND c.cafeteriaId = :cafeteriaId")
-    List<Object[]> findDietList(@Param("date") LocalDateTime date,
+    List<Object[]> findDietList(@Param("dietDate") Date dietDate,
                                 @Param("period") String period,
                                 @Param("cafeteriaId") int cafeteriaId);
 }

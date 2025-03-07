@@ -42,7 +42,7 @@ public class CampusRepositoryV2Test {
         String campusName = "가좌";
 
         // when
-        String result = campusRepositoryV2.findCampusNameById(campusId);
+        String result = campusRepositoryV2.findCampusNameByCampusId(campusId);
         System.out.println("result: " + result);
 
         // then
