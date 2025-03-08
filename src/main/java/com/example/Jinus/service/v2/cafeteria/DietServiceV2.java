@@ -7,6 +7,7 @@ import com.example.Jinus.dto.response.*;
 import com.example.Jinus.repository.v2.cafeteria.CampusRepositoryV2;
 import com.example.Jinus.repository.v2.cafeteria.DietRepositoryV2;
 import com.example.Jinus.repository.v2.userInfo.UserRepositoryV2;
+import com.example.Jinus.utility.DateUtils;
 import com.example.Jinus.utility.JsonUtils;
 import com.example.Jinus.utility.SimpleTextResponse;
 import lombok.RequiredArgsConstructor;
@@ -70,7 +71,7 @@ public class DietServiceV2 {
                 StringBuilder diets = processDietList(dietList);
                 return makeContents(parameters, cafeteriaId, diets);
             } else { // 메뉴 존재하지 않는 경우
-                StringBuilder diets = new StringBuilder("\n\n").append("메뉴가 존재하지 않습니다.");
+                StringBuilder diets = new StringBuilder("\n메뉴가 존재하지 않습니다.");
                 return makeContents(parameters, cafeteriaId, diets);
             }
         } else { // 식당 존재하지 않는 경우
@@ -150,9 +151,11 @@ public class DietServiceV2 {
 
         // 식단 날짜
         Date dietDate = getCurrentDate(parameters.getDay());
+        String day = DateUtils.getDayOfWeekInKorean(dietDate);
+
         // 메뉴 연결
-        StringBuilder description = new StringBuilder(String.valueOf(dietDate)).append(" ")
-                .append(parameters.getPeriod()).append(diets);
+        StringBuilder description = new StringBuilder(String.valueOf(dietDate)).append("(").append(day).append(") ")
+                .append(parameters.getPeriod()).append("\n").append(diets);
 
         return mappingResponse(parameters, imgUrl, title.toString(), description.toString());
     }
