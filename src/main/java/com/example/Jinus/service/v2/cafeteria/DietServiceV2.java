@@ -152,7 +152,7 @@ public class DietServiceV2 {
         Date dietDate = getCurrentDate(parameters.getDay());
         // 메뉴 연결
         StringBuilder description = new StringBuilder(String.valueOf(dietDate)).append(" ")
-                .append(parameters.getPeriod()).append(diets);
+                .append(parameters.getPeriod()).append("\n").append(diets);
 
         return mappingResponse(parameters, imgUrl, title.toString(), description.toString());
     }
