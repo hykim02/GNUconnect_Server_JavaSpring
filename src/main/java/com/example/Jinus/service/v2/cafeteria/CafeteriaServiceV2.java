@@ -26,21 +26,6 @@ public class CafeteriaServiceV2 {
         this.campusServiceV2 = campusServiceV2;
     }
 
-    // 사용자의 campusId와 동일한 식당리스트 찾기
-    public List<Object[]> getCafeteriaList(int campusId) {
-        return cafeteriaRepositoryV2.findCafeteriaListByCampusId(campusId);
-    }
-
-    // 캠퍼스에 식당이 존재한다면 cafeteriaId 찾기
-    public int getCafeteriaId(String cafeteriaName, int campusId) {
-        return cafeteriaRepositoryV2.findCafeteriaId(cafeteriaName, campusId).orElse(-1);
-    }
-
-    // 식당 imgUrl 찾기
-    public String getImgUrl(int cafeteriaId) {
-        return cafeteriaRepositoryV2.findImgUrlByCafeteriaId(cafeteriaId);
-    }
-
     // 반환 조건 설정
     public String campusOrCafeteria(int campusId, int sysCampusId) {
         // 더보기 버튼 누른 경우
@@ -54,7 +39,7 @@ public class CafeteriaServiceV2 {
         }
 
         // 사용자가 원하는 캠퍼스가 없을 때
-        return (campusId != -1)
+        return (campusId != -1) // 사용자 존재 여부
                 ? makeCafeteriaListCard(campusId)
                 : campusServiceV2.makeCampusListCard();
     }
@@ -96,5 +81,20 @@ public class CafeteriaServiceV2 {
         ButtonDto button = new ButtonDto("더보기", "block", "66067167cdd882158c759fc2", extra);
         buttonDto.add(button);
         return buttonDto;
+    }
+
+    // 사용자의 campusId와 동일한 식당리스트 찾기
+    public List<Object[]> getCafeteriaList(int campusId) {
+        return cafeteriaRepositoryV2.findCafeteriaListByCampusId(campusId);
+    }
+
+    // 캠퍼스에 식당이 존재한다면 cafeteriaId 찾기
+    public int getCafeteriaId(String cafeteriaName, int campusId) {
+        return cafeteriaRepositoryV2.findCafeteriaId(cafeteriaName, campusId).orElse(-1);
+    }
+
+    // 식당 imgUrl 찾기
+    public String getImgUrl(int cafeteriaId) {
+        return cafeteriaRepositoryV2.findImgUrlByCafeteriaId(cafeteriaId);
     }
 }
