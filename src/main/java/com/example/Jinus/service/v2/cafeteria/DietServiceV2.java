@@ -7,6 +7,7 @@ import com.example.Jinus.dto.response.*;
 import com.example.Jinus.repository.v2.cafeteria.CampusRepositoryV2;
 import com.example.Jinus.repository.v2.cafeteria.DietRepositoryV2;
 import com.example.Jinus.repository.v2.userInfo.UserRepositoryV2;
+import com.example.Jinus.service.v2.userInfo.UserServiceV2;
 import com.example.Jinus.utility.DateUtils;
 import com.example.Jinus.utility.JsonUtils;
 import com.example.Jinus.utility.SimpleTextResponse;
@@ -29,10 +30,9 @@ import java.util.TreeSet;
 @RequiredArgsConstructor
 public class DietServiceV2 {
     private final DietRepositoryV2 dietRepositoryV2;
-    private final UserRepositoryV2 userRepositoryV2;
-    private final CampusRepositoryV2 campusRepositoryV2;
     private final CampusServiceV2 campusServiceV2;
     private final CafeteriaServiceV2 cafeteriaServiceV2;
+    private final UserServiceV2 userServiceV2;
 
     // 식단 데이터 찾기 위해 필요한 파라미터 추출 및 초기화
     public String requestHandler(RequestDto requestDto) {
@@ -203,11 +203,12 @@ public class DietServiceV2 {
     // 일반 파라미터 값 채우기
     // sys_campus_name 파라미터 초기화
     public String getCampusName(String kakaoId) {
+        System.out.println("diet - campusId 확인1");
         // 학과 등록 여부 확인
-        int campusId = userRepositoryV2.findCampusIdById(kakaoId).orElse(-1);
+        int campusId = userServiceV2.getUserCampusId(kakaoId);
         // 학과 등록한 경우 campusId가 존재함
         if (campusId != -1) {
-            return campusRepositoryV2.findCampusNameByCampusId(campusId);
+            return campusServiceV2.getUserCampusName(campusId);
         } else { // 학과 등록 안한 경우
             return  "가좌캠퍼스";
         }
