@@ -18,9 +18,4 @@ public class DietControllerV2 {
     public String handleRequest(@RequestBody RequestDto requestDto) {
         return dietServiceV2.requestHandler(requestDto);
     }
-
-//    @PostMapping("/dish")
-//    public void handleRequest(@RequestBody String requestDto) {
-//        System.out.println(requestDto);
-//    }
 }
