@@ -25,7 +25,6 @@ public class UserServiceV2 {
             cacheManager = "contentCacheManager"
     )
     public int getUserCampusId(String userId) {
-        System.out.println("campusId 쿼리실행");
         Optional<Integer> campusId = userRepositoryV2.findCampusIdById(userId);
         // 존재한다면 campusId, 존재하지 않는다면 -1 반환
         return campusId.orElse(-1);

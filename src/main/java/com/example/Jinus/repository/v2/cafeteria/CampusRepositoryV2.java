@@ -18,10 +18,6 @@ public interface CampusRepositoryV2 extends JpaRepository<CampusEntity, Integer>
     @Query("SELECT c FROM CampusEntity c WHERE c.id < 5")
     List<CampusEntity> findCampusList();
 
-    // campusName으로 imgUrl 찾기
-    @Query("SELECT c.thumbnailUrl FROM CampusEntity c WHERE c.campusNameKo = :campusName")
-    String findCampusImgUrlByCampusName(@Param("campusName")String campusName);
-
     // campusName으로 id 찾기
     @Query("SELECT c.id FROM CampusEntity c WHERE c.campusNameKo = :campusName")
     int findCampusIdByName(@Param("campusName")String campusName);

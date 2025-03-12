@@ -22,7 +22,6 @@ public class CafeteriaControllerV2 {
     public String responseCafeteriaOrCampusListCard(@RequestBody RequestDto requestDto) {
         // userId로 campusId 찾기
         String userId = requestDto.getUserRequest().getUser().getId();
-        System.out.println("cafeteria - campusId 확인");
         int campusId = userServiceV2.getUserCampusId(userId);
         int sysCampusId = requestDto.getAction().getClientExtra().getSys_campus_id();
 

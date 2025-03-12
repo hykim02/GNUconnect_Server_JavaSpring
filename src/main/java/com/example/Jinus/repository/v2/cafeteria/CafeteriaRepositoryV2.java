@@ -19,6 +19,7 @@ public interface CafeteriaRepositoryV2 extends JpaRepository<CafeteriaEntity, In
     )
     List<Object[]> findCafeteriaListByCampusId(@Param("campusId")int campusId);
 
+
     // campusId와 식당이름으로 cafeteriaId 찾기
     @Query("SELECT c.id FROM CafeteriaEntity c " +
             "WHERE c.campusId = :campusId AND c.cafeteriaNameKo = :cafeteriaName")

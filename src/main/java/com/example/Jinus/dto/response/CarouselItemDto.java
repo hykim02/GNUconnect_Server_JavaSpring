@@ -5,20 +5,11 @@ import lombok.Setter;
 
 import java.util.List;
 
-@Getter
-@Setter
-public class CarouselItemDto {
-    private HeaderDto header;
-    private List<ListItemDto> items;
-    private List<ButtonDto> buttons;
+public record CarouselItemDto(HeaderDto header,
+                              List<ListItemDto> items,
+                              List<ButtonDto> buttons) {
 
     public CarouselItemDto(HeaderDto header, List<ListItemDto> items) {
-        this.header = header;
-        this.items = items;
-    }
-
-    public CarouselItemDto(HeaderDto header, List<ListItemDto> items, List<ButtonDto> buttons) {
-        this(header, items);
-        this.buttons = buttons;
+        this(header, items, null);
     }
 }

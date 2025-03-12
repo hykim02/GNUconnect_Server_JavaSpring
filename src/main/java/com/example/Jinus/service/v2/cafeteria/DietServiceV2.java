@@ -107,10 +107,7 @@ public class DietServiceV2 {
 
     // 카테고리별 메뉴 리스트 생성하기
     private MultiValueMap<String, String> getDiets(HandleRequestDto parameters, int cafeteriaId) {
-        // 오늘, 내일 문자열로 날짜 설정하기
-        Date dietDate = getCurrentDate(parameters.getDay());
-        List<Object[]> dietObject =
-                dietRepositoryV2.findDietList(dietDate, parameters.getPeriod(), cafeteriaId);
+        List<Object[]> dietObject = getDietList(parameters, cafeteriaId);
         MultiValueMap<String, String> dietList = new LinkedMultiValueMap<>(); // 중복 키 허용(값을 리스트로 반환)
 
         for (Object[] o : dietObject) {
@@ -122,6 +119,18 @@ public class DietServiceV2 {
             dietList.add(key, dishName);
         }
         return dietList;
+    }
+
+
+    // 식단 데이터 가져오기
+    private List<Object[]> getDietList(HandleRequestDto parameters, int cafeteriaId) {
+        // 오늘, 내일 문자열로 날짜 설정하기
+        Date dietDate = getCurrentDate(parameters.getDay());
+        // 식단 데이터 찾기
+        List<Object[]> dietObject =
+                dietRepositoryV2.findDietList(dietDate, parameters.getPeriod(), cafeteriaId);
+
+        return dietObject;
     }
 
 
@@ -203,7 +212,6 @@ public class DietServiceV2 {
     // 일반 파라미터 값 채우기
     // sys_campus_name 파라미터 초기화
     public String getCampusName(String kakaoId) {
-        System.out.println("diet - campusId 확인1");
         // 학과 등록 여부 확인
         int campusId = userServiceV2.getUserCampusId(kakaoId);
         // 학과 등록한 경우 campusId가 존재함
