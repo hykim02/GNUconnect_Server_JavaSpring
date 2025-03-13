@@ -4,9 +4,7 @@ import com.example.Jinus.dto.request.DetailParamsItemFieldDto;
 import com.example.Jinus.dto.request.HandleRequestDto;
 import com.example.Jinus.dto.request.RequestDto;
 import com.example.Jinus.dto.response.*;
-import com.example.Jinus.repository.v2.cafeteria.CampusRepositoryV2;
 import com.example.Jinus.repository.v2.cafeteria.DietRepositoryV2;
-import com.example.Jinus.repository.v2.userInfo.UserRepositoryV2;
 import com.example.Jinus.service.v2.userInfo.UserServiceV2;
 import com.example.Jinus.utility.DateUtils;
 import com.example.Jinus.utility.JsonUtils;
@@ -15,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.servlet.View;
 
 import java.sql.Date;
 import java.time.LocalDate;

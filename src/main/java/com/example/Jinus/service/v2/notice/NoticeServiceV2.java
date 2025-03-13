@@ -63,7 +63,7 @@ public class NoticeServiceV2 {
         CarouselDto carousel = new CarouselDto("listCard", categoryList);
         List<ComponentDto> componentList = new ArrayList<>();
         componentList.add(new ComponentDto(carousel));
-        TemplateDto templateDto = new TemplateDto(componentList);
+        TemplateDto templateDto = new TemplateDto(componentList, null);
         ResponseDto responseDto = new ResponseDto("2.0", templateDto);
         return JsonUtils.toJsonResponse(responseDto);
     }

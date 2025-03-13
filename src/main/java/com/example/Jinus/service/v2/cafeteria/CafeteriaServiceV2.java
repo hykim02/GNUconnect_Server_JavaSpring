@@ -6,6 +6,7 @@ import com.example.Jinus.dto.response.ResponseDto;
 import com.example.Jinus.repository.v2.cafeteria.CafeteriaRepositoryV2;
 import com.example.Jinus.utility.JsonUtils;
 import com.example.Jinus.utility.ListCardResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,17 +15,12 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class CafeteriaServiceV2 {
 
     private final CafeteriaRepositoryV2 cafeteriaRepositoryV2;
     private final CampusServiceV2 campusServiceV2;
 
-    public CafeteriaServiceV2(
-            CafeteriaRepositoryV2 cafeteriaRepositoryV2,
-            CampusServiceV2 campusServiceV2) {
-        this.cafeteriaRepositoryV2 = cafeteriaRepositoryV2;
-        this.campusServiceV2 = campusServiceV2;
-    }
 
     // 반환 조건 설정
     public String campusOrCafeteria(int campusId, int sysCampusId) {
