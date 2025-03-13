@@ -115,7 +115,7 @@ public class CafeteriaController {
         ComponentDto cardTypeDto = new ComponentDto(carouselComponent);
         outputs.add(cardTypeDto);
 
-        TemplateDto template = new TemplateDto(outputs);
+        TemplateDto template = new TemplateDto(outputs, null);
         ResponseDto responseDto = new ResponseDto("2.0", template);
 
         return JsonUtils.toJsonResponse(responseDto);
@@ -144,7 +144,7 @@ public class CafeteriaController {
         ComponentDto cardTypeDto = new ComponentDto(carouselComponent);
         outputs.add(cardTypeDto);
 
-        TemplateDto template = new TemplateDto(outputs);
+        TemplateDto template = new TemplateDto(outputs, null);
         ResponseDto responseDto = new ResponseDto("2.0", template);
 
         return JsonUtils.toJsonResponse(responseDto);

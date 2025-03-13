@@ -1,5 +1,6 @@
 package com.example.Jinus.repository.v2.cafeteria;
 
+import com.example.Jinus.dto.data.DietDto;
 import com.example.Jinus.entity.cafeteria.CafeteriaDietEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,10 +12,11 @@ import java.util.List;
 
 @Repository
 public interface DietRepositoryV2 extends JpaRepository<CafeteriaDietEntity, Integer> {
-    @Query("SELECT c.dishCategory, c.dishType, c.dishName FROM CafeteriaDietEntity c " +
+    @Query("SELECT new com.example.Jinus.dto.data.DietDto(c.dishCategory, c.dishName, c.dishType) " +
+            "FROM CafeteriaDietEntity c " +
             "WHERE c.dietDate = :dietDate " +
             "AND c.time = :period AND c.cafeteriaId = :cafeteriaId")
-    List<Object[]> findDietList(@Param("dietDate") Date dietDate,
-                                @Param("period") String period,
-                                @Param("cafeteriaId") int cafeteriaId);
+    List<DietDto> findDietList(@Param("dietDate") Date dietDate,
+                               @Param("period") String period,
+                               @Param("cafeteriaId") int cafeteriaId);
 }

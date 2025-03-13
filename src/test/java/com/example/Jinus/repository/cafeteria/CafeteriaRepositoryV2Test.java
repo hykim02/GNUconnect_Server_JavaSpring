@@ -1,5 +1,6 @@
 package com.example.Jinus.repository.cafeteria;
 
+import com.example.Jinus.dto.data.CafeteriaDto;
 import com.example.Jinus.entity.cafeteria.CafeteriaEntity;
 import com.example.Jinus.repository.v2.cafeteria.CafeteriaRepositoryV2;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +45,7 @@ public class CafeteriaRepositoryV2Test {
         resultList.add(row1);
 
         // when
-        List<Object[]> result = cafeteriaRepositoryV2.findCafeteriaListByCampusId(userCampusId);
+        List<CafeteriaDto> result = cafeteriaRepositoryV2.findCafeteriaListByCampusId(userCampusId);
 
         // then
         // 객체이므로 isEqualTo만 사용하면 메모리 주소를 비교함

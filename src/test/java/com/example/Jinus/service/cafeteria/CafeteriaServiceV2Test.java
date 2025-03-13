@@ -1,5 +1,6 @@
 package com.example.Jinus.service.cafeteria;
 
+import com.example.Jinus.dto.data.CafeteriaDto;
 import com.example.Jinus.repository.v2.cafeteria.CafeteriaRepositoryV2;
 import com.example.Jinus.service.v2.cafeteria.CafeteriaServiceV2;
 import org.junit.jupiter.api.DisplayName;
@@ -33,13 +34,13 @@ public class CafeteriaServiceV2Test {
         // given
         int campusId = 2;
         // 예상 데이터
-        List<Object[]> resultList = new ArrayList<>();
-        Object[] row1 = {"아람관","aram.com"};
-        resultList.add(row1);
+        List<CafeteriaDto> resultList = new ArrayList<>();
+        CafeteriaDto cafeteriaDto = new CafeteriaDto("아람관", "aram.com");
+        resultList.add(cafeteriaDto);
 
         // when
         Mockito.when(cafeteriaRepositoryV2.findCafeteriaListByCampusId(campusId)).thenReturn(resultList);
-        List<Object[]> result = cafeteriaServiceV2.getCafeteriaList(campusId);
+        List<CafeteriaDto> result = cafeteriaServiceV2.getCafeteriaList(campusId);
 
         // then
         assertThat(result).usingRecursiveComparison().isEqualTo(resultList);

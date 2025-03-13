@@ -1,5 +1,6 @@
 package com.example.Jinus.service.v2.cafeteria;
 
+import com.example.Jinus.dto.data.DietDto;
 import com.example.Jinus.dto.request.DetailParamsItemFieldDto;
 import com.example.Jinus.dto.request.HandleRequestDto;
 import com.example.Jinus.dto.request.RequestDto;
@@ -10,6 +11,7 @@ import com.example.Jinus.utility.DateUtils;
 import com.example.Jinus.utility.JsonUtils;
 import com.example.Jinus.utility.SimpleTextResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -96,38 +98,41 @@ public class DietServiceV2 {
     private int checkThereIsDiet(HandleRequestDto parameters, int cafeteriaId) {
         // 오늘, 내일 문자열로 날짜 설정하기
         Date dietDate = getCurrentDate(parameters.getDay());
-        List<Object[]> dietObject =
+        List<DietDto> dietDtos =
                 dietRepositoryV2.findDietList(dietDate, parameters.getPeriod(), cafeteriaId);
-        return (!dietObject.isEmpty()) ? 1 : -1;
+        return (!dietDtos.isEmpty()) ? 1 : -1;
     }
 
 
     // 카테고리별 메뉴 리스트 생성하기
     private MultiValueMap<String, String> getDiets(HandleRequestDto parameters, int cafeteriaId) {
-        List<Object[]> dietObject = getDietList(parameters, cafeteriaId);
+        List<DietDto> dietDtos = getDietList(parameters, cafeteriaId);
         MultiValueMap<String, String> dietList = new LinkedMultiValueMap<>(); // 중복 키 허용(값을 리스트로 반환)
 
-        for (Object[] o : dietObject) {
-            String key = (o[0] != null) ? (String)o[0] // dishCategory
-                    : (o[1] != null) ? (String) o[1] // dishType
+        for (DietDto o : dietDtos) {
+            String key = (o.getDishCategory() != null) ? o.getDishCategory()
+                    : (o.getDishType() != null) ? o.getDishType()
                     : "메뉴";
 
-            String dishName = (String) o[2];
-            dietList.add(key, dishName);
+            dietList.add(key, o.getDishName());
         }
         return dietList;
     }
 
 
+    @Cacheable(
+            value = "dietList",
+            key = "#parameters.day + '::' + #parameters.period + '::' + #cafeteriaId",
+            unless = "#result == null || #result.isEmpty()",
+            cacheManager = "contentCacheManager"
+    )
     // 식단 데이터 가져오기
-    private List<Object[]> getDietList(HandleRequestDto parameters, int cafeteriaId) {
+    public List<DietDto> getDietList(HandleRequestDto parameters, int cafeteriaId) {
+        System.out.println("getDietList 호출");
         // 오늘, 내일 문자열로 날짜 설정하기
         Date dietDate = getCurrentDate(parameters.getDay());
-        // 식단 데이터 찾기
-        List<Object[]> dietObject =
-                dietRepositoryV2.findDietList(dietDate, parameters.getPeriod(), cafeteriaId);
-
-        return dietObject;
+        // 식단 데이터 반환
+        return dietRepositoryV2.findDietList(dietDate, parameters.getPeriod(), cafeteriaId);
     }
 
 

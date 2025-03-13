@@ -1,5 +1,6 @@
 package com.example.Jinus.service.v2.cafeteria;
 
+import com.example.Jinus.dto.data.CafeteriaDto;
 import com.example.Jinus.dto.response.ButtonDto;
 import com.example.Jinus.dto.response.ListItemDto;
 import com.example.Jinus.dto.response.ResponseDto;
@@ -7,6 +8,8 @@ import com.example.Jinus.repository.v2.cafeteria.CafeteriaRepositoryV2;
 import com.example.Jinus.utility.JsonUtils;
 import com.example.Jinus.utility.ListCardResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,6 +23,7 @@ public class CafeteriaServiceV2 {
 
     private final CafeteriaRepositoryV2 cafeteriaRepositoryV2;
     private final CampusServiceV2 campusServiceV2;
+    private final RedisTemplate<String, Object> redisTemplate;
 
 
     // 반환 조건 설정
@@ -43,7 +47,7 @@ public class CafeteriaServiceV2 {
     // 식당 리스트 반환 메소드
     public String makeCafeteriaListCard(int campusId) {
         String campusName = campusServiceV2.getUserCampusName(campusId);
-        List<Object[]> cafeteriaList = getCafeteriaList(campusId);
+        List<CafeteriaDto> cafeteriaList = getCafeteriaList(campusId);
 
         // 식당 리스트 객체 생성
         List<ListItemDto> listItems = mappingCafeteriaList(campusName, cafeteriaList);
@@ -53,20 +57,21 @@ public class CafeteriaServiceV2 {
         return JsonUtils.toJsonResponse(responseDto);
     }
 
+
     // 식당 리스트 객체 생성
-    public List<ListItemDto> mappingCafeteriaList(String campusName, List<Object[]> cafeteriaList) {
+    public List<ListItemDto> mappingCafeteriaList(String campusName, List<CafeteriaDto> cafeteriaList) {
         List<ListItemDto> listItems = new ArrayList<>();
-        for (Object[]  cafeteria : cafeteriaList) {
-            String cafeteriaName = cafeteria[0].toString();
-            String imageUrl = cafeteria[1].toString();
-            String userMessage = campusName + " " + cafeteriaName;
+        for (CafeteriaDto  cafeteria : cafeteriaList) {
+            String userMessage = campusName + " " + cafeteria.getCafeteriaNameKo();
 
             // 리스트 아이템 객체 생성
-            ListItemDto listItem = new ListItemDto(cafeteriaName, campusName, imageUrl, "message", userMessage);
+            ListItemDto listItem = new ListItemDto(cafeteria.getCafeteriaNameKo(), campusName,
+                    cafeteria.getThumbnailUrl(), "message", userMessage);
             listItems.add(listItem);
         }
         return listItems;
     }
+
 
     // 더보기 버튼 리스트 생성
     public List<ButtonDto> mappingButtonDto() {
@@ -79,15 +84,25 @@ public class CafeteriaServiceV2 {
         return buttonDto;
     }
 
-    // 사용자의 campusId와 동일한 식당리스트 찾기
-    public List<Object[]> getCafeteriaList(int campusId) {
+
+    // Redis에서 조회 (없으면 DB에서 가져옴)
+    // cache-warming 적용
+    @Cacheable(value = "cafeteriaList", key = "#campusId", cacheManager = "contentCacheManager")
+    public List<CafeteriaDto> getCafeteriaList(int campusId) {
+        System.out.println("getCafeteriaList 호출");
         return cafeteriaRepositoryV2.findCafeteriaListByCampusId(campusId);
     }
 
+
+    @Cacheable(value = "cafeteriaId", key = "#cafeteriaName",
+            unless = "#result == -1",
+            cacheManager = "contentCacheManager")
     // 캠퍼스에 식당이 존재한다면 cafeteriaId 찾기
     public int getCafeteriaId(String cafeteriaName, int campusId) {
+        System.out.println("getCafeteriaId 호출");
         return cafeteriaRepositoryV2.findCafeteriaId(cafeteriaName, campusId).orElse(-1);
     }
+
 
     // 식당 imgUrl 찾기
     public String getImgUrl(int cafeteriaId) {

@@ -8,6 +8,7 @@ import com.example.Jinus.utility.JsonUtils;
 import com.example.Jinus.utility.ListCardResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,8 +31,10 @@ public class CampusServiceV2 {
         return campusRepositoryV2.findCampusList();
     }
 
+    @Cacheable(value = "campusName", key = "#campusName", cacheManager = "contentCacheManager")
     // 캠퍼스 이름으로 id 찾기
     public int getCampusId(String campusName) {
+        System.out.println("getCampusId 호출");
         return campusRepositoryV2.findCampusIdByName(campusName);
     }
 

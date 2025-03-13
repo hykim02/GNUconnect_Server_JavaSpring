@@ -14,7 +14,7 @@ public class TextCardResponse {
         ComponentDto componentDto = new ComponentDto(textCardDto);
         componentDtoList.add(componentDto);
 
-        TemplateDto templateDto = new TemplateDto(componentDtoList);
+        TemplateDto templateDto = new TemplateDto(componentDtoList, null);
         ResponseDto responseDto = new ResponseDto("2.0", templateDto);
 
         return JsonUtils.toJsonResponse(responseDto);
@@ -27,7 +27,7 @@ public class TextCardResponse {
         ComponentDto componentDto = new ComponentDto(textCardDto);
         componentDtoList.add(componentDto);
 
-        TemplateDto templateDto = new TemplateDto(componentDtoList);
+        TemplateDto templateDto = new TemplateDto(componentDtoList, null);
         ResponseDto responseDto = new ResponseDto("2.0", templateDto);
 
         return JsonUtils.toJsonResponse(responseDto);
