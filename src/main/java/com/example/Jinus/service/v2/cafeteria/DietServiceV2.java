@@ -2,7 +2,7 @@ package com.example.Jinus.service.v2.cafeteria;
 
 import com.example.Jinus.dto.data.DietDto;
 import com.example.Jinus.dto.request.DetailParamsItemFieldDto;
-import com.example.Jinus.dto.request.HandleRequestDto;
+import com.example.Jinus.dto.data.HandleRequestDto;
 import com.example.Jinus.dto.request.RequestDto;
 import com.example.Jinus.dto.response.*;
 import com.example.Jinus.repository.v2.cafeteria.DietRepositoryV2;
@@ -11,7 +11,6 @@ import com.example.Jinus.utility.DateUtils;
 import com.example.Jinus.utility.JsonUtils;
 import com.example.Jinus.utility.SimpleTextResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -52,8 +51,11 @@ public class DietServiceV2 {
         // 요청 필수 파라미터 추출
         String cafeteriaName = requestDto.getAction().getParams().getSys_cafeteria_name();
 
+        // 오늘, 내일 문자열로 날짜 생성
+        Date dietDate = getCurrentDate(dayValue);
+
         // 요청 파라미터 객체 생성
-        HandleRequestDto parameters = new HandleRequestDto(kakaoId, campusNameValue, dayValue, periodValue, cafeteriaName);
+        HandleRequestDto parameters = new HandleRequestDto(kakaoId, campusNameValue, dayValue, periodValue, cafeteriaName, dietDate);
 
         return makeResponse(parameters);
     }
@@ -98,7 +100,7 @@ public class DietServiceV2 {
     // 식당 메뉴 존재여부 확인
     private int checkThereIsDiet(HandleRequestDto parameters, int cafeteriaId) {
         // 오늘, 내일 문자열로 날짜 설정하기
-        Date dietDate = dietCacheServiceV2.getCurrentDate(parameters.getDay());
+        Date dietDate = parameters.getDietDate();
         List<DietDto> dietDtos =
                 dietRepositoryV2.findDietList(dietDate, parameters.getPeriod(), cafeteriaId);
         return (!dietDtos.isEmpty()) ? 1 : -1;
@@ -146,7 +148,7 @@ public class DietServiceV2 {
                 .append(parameters.getCampusName(), 0, 2).append(") 메뉴");
 
         // 식단 날짜
-        Date dietDate = dietCacheServiceV2.getCurrentDate(parameters.getDay());
+        Date dietDate = parameters.getDietDate();
         String day = DateUtils.getDayOfWeekInKorean(dietDate);
 
         // 메뉴 연결
@@ -236,5 +238,19 @@ public class DietServiceV2 {
         String[] timeSplit = dateTimeParts[1].split("\\.");
 
         return LocalTime.parse(timeSplit[0]);
+    }
+
+
+    // sysDay 파라미터 값으로 조회할 날짜 찾는 함수
+    public Date getCurrentDate(String sysDate) {
+        // 현재 날짜
+        LocalDate today = LocalDate.now();
+        LocalDate tomorrow = today.plusDays(1); // 하루 뒤 날짜 계산
+
+        if (sysDate.equals("오늘")) {
+            return Date.valueOf(today);
+        } else { // 내일
+            return Date.valueOf(tomorrow);
+        }
     }
 }

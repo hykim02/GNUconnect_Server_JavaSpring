@@ -35,7 +35,7 @@ public class RedisCacheManager {
                 RedisCacheConfiguration.defaultCacheConfig()
                         .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer())) // Key Serializer
                         .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())) // Value Serializer
-                        .entryTtl(Duration.ofHours(24)) // 12시간 유지
+                        .entryTtl(Duration.ofHours(12)) // 12시간 유지
                         .disableCachingNullValues());
 
         // 3. 캠퍼스 이름별 캠퍼스 id 캐시 (불변 데이터, 7일 유지)
