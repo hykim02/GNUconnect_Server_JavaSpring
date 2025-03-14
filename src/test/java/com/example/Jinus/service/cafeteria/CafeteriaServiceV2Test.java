@@ -2,6 +2,7 @@ package com.example.Jinus.service.cafeteria;
 
 import com.example.Jinus.dto.data.CafeteriaDto;
 import com.example.Jinus.repository.v2.cafeteria.CafeteriaRepositoryV2;
+import com.example.Jinus.service.v2.cafeteria.CacheServiceV2;
 import com.example.Jinus.service.v2.cafeteria.CafeteriaServiceV2;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,8 @@ public class CafeteriaServiceV2Test {
 
     @Autowired
     private CafeteriaServiceV2 cafeteriaServiceV2;
+    @Autowired
+    private CacheServiceV2 cacheServiceV2;
     @MockBean
     private CafeteriaRepositoryV2 cafeteriaRepositoryV2;
 
@@ -40,7 +43,7 @@ public class CafeteriaServiceV2Test {
 
         // when
         Mockito.when(cafeteriaRepositoryV2.findCafeteriaListByCampusId(campusId)).thenReturn(resultList);
-        List<CafeteriaDto> result = cafeteriaServiceV2.getCafeteriaList(campusId);
+        List<CafeteriaDto> result = cacheServiceV2.getCafeteriaList(campusId);
 
         // then
         assertThat(result).usingRecursiveComparison().isEqualTo(resultList);
