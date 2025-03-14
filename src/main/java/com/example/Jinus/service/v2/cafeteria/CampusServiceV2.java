@@ -7,7 +7,6 @@ import com.example.Jinus.repository.v2.cafeteria.CampusRepositoryV2;
 import com.example.Jinus.utility.JsonUtils;
 import com.example.Jinus.utility.ListCardResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
