@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class CafeteriaCacheWarmUp implements ApplicationRunner {
+public class CafeteriaCacheWarmingServiceV2 implements ApplicationRunner {
 
     private final CafeteriaServiceV2 cafeteriaServiceV2;
 

@@ -32,6 +32,7 @@ public class DietServiceV2 {
     private final CampusServiceV2 campusServiceV2;
     private final CafeteriaServiceV2 cafeteriaServiceV2;
     private final UserServiceV2 userServiceV2;
+    private final DietCacheServiceV2 dietCacheServiceV2;
 
     // 식단 데이터 찾기 위해 필요한 파라미터 추출 및 초기화
     public String requestHandler(RequestDto requestDto) {
@@ -97,7 +98,7 @@ public class DietServiceV2 {
     // 식당 메뉴 존재여부 확인
     private int checkThereIsDiet(HandleRequestDto parameters, int cafeteriaId) {
         // 오늘, 내일 문자열로 날짜 설정하기
-        Date dietDate = getCurrentDate(parameters.getDay());
+        Date dietDate = dietCacheServiceV2.getCurrentDate(parameters.getDay());
         List<DietDto> dietDtos =
                 dietRepositoryV2.findDietList(dietDate, parameters.getPeriod(), cafeteriaId);
         return (!dietDtos.isEmpty()) ? 1 : -1;
@@ -105,8 +106,8 @@ public class DietServiceV2 {
 
 
     // 카테고리별 메뉴 리스트 생성하기
-    private MultiValueMap<String, String> getDiets(HandleRequestDto parameters, int cafeteriaId) {
-        List<DietDto> dietDtos = getDietList(parameters, cafeteriaId);
+    public MultiValueMap<String, String> getDiets(HandleRequestDto parameters, int cafeteriaId) {
+        List<DietDto> dietDtos = dietCacheServiceV2.getDietList(parameters, cafeteriaId);
         MultiValueMap<String, String> dietList = new LinkedMultiValueMap<>(); // 중복 키 허용(값을 리스트로 반환)
 
         for (DietDto o : dietDtos) {
@@ -117,22 +118,6 @@ public class DietServiceV2 {
             dietList.add(key, o.getDishName());
         }
         return dietList;
-    }
-
-
-    @Cacheable(
-            value = "dietList",
-            key = "#parameters.day + '::' + #parameters.period + '::' + #cafeteriaId",
-            unless = "#result == null || #result.isEmpty()",
-            cacheManager = "contentCacheManager"
-    )
-    // 식단 데이터 가져오기
-    public List<DietDto> getDietList(HandleRequestDto parameters, int cafeteriaId) {
-        System.out.println("getDietList 호출");
-        // 오늘, 내일 문자열로 날짜 설정하기
-        Date dietDate = getCurrentDate(parameters.getDay());
-        // 식단 데이터 반환
-        return dietRepositoryV2.findDietList(dietDate, parameters.getPeriod(), cafeteriaId);
     }
 
 
@@ -161,7 +146,7 @@ public class DietServiceV2 {
                 .append(parameters.getCampusName(), 0, 2).append(") 메뉴");
 
         // 식단 날짜
-        Date dietDate = getCurrentDate(parameters.getDay());
+        Date dietDate = dietCacheServiceV2.getCurrentDate(parameters.getDay());
         String day = DateUtils.getDayOfWeekInKorean(dietDate);
 
         // 메뉴 연결
@@ -251,18 +236,5 @@ public class DietServiceV2 {
         String[] timeSplit = dateTimeParts[1].split("\\.");
 
         return LocalTime.parse(timeSplit[0]);
-    }
-
-    // sysDay 파라미터 값으로 조회할 날짜 찾는 함수
-    public Date getCurrentDate(String sysDate) {
-        // 현재 날짜
-        LocalDate today = LocalDate.now();
-        LocalDate tomorrow = today.plusDays(1); // 하루 뒤 날짜 계산
-
-        if (sysDate.equals("오늘")) {
-            return Date.valueOf(today);
-        } else { // 내일
-            return Date.valueOf(tomorrow);
-        }
     }
 }
