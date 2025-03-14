@@ -30,10 +30,9 @@ public class CampusServiceV2 {
         return campusRepositoryV2.findCampusList();
     }
 
-    @Cacheable(value = "campusName", key = "#campusName", cacheManager = "contentCacheManager")
+//    @Cacheable(value = "campusName", key = "#campusName", cacheManager = "contentCacheManager")
     // 캠퍼스 이름으로 id 찾기
     public int getCampusId(String campusName) {
-        System.out.println("getCampusId 호출");
         return campusRepositoryV2.findCampusIdByName(campusName);
     }
 

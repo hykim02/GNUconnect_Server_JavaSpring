@@ -23,7 +23,7 @@ public class CafeteriaServiceV2 {
 
     private final CafeteriaRepositoryV2 cafeteriaRepositoryV2;
     private final CampusServiceV2 campusServiceV2;
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final CacheServiceV2 cacheServiceV2;
 
 
     // 반환 조건 설정
@@ -47,7 +47,7 @@ public class CafeteriaServiceV2 {
     // 식당 리스트 반환 메소드
     public String makeCafeteriaListCard(int campusId) {
         String campusName = campusServiceV2.getUserCampusName(campusId);
-        List<CafeteriaDto> cafeteriaList = getCafeteriaList(campusId);
+        List<CafeteriaDto> cafeteriaList = cacheServiceV2.getCafeteriaList(campusId);
 
         // 식당 리스트 객체 생성
         List<ListItemDto> listItems = mappingCafeteriaList(campusName, cafeteriaList);
@@ -85,21 +85,11 @@ public class CafeteriaServiceV2 {
     }
 
 
-    // Redis에서 조회 (없으면 DB에서 가져옴)
-    // cache-warming 적용
-    @Cacheable(value = "cafeteriaList", key = "#campusId", cacheManager = "contentCacheManager")
-    public List<CafeteriaDto> getCafeteriaList(int campusId) {
-        System.out.println("getCafeteriaList 호출");
-        return cafeteriaRepositoryV2.findCafeteriaListByCampusId(campusId);
-    }
-
-
     @Cacheable(value = "cafeteriaId", key = "#cafeteriaName",
             unless = "#result == -1",
             cacheManager = "contentCacheManager")
     // 캠퍼스에 식당이 존재한다면 cafeteriaId 찾기
     public int getCafeteriaId(String cafeteriaName, int campusId) {
-        System.out.println("getCafeteriaId 호출");
         return cafeteriaRepositoryV2.findCafeteriaId(cafeteriaName, campusId).orElse(-1);
     }
 

@@ -31,7 +31,7 @@ public class DietServiceV2 {
     private final CampusServiceV2 campusServiceV2;
     private final CafeteriaServiceV2 cafeteriaServiceV2;
     private final UserServiceV2 userServiceV2;
-    private final DietCacheServiceV2 dietCacheServiceV2;
+    private final CacheServiceV2 dietCacheServiceV2;
 
     // 식단 데이터 찾기 위해 필요한 파라미터 추출 및 초기화
     public String requestHandler(RequestDto requestDto) {
