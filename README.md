@@ -1,8 +1,12 @@
-# 커넥트 지누
+<div align="center">
+  <img src="https://github.com/GNU-connect/.github/raw/main/profile/image/logo.png" alt="logo" width="200px">
+  <br><br>
+  <b>경상국립대 학생들을 위한 교내 정보 제공 카카오톡 챗봇 서비스</b>
+</div>
+<br><br>
 
-경상국립대 학생들을 위한 교내 정보 제공 카카오톡 챗봇 서비스
-
-# 프로젝트 기능 소개
+# ⭐️ 프로젝트 기능 소개
+<br><br>
 
 <div align="center">
   <h3>학교 & 학과 공지사항 조회</h3>
