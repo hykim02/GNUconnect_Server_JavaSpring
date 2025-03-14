@@ -6,7 +6,8 @@ import com.example.Jinus.entity.cafeteria.CampusEntity;
 import com.example.Jinus.repository.v2.cafeteria.CampusRepositoryV2;
 import com.example.Jinus.utility.JsonUtils;
 import com.example.Jinus.utility.ListCardResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,13 +16,9 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class CampusServiceV2 {
     private final CampusRepositoryV2 campusRepositoryV2;
-
-    @Autowired
-    public CampusServiceV2(CampusRepositoryV2 campusRepositoryV2) {
-        this.campusRepositoryV2 = campusRepositoryV2;
-    }
 
     // 사용자의 campusId 받아 캠퍼스 이름 찾기
     public String getUserCampusName(int campusId) {
@@ -33,6 +30,7 @@ public class CampusServiceV2 {
         return campusRepositoryV2.findCampusList();
     }
 
+//    @Cacheable(value = "campusName", key = "#campusName", cacheManager = "contentCacheManager")
     // 캠퍼스 이름으로 id 찾기
     public int getCampusId(String campusName) {
         return campusRepositoryV2.findCampusIdByName(campusName);

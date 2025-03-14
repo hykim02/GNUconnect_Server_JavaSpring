@@ -18,4 +18,5 @@ public class DietControllerV2 {
     public String handleRequest(@RequestBody RequestDto requestDto) {
         return dietServiceV2.requestHandler(requestDto);
     }
+
 }

@@ -18,7 +18,7 @@ public class ListCardResponse {
         // template 객체 생성
         List<ComponentDto> outputs = new ArrayList<>();
         outputs.add(componentDto);
-        TemplateDto templateDto = new TemplateDto(outputs);
+        TemplateDto templateDto = new TemplateDto(outputs, null);
         // response 객체 생성
         return new ResponseDto("2.0", templateDto);
     }

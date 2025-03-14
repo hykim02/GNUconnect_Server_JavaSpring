@@ -14,7 +14,7 @@ public class SimpleTextResponse {
         List<ComponentDto> components = new ArrayList<>();
         components.add(componentDto);
 
-        TemplateDto templateDto = new TemplateDto(components);
+        TemplateDto templateDto = new TemplateDto(components, null);
         ResponseDto responseDto = new ResponseDto("2.0", templateDto);
 
         return JsonUtils.toJsonResponse(responseDto);
