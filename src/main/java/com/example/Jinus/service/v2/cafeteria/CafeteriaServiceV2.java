@@ -85,9 +85,9 @@ public class CafeteriaServiceV2 {
     }
 
 
-    @Cacheable(value = "cafeteriaId", key = "#cafeteriaName",
-            unless = "#result == -1",
-            cacheManager = "contentCacheManager")
+//    @Cacheable(value = "cafeteriaId", key = "#cafeteriaName", // key 값을 'campusId + cafeteriaName' 조합으로 수정할 필요가 있음.
+//            unless = "#result == -1",
+//            cacheManager = "contentCacheManager")
     // 캠퍼스에 식당이 존재한다면 cafeteriaId 찾기
     public int getCafeteriaId(String cafeteriaName, int campusId) {
         return cafeteriaRepositoryV2.findCafeteriaId(cafeteriaName, campusId).orElse(-1);
