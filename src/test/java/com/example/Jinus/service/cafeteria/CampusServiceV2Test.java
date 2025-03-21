@@ -41,7 +41,6 @@ public class CampusServiceV2Test {
         // when
         Mockito.when(campusRepositoryV2.findCampusNameByCampusId(campusId)).thenReturn(campusName); // Mocking
         String result = campusServiceV2.getUserCampusName(campusId);
-        System.out.println("result:" + result);
 
         // then
         assertThat(result).isEqualTo(campusName);

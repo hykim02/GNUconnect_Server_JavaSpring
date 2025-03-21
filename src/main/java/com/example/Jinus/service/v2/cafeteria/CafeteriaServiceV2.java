@@ -85,7 +85,7 @@ public class CafeteriaServiceV2 {
     }
 
 
-    @Cacheable(value = "cafeteriaId", key = "#cafeteriaName",
+    @Cacheable(value = "cafeteriaId", key = "#campusId + '::' + #cafeteriaName",
             unless = "#result == -1",
             cacheManager = "contentCacheManager")
     // 캠퍼스에 식당이 존재한다면 cafeteriaId 찾기

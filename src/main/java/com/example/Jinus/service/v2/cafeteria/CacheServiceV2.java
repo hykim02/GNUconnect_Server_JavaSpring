@@ -34,7 +34,6 @@ public class CacheServiceV2 {
 
 
     // Redis에서 조회 (없으면 DB에서 가져옴)
-    // cache-warming 적용
     @Cacheable(value = "cafeteriaList", key = "#campusId", cacheManager = "contentCacheManager")
     public List<CafeteriaDto> getCafeteriaList(int campusId) {
         return cafeteriaRepositoryV2.findCafeteriaListByCampusId(campusId);
