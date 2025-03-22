@@ -21,8 +21,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,14 +42,23 @@ public class DietServiceV2 {
         // 현재 시간 파악
         LocalTime time = getCurrentTime();
 
-        // 요청 일반 파라미터 추출
-        DetailParamsItemFieldDto campusName = requestDto.getAction().getDetailParams().getSys_campus_name();
-        DetailParamsItemFieldDto day = requestDto.getAction().getDetailParams().getSys_date();
-        DetailParamsItemFieldDto period = requestDto.getAction().getDetailParams().getSys_time_period();
-        // null이면 값 초기화하기
-        String campusNameValue = (campusName != null) ? campusName.getValue() : getCampusName(kakaoId);
-        String dayValue = (day != null) ? day.getValue() : getDay(time); // 오늘, 내일
-        String periodValue = (period != null) ? period.getValue() : getPeriodOfDay(time); // 아침, 점심, 저녁
+//        // 요청 일반 파라미터 추출
+//        DetailParamsItemFieldDto campusName = requestDto.getAction().getDetailParams().getSys_campus_name();
+//        DetailParamsItemFieldDto day = requestDto.getAction().getDetailParams().getSys_date();
+//        DetailParamsItemFieldDto period = requestDto.getAction().getDetailParams().getSys_time_period();
+//        // null이면 값 초기화하기
+//        String campusNameValue = (campusName != null) ? campusName.getValue() : getCampusName(kakaoId);
+//        String dayValue = (day != null) ? day.getValue() : getDay(time); // 오늘, 내일
+//        String periodValue = (period != null) ? period.getValue() : getPeriodOfDay(time); // 아침, 점심, 저녁
+
+        // DetailParams에서 값 추출 (null 체크 포함)
+        String campusNameValue = extractValue(requestDto.getAction().getDetailParams().getSys_campus_name())
+                .orElseGet(() -> getCampusName(kakaoId));
+        String dayValue = extractValue(requestDto.getAction().getDetailParams().getSys_date())
+                .orElseGet(() -> getDay(time));
+        String periodValue = extractValue(requestDto.getAction().getDetailParams().getSys_time_period())
+                .orElseGet(() -> getPeriodOfDay(time));
+
         // 요청 필수 파라미터 추출
         String cafeteriaName = requestDto.getAction().getParams().getSys_cafeteria_name();
 
@@ -59,6 +70,13 @@ public class DietServiceV2 {
 
         return makeResponse(parameters);
     }
+
+
+    // 기본값 설정 유틸
+    private Optional<String> extractValue(DetailParamsItemFieldDto fieldDto) {
+        return Optional.ofNullable(fieldDto).map(DetailParamsItemFieldDto::getValue);
+    }
+
 
     // response 생성 로직
     public String makeResponse(HandleRequestDto parameters) {
@@ -177,21 +195,51 @@ public class DietServiceV2 {
 
 
     // quickReply 객체 생성
+//    private List<QuickReplyDto> mappingQuickReply(HandleRequestDto parameters) {
+//        return switch (parameters.getPeriod()) {
+//            case "아침" -> List.of(
+//                    new QuickReplyDto("점심", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 점심 메뉴"),
+//                    new QuickReplyDto("저녁", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 저녁 메뉴")
+//            );
+//            case "점심" -> List.of(
+//                    new QuickReplyDto("아침", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 아침 메뉴"),
+//                    new QuickReplyDto("저녁", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 저녁 메뉴")
+//            );
+//            default -> List.of(
+//                    new QuickReplyDto("아침", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 아침 메뉴"),
+//                    new QuickReplyDto("점심", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 점심 메뉴")
+//            );
+//        };
+//    }
+
+
+
     private List<QuickReplyDto> mappingQuickReply(HandleRequestDto parameters) {
-        return switch (parameters.getPeriod()) {
-            case "아침" -> List.of(
-                    new QuickReplyDto("점심", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 점심 메뉴"),
-                    new QuickReplyDto("저녁", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 저녁 메뉴")
-            );
-            case "점심" -> List.of(
-                    new QuickReplyDto("아침", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 아침 메뉴"),
-                    new QuickReplyDto("저녁", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 저녁 메뉴")
-            );
-            default -> List.of(
-                    new QuickReplyDto("아침", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 아침 메뉴"),
-                    new QuickReplyDto("점심", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 점심 메뉴")
-            );
+        List<String> periods = getNextMealPeriods(parameters.getPeriod());
+        return periods.stream()
+                .map(period -> createQuickReply(period, parameters))
+                .collect(Collectors.toList());
+    }
+
+
+    // 현재 시간대(period)에 따라 다음 선택할 식사 시간대를 반환
+    private List<String> getNextMealPeriods(String currentPeriod) {
+        return switch (currentPeriod) {
+            case "아침" -> List.of("점심", "저녁");
+            case "점심" -> List.of("아침", "저녁");
+            default -> List.of("아침", "점심");
         };
+    }
+
+
+    // QuickReplyDto 객체를 생성하는 메서드
+    private QuickReplyDto createQuickReply(String period, HandleRequestDto parameters) {
+        String message = String.format("%s %s %s %s 메뉴",
+                parameters.getCampusName(),
+                parameters.getCafeteriaName(),
+                parameters.getDay(),
+                period);
+        return new QuickReplyDto(period, "message", message);
     }
 
 
