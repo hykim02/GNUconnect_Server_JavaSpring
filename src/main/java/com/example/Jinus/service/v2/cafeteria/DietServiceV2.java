@@ -42,15 +42,6 @@ public class DietServiceV2 {
         // 현재 시간 파악
         LocalTime time = getCurrentTime();
 
-//        // 요청 일반 파라미터 추출
-//        DetailParamsItemFieldDto campusName = requestDto.getAction().getDetailParams().getSys_campus_name();
-//        DetailParamsItemFieldDto day = requestDto.getAction().getDetailParams().getSys_date();
-//        DetailParamsItemFieldDto period = requestDto.getAction().getDetailParams().getSys_time_period();
-//        // null이면 값 초기화하기
-//        String campusNameValue = (campusName != null) ? campusName.getValue() : getCampusName(kakaoId);
-//        String dayValue = (day != null) ? day.getValue() : getDay(time); // 오늘, 내일
-//        String periodValue = (period != null) ? period.getValue() : getPeriodOfDay(time); // 아침, 점심, 저녁
-
         // DetailParams에서 값 추출 (null 체크 포함)
         String campusNameValue = extractValue(requestDto.getAction().getDetailParams().getSys_campus_name())
                 .orElseGet(() -> getCampusName(kakaoId));
@@ -61,10 +52,8 @@ public class DietServiceV2 {
 
         // 요청 필수 파라미터 추출
         String cafeteriaName = requestDto.getAction().getParams().getSys_cafeteria_name();
-
         // 오늘, 내일 문자열로 날짜 생성
         Date dietDate = getCurrentDate(dayValue);
-
         // 요청 파라미터 객체 생성
         HandleRequestDto parameters = new HandleRequestDto(kakaoId, campusNameValue, dayValue, periodValue, cafeteriaName, dietDate);
 
@@ -192,26 +181,6 @@ public class DietServiceV2 {
 
         return JsonUtils.toJsonResponse(responseDto);
     }
-
-
-    // quickReply 객체 생성
-//    private List<QuickReplyDto> mappingQuickReply(HandleRequestDto parameters) {
-//        return switch (parameters.getPeriod()) {
-//            case "아침" -> List.of(
-//                    new QuickReplyDto("점심", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 점심 메뉴"),
-//                    new QuickReplyDto("저녁", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 저녁 메뉴")
-//            );
-//            case "점심" -> List.of(
-//                    new QuickReplyDto("아침", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 아침 메뉴"),
-//                    new QuickReplyDto("저녁", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 저녁 메뉴")
-//            );
-//            default -> List.of(
-//                    new QuickReplyDto("아침", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 아침 메뉴"),
-//                    new QuickReplyDto("점심", "message", parameters.getCampusName() + " " + parameters.getCafeteriaName() + " " + parameters.getDay() + " 점심 메뉴")
-//            );
-//        };
-//    }
-
 
 
     private List<QuickReplyDto> mappingQuickReply(HandleRequestDto parameters) {
