@@ -64,29 +64,26 @@ public class DietServiceV2 {
     public String makeResponse(HandleRequestDto parameters) {
         int campusId = campusServiceV2.getCampusId(parameters.getCampusName());
         int cafeteriaId = cafeteriaServiceV2.getCafeteriaId(parameters.getCafeteriaName(), campusId);
-        // 캠퍼스에 식당이 존재하는 경우
-        if (checkIsThereCafeteria(parameters) != -1) {
-            // 식당 메뉴가 존재하는 경우
-            if (checkThereIsDiet(parameters, cafeteriaId) != -1) {
-                // 메뉴 찾기
-                MultiValueMap<String, String> dietList = getDiets(parameters, cafeteriaId);
-                StringBuilder diets = processDietList(dietList);
-                return makeContents(parameters, cafeteriaId, diets);
-            } else { // 메뉴 존재하지 않는 경우
-                StringBuilder diets = new StringBuilder("\n메뉴가 존재하지 않습니다.");
-                return makeContents(parameters, cafeteriaId, diets);
-            }
-        } else { // 식당 존재하지 않는 경우
+
+        // 캠퍼스에 식당이 존재하지 않는 경우
+        if (cafeteriaId == -1) {
             return errorMsgThereIsNoCafeteria();
         }
+
+        // 캠퍼스에 식당이 존재하는 경우
+        String diets = getDietResponse(parameters, cafeteriaId);
+        return makeContents(parameters, cafeteriaId, diets);
     }
 
-
-    // 캠퍼스에 식당 존재여부 확인 -> cafeteriaId 찾기
-    // cafeteriaId가 -1이면 존재하지 않음
-    private int checkIsThereCafeteria(HandleRequestDto parameters) {
-        int campusId = campusServiceV2.getCampusId(parameters.getCampusName());
-        return cafeteriaServiceV2.getCafeteriaId(parameters.getCafeteriaName(), campusId);
+    // 메뉴 존재 여부 확인
+    private String getDietResponse(HandleRequestDto parameters, int cafeteriaId) {
+        // 메뉴 존재하는 경우
+        if (checkThereIsDiet(parameters, cafeteriaId) != -1) {
+            // 메뉴 찾기
+            MultiValueMap<String, String> dietList = getDiets(parameters, cafeteriaId);
+            return processDietList(dietList).toString();
+        }
+        return "\n메뉴가 존재하지 않습니다."; // 메뉴가 없는 경우
     }
 
 
@@ -138,24 +135,24 @@ public class DietServiceV2 {
 
 
     // 응답 내용 초기화
-    private String makeContents(HandleRequestDto parameters, int cafeteriaId, StringBuilder diets) {
+    private String makeContents(HandleRequestDto parameters, int cafeteriaId, String diets) {
         // 식당 img 찾기
         String imgUrl = cafeteriaServiceV2.getImgUrl(cafeteriaId);
 
         // title 데이터 연결
-        StringBuilder title = new StringBuilder("\uD83C\uDF71 ")
-                .append(parameters.getCafeteriaName()).append("(")
-                .append(parameters.getCampusName(), 0, 2).append(") 메뉴");
+        String title = "\uD83C\uDF71 " +
+                parameters.getCafeteriaName() + "(" +
+                parameters.getCampusName().substring(0, 2) + ") 메뉴";
 
         // 식단 날짜
         Date dietDate = parameters.getDietDate();
         String day = DateUtils.getDayOfWeekInKorean(dietDate);
 
         // 메뉴 연결
-        StringBuilder description = new StringBuilder(String.valueOf(dietDate)).append("(").append(day).append(") ")
-                .append(parameters.getPeriod()).append("\n").append(diets);
+        String description = dietDate + "(" + day + ") " +
+                parameters.getPeriod() + "\n" + diets;
 
-        return mappingResponse(parameters, imgUrl, title.toString(), description.toString());
+        return mappingResponse(parameters, imgUrl, title, description);
     }
 
     // 응답 객체 매핑
