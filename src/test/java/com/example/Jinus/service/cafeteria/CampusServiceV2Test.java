@@ -2,33 +2,26 @@ package com.example.Jinus.service.cafeteria;
 
 import com.example.Jinus.entity.cafeteria.CampusEntity;
 import com.example.Jinus.repository.v2.cafeteria.CampusRepositoryV2;
-import com.example.Jinus.repository.v2.userInfo.UserRepositoryV2;
 import com.example.Jinus.service.v2.cafeteria.CampusServiceV2;
-import com.example.Jinus.service.v2.userInfo.UserServiceV2;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-@SpringBootTest
 public class CampusServiceV2Test {
 
-    @Autowired
+    @InjectMocks
     private CampusServiceV2 campusServiceV2;
-    @MockBean
+    @Mock
     private CampusRepositoryV2 campusRepositoryV2;
 
     @Test

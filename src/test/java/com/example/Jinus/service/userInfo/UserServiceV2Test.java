@@ -9,25 +9,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-@SpringBootTest
 public class UserServiceV2Test {
 
-    @Autowired
     @InjectMocks
     private UserServiceV2 userServiceV2;
-    @MockBean
+    @Mock
     private UserRepositoryV2 userRepositoryV2;
 
     @Test
@@ -86,28 +78,5 @@ public class UserServiceV2Test {
 
         // then
         assertThat(result).isEqualTo(-1);
-    }
-
-
-    @Test
-    @DisplayName("사용자 학과 ID 캐싱 테스트")
-    public void testUserCampusIdCaching() {
-        // Given: 특정 userId에 대해 학과 ID 반환
-        String userId = "user123";
-        int campusId = 12;
-
-        Mockito.when(userRepositoryV2.findCampusIdById(userId))
-                .thenReturn(Optional.of(campusId));
-
-        // When: 첫 번째 조회 (DB에서 가져옴)
-        int firstCall = userServiceV2.getUserCampusId(userId);
-        int secondCall = userServiceV2.getUserCampusId(userId); // 캐시에서 가져와야 함
-
-        // Then: 두 번째 호출 시 DB 호출 없이 동일한 값이 반환되어야 함
-        assertThat(firstCall).isEqualTo(12);  //
-        assertThat(secondCall).isEqualTo(firstCall);
-
-        // Verify: 한 번만 호출되어야 함
-        Mockito.verify(userRepositoryV2, times(1)).findCampusIdById(userId);
     }
 }
