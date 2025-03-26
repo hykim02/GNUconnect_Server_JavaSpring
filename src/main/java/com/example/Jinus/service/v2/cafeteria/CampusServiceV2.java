@@ -48,7 +48,7 @@ public class CampusServiceV2 {
     }
 
     // 캠퍼스 리스트 객체 생성
-    public List<ListItemDto> mappingCampusList(List<CampusEntity> campusList) {
+    private List<ListItemDto> mappingCampusList(List<CampusEntity> campusList) {
         List<ListItemDto> listItems = new ArrayList<>();
         for (CampusEntity campus : campusList) {
             String campusName = campus.getCampusNameKo();

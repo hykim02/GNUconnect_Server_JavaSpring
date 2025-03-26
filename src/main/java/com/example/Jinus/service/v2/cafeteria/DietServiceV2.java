@@ -68,7 +68,7 @@ public class DietServiceV2 {
 
 
     // response 생성 로직
-    public String makeResponse(HandleRequestDto parameters) {
+    private String makeResponse(HandleRequestDto parameters) {
         int campusId = campusServiceV2.getCampusId(parameters.getCampusName());
         int cafeteriaId = cafeteriaServiceV2.getCafeteriaId(parameters.getCafeteriaName(), campusId);
 
@@ -112,7 +112,7 @@ public class DietServiceV2 {
 
 
     // 카테고리별 메뉴 리스트 생성하기
-    public MultiValueMap<String, String> getDiets(HandleRequestDto parameters, int cafeteriaId) {
+    private MultiValueMap<String, String> getDiets(HandleRequestDto parameters, int cafeteriaId) {
         List<DietDto> dietDtos = dietCacheServiceV2.getDietList(parameters, cafeteriaId);
         MultiValueMap<String, String> dietList = new LinkedMultiValueMap<>(); // 중복 키 허용(값을 리스트로 반환)
 
@@ -128,7 +128,7 @@ public class DietServiceV2 {
 
 
     // 카테고리별 메뉴 문자열로 나열하기
-    public StringBuilder processDietList(MultiValueMap<String, String> dietList) {
+    private StringBuilder processDietList(MultiValueMap<String, String> dietList) {
         // 키 추출
         Set<String> keys = new TreeSet<>(dietList.keySet()); // 순서 보장 - 오름차순
         StringBuilder description = new StringBuilder();
@@ -163,7 +163,7 @@ public class DietServiceV2 {
     }
 
     // 응답 객체 매핑
-    public String mappingResponse(HandleRequestDto parameters, String imgUrl, String title, String description) {
+    private String mappingResponse(HandleRequestDto parameters, String imgUrl, String title, String description) {
         // imgUrl 객체 생성
         ThumbnailDto thumbnail = new ThumbnailDto(imgUrl);
 
@@ -214,7 +214,7 @@ public class DietServiceV2 {
 
     // 일반 파라미터 값 채우기
     // sys_campus_name 파라미터 초기화
-    public String getCampusName(String kakaoId) {
+    private String getCampusName(String kakaoId) {
         // 학과 등록 여부 확인
         int campusId = userServiceV2.getUserCampusId(kakaoId);
         // 학과 등록한 경우 campusId가 존재함
@@ -226,7 +226,7 @@ public class DietServiceV2 {
     }
 
     // sys_date 파라미터 초기화 - 시간 범위에 따라 오늘, 내일 판별
-    public String getDay(LocalTime time) {
+    private String getDay(LocalTime time) {
         if (time.isAfter(LocalTime.parse("00:00:00")) && time.isBefore(LocalTime.parse("19:00:00"))) {
             return "오늘";
         } else {
@@ -235,7 +235,7 @@ public class DietServiceV2 {
     }
 
     // sys_period 파라미터 초기화 - 시간 범위에 따라 아침, 점심, 저녁을 판별
-    public static String getPeriodOfDay(LocalTime time) {
+    private String getPeriodOfDay(LocalTime time) {
         if (time.isAfter(LocalTime.parse("19:00:00")) || time.isBefore(LocalTime.parse("09:30:00"))) {
             return "아침";
         } else if (!time.isBefore(LocalTime.parse("09:30:00")) && time.isBefore(LocalTime.parse("13:30:00"))) {
@@ -246,7 +246,7 @@ public class DietServiceV2 {
     }
 
     // 현재 시간 출력 함수
-    public LocalTime getCurrentTime() {
+    private LocalTime getCurrentTime() {
         LocalDateTime currentDateTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         String[] dateTimeParts = currentDateTime.toString().split("T");
         String[] timeSplit = dateTimeParts[1].split("\\.");
@@ -256,7 +256,7 @@ public class DietServiceV2 {
 
 
     // sysDay 파라미터 값으로 조회할 날짜 찾는 함수
-    public Date getCurrentDate(String sysDate) {
+    private Date getCurrentDate(String sysDate) {
         // 현재 날짜
         LocalDate today = LocalDate.now();
         LocalDate tomorrow = today.plusDays(1); // 하루 뒤 날짜 계산

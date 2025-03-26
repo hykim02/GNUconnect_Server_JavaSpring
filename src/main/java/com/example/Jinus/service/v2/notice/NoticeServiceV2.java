@@ -44,7 +44,7 @@ public class NoticeServiceV2 {
     }
 
     // 공지가 존재하는 경우
-    public String mappingCarouselItems(List<NoticeCategoryEntity> categoryEntities, String departmentEng) {
+    private String mappingCarouselItems(List<NoticeCategoryEntity> categoryEntities, String departmentEng) {
         // 카테고리 리스트 생성 (캐로셀 아이템 리스트)
         List<CarouselItemDto> categoryList = new ArrayList<>();
         for (NoticeCategoryEntity entity : categoryEntities) {
@@ -69,7 +69,7 @@ public class NoticeServiceV2 {
     }
 
     // 공지가 존재하지 않는 경우 예외처리
-    public String thereIsNoCategory() {
+    private String thereIsNoCategory() {
         List<ButtonDto> buttonList = new ArrayList<>();
         ButtonDto buttonDto = new ButtonDto("게시판 등록 요청", "webLink", "https://forms.gle/cSMheFmmGDe7P3RD6");
         buttonList.add(buttonDto);
@@ -83,7 +83,7 @@ public class NoticeServiceV2 {
     }
 
     // 공지 아이템 리스트 dto 매핑
-    public List<ListItemDto> makeNoticeItemList(List<NoticeEntity> noticeEntities,
+    private List<ListItemDto> makeNoticeItemList(List<NoticeEntity> noticeEntities,
                                    String mi, String bbsId, String departmentEng) {
         List<ListItemDto> noticeItems = new ArrayList<>();
 
@@ -99,7 +99,7 @@ public class NoticeServiceV2 {
     }
 
     // 아이템 버튼 생성
-    public List<ButtonDto> makeButton(String departmentEng, String mi, String bbsId) {
+    private List<ButtonDto> makeButton(String departmentEng, String mi, String bbsId) {
         List<ButtonDto> buttons = new ArrayList<>();
         ButtonDto button = new ButtonDto("더보기", "webLink", noticeCategoryUrl(departmentEng, mi, bbsId));
         buttons.add(button);
@@ -113,7 +113,7 @@ public class NoticeServiceV2 {
     }
 
     // 공지 카테고리 주소
-    public String noticeCategoryUrl(String departmentEng, String mi, String bbsId) {
+    private String noticeCategoryUrl(String departmentEng, String mi, String bbsId) {
         String baseUrl = "https://www.gnu.ac.kr/" + departmentEng + "/na/ntt/selectNttList.do?";
         return baseUrl + "mi=" + mi + "&bbsId=" + bbsId;
     }

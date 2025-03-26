@@ -45,7 +45,7 @@ public class CafeteriaServiceV2 {
     }
 
     // 식당 리스트 반환 메소드
-    public String makeCafeteriaListCard(int campusId) {
+    private String makeCafeteriaListCard(int campusId) {
         String campusName = campusServiceV2.getUserCampusName(campusId);
         List<CafeteriaDto> cafeteriaList = cacheServiceV2.getCafeteriaList(campusId);
 
@@ -59,7 +59,7 @@ public class CafeteriaServiceV2 {
 
 
     // 식당 리스트 객체 생성
-    public List<ListItemDto> mappingCafeteriaList(String campusName, List<CafeteriaDto> cafeteriaList) {
+    private List<ListItemDto> mappingCafeteriaList(String campusName, List<CafeteriaDto> cafeteriaList) {
         List<ListItemDto> listItems = new ArrayList<>();
         for (CafeteriaDto  cafeteria : cafeteriaList) {
             String userMessage = campusName + " " + cafeteria.getCafeteriaNameKo();
@@ -74,7 +74,7 @@ public class CafeteriaServiceV2 {
 
 
     // 더보기 버튼 리스트 생성
-    public List<ButtonDto> mappingButtonDto() {
+    private List<ButtonDto> mappingButtonDto() {
         List<ButtonDto> buttonDto = new ArrayList<>();
         Map<String, Object> extra = new HashMap<>();
         extra.put("sys_campus_id", -1);
