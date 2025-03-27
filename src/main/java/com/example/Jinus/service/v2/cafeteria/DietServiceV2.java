@@ -31,9 +31,9 @@ import java.util.stream.Collectors;
 public class DietServiceV2 {
     private final DietRepositoryV2 dietRepositoryV2;
     private final CampusServiceV2 campusServiceV2;
-    private final CafeteriaServiceV2 cafeteriaServiceV2;
     private final UserServiceV2 userServiceV2;
     private final CacheServiceV2 dietCacheServiceV2;
+    private final CafeteriaQueryServiceV2 queryServiceV2;
 
     // 식단 데이터 찾기 위해 필요한 파라미터 추출 및 초기화
     public String requestHandler(RequestDto requestDto) {
@@ -70,7 +70,7 @@ public class DietServiceV2 {
     // response 생성 로직
     private String makeResponse(HandleRequestDto parameters) {
         int campusId = campusServiceV2.getCampusId(parameters.getCampusName());
-        int cafeteriaId = cafeteriaServiceV2.getCafeteriaId(parameters.getCafeteriaName(), campusId);
+        int cafeteriaId = queryServiceV2.getCafeteriaId(parameters.getCafeteriaName(), campusId);
 
         // 캠퍼스에 식당이 존재하지 않는 경우
         if (cafeteriaId == -1) {
@@ -144,7 +144,7 @@ public class DietServiceV2 {
     // 응답 내용 초기화
     private String makeContents(HandleRequestDto parameters, int cafeteriaId, String diets) {
         // 식당 img 찾기
-        String imgUrl = cafeteriaServiceV2.getImgUrl(cafeteriaId);
+        String imgUrl = queryServiceV2.getImgUrl(cafeteriaId);
 
         // title 데이터 연결
         String title = "\uD83C\uDF71 " +
