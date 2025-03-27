@@ -34,7 +34,6 @@ public class CafeteriaServiceV2 {
         return cafeteriaResponseServiceV2.createCafeteriaListCard(campusName, cafeteriaList);
     }
 
-
 //    // 반환 조건 설정
 //    public String campusOrCafeteria(int campusId, int sysCampusId) {
 //        // 더보기 버튼 누른 경우
@@ -108,4 +107,5 @@ public class CafeteriaServiceV2 {
 //    public String getImgUrl(int cafeteriaId) {
 //        return cafeteriaRepositoryV2.findImgUrlByCafeteriaId(cafeteriaId);
 //    }
+
 }
