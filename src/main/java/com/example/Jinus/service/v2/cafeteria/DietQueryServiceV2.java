@@ -1,0 +1,72 @@
+package com.example.Jinus.service.v2.cafeteria;
+
+import com.example.Jinus.dto.data.DietDto;
+import com.example.Jinus.dto.data.HandleRequestDto;
+import com.example.Jinus.repository.v2.cafeteria.DietRepositoryV2;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+
+import java.sql.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+@Service
+@RequiredArgsConstructor
+public class DietQueryServiceV2 {
+
+    private final CacheServiceV2 cacheServiceV2;
+    private final DietRepositoryV2 dietRepositoryV2;
+
+    // 메뉴 존재 여부에 따른 반환값 처리 로직
+    public String getDietResponse(HandleRequestDto parameters, int cafeteriaId) {
+        // 메뉴 존재하는 경우
+        if (checkThereIsDiet(parameters, cafeteriaId) != -1) {
+            // 메뉴 찾기
+            MultiValueMap<String, String> dietList = getDiets(parameters, cafeteriaId);
+            return processDietList(dietList).toString();
+        }
+        return "\n메뉴가 존재하지 않습니다."; // 메뉴가 없는 경우
+    }
+
+
+    // 식당 메뉴 존재여부 확인
+    private int checkThereIsDiet(HandleRequestDto parameters, int cafeteriaId) {
+        // 오늘, 내일 문자열로 날짜 설정하기
+        Date dietDate = parameters.getDietDate();
+        List<DietDto> dietDtos =
+                dietRepositoryV2.findDietList(dietDate, parameters.getPeriod(), cafeteriaId);
+        return (!dietDtos.isEmpty()) ? 1 : -1;
+    }
+
+
+    // 카테고리별 메뉴 리스트 생성하기
+    private MultiValueMap<String, String> getDiets(HandleRequestDto parameters, int cafeteriaId) {
+        List<DietDto> dietDtos = cacheServiceV2.getDietList(parameters, cafeteriaId);
+        MultiValueMap<String, String> dietList = new LinkedMultiValueMap<>(); // 중복 키 허용(값을 리스트로 반환)
+
+        for (DietDto o : dietDtos) {
+            String key = (o.getDishCategory() != null) ? o.getDishCategory()
+                    : (o.getDishType() != null) ? o.getDishType()
+                    : "메뉴";
+
+            dietList.add(key, o.getDishName());
+        }
+        return dietList;
+    }
+
+    // 카테고리별 메뉴 문자열로 나열하기
+    private StringBuilder processDietList(MultiValueMap<String, String> dietList) {
+        // 키 추출
+        Set<String> keys = new TreeSet<>(dietList.keySet()); // 순서 보장 - 오름차순
+        StringBuilder description = new StringBuilder();
+
+        for (String key : keys) {
+            description.append("\n[").append(key).append("]").append("\n");
+            dietList.get(key).forEach(diet -> description.append(diet).append("\n"));
+        }
+        return description;
+    }
+}
