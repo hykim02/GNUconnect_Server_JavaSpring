@@ -3,7 +3,10 @@ package com.example.Jinus.controller.v2;
 import com.example.Jinus.dto.request.RequestDto;
 import com.example.Jinus.service.v2.cafeteria.CafeteriaServiceV2;
 import com.example.Jinus.service.v2.userInfo.UserServiceV2;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,5 +30,4 @@ public class CafeteriaControllerV2 {
 
         return cafeteriaServiceV2.campusOrCafeteria(userCampusId, sysCampusId);
     }
-
 }
