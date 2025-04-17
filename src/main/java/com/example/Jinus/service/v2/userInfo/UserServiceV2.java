@@ -2,6 +2,7 @@ package com.example.Jinus.service.v2.userInfo;
 
 import com.example.Jinus.repository.v2.userInfo.UserRepositoryV2;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceV2 {
 
     private final UserRepositoryV2 userRepositoryV2;
