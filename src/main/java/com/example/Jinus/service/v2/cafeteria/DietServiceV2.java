@@ -20,8 +20,8 @@ import java.util.TreeSet;
 public class DietServiceV2 {
 
     private final CampusServiceV2 campusServiceV2;
-    private final CafeteriaQueryServiceV2 queryServiceV2;
-    private final DietParameterServiceV2 parameterServiceV2;
+    private final CafeteriaQueryServiceV2 cafeteriaQueryServiceV2;
+    private final DietParameterServiceV2 dietParameterServiceV2;
     private final DietResponseServiceV2 dietResponseServiceV2;
     private final DietQueryServiceV2 dietQueryServiceV2;
 
@@ -31,7 +31,7 @@ public class DietServiceV2 {
         // 현재 시간 파악
         LocalTime time = getCurrentTime();
         // 사용자 발화에서 파라미터 추출 및 객체 생성
-        HandleRequestDto parameters = parameterServiceV2.setParameters(kakaoId, time, requestDto);
+        HandleRequestDto parameters = dietParameterServiceV2.setParameters(kakaoId, time, requestDto);
 
         return checkIsCafeteriaInCampus(parameters);
     }
@@ -39,7 +39,7 @@ public class DietServiceV2 {
     // 식당 존재 여부에 따른 메뉴 조회 로직
     private String checkIsCafeteriaInCampus(HandleRequestDto parameters) {
         int campusId = campusServiceV2.getCampusId(parameters.getCampusName());
-        int cafeteriaId = queryServiceV2.getCafeteriaId(parameters.getCafeteriaName(), campusId);
+        int cafeteriaId = cafeteriaQueryServiceV2.getCafeteriaId(parameters.getCafeteriaName(), campusId);
 
         // 캠퍼스에 식당이 존재하지 않는 경우
         if (cafeteriaId == -1) {
@@ -54,7 +54,7 @@ public class DietServiceV2 {
     // 응답 내용 생성
     private String makeContents(HandleRequestDto parameters, int cafeteriaId, String diets) {
         // 식당 img 찾기
-        String imgUrl = queryServiceV2.getImgUrl(cafeteriaId);
+        String imgUrl = cafeteriaQueryServiceV2.getImgUrl(cafeteriaId);
 
         // title 데이터 연결
         String title = "\uD83C\uDF71 " +

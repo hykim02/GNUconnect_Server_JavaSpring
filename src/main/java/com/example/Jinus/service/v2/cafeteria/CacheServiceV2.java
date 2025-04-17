@@ -18,12 +18,12 @@ public class CacheServiceV2 {
     private final DietRepositoryV2 dietRepositoryV2;
     private final CafeteriaRepositoryV2 cafeteriaRepositoryV2;
 
-    @Cacheable(
-            value = "dietList",
-            key = "#parameters.dietDate + '::' + #parameters.period + '::' + #cafeteriaId",
-            unless = "#result == null || #result.isEmpty()",
-            cacheManager = "contentCacheManager"
-    )
+//    @Cacheable(
+//            value = "dietList",
+//            key = "#parameters?.dietDate?.toString() + '::' + #parameters?.period + '::' + #cafeteriaId",
+//            unless = "#result == null || #result.isEmpty()",
+//            cacheManager = "contentCacheManager"
+//    )
     // 식단 데이터 가져오기
     public List<DietDto> getDietList(HandleRequestDto parameters, int cafeteriaId) {
         // 오늘, 내일 문자열로 날짜 설정하기
@@ -34,7 +34,7 @@ public class CacheServiceV2 {
 
 
     // Redis에서 조회 (없으면 DB에서 가져옴)
-    @Cacheable(value = "cafeteriaList", key = "#campusId", cacheManager = "contentCacheManager")
+//    @Cacheable(value = "cafeteriaList", key = "#campusId", cacheManager = "contentCacheManager")
     public List<CafeteriaDto> getCafeteriaList(int campusId) {
         return cafeteriaRepositoryV2.findCafeteriaListByCampusId(campusId);
     }
