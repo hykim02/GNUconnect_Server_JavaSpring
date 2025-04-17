@@ -4,9 +4,7 @@ import com.example.Jinus.dto.request.RequestDto;
 import com.example.Jinus.service.v2.notice.NoticeServiceV2;
 import com.example.Jinus.service.v2.userInfo.DepartmentServiceV2;
 import com.example.Jinus.service.v2.userInfo.UserServiceV2;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,8 +18,6 @@ public class NoticeControllerV2 {
     private final NoticeServiceV2 noticeServiceV2;
     private final DepartmentServiceV2 departmentServiceV2;
     private final UserServiceV2 userServiceV2;
-    @Autowired
-    private ObjectMapper objectMapper;
 
     // 학교 공지사항 조회
     @PostMapping("/v2/main-notice")

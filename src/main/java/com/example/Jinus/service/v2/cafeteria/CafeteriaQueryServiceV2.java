@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 public class CafeteriaQueryServiceV2 {
     private final CafeteriaRepositoryV2 cafeteriaRepositoryV2;
 
-    @Cacheable(value = "cafeteriaId", key = "#campusId + '::' + #cafeteriaName",
-            unless = "#result == -1",
-            cacheManager = "contentCacheManager")
+//    @Cacheable(value = "cafeteriaId", key = "#campusId + '::' + #cafeteriaName",
+//            unless = "#result == -1",
+//            cacheManager = "contentCacheManager")
     public int getCafeteriaId(String cafeteriaName, int campusId) {
         return cafeteriaRepositoryV2.findCafeteriaId(cafeteriaName, campusId).orElse(-1);
     }
