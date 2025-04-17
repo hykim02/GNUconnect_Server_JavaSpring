@@ -21,37 +21,53 @@ public class RedisCacheManager {
     public CacheManager contentCacheManager(RedisConnectionFactory cf) {
         Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
 
-        // 1. 식당 리스트 캐시 (불변 데이터, 7일 유지)
+        // 1. 식당 리스트 캐시 (불변 데이터, 30일 유지)
         cacheConfigurations.put("cafeteriaList",
                 RedisCacheConfiguration.defaultCacheConfig()
                         .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer())) // Key Serializer
                         .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())) // Value Serializer
-                        .entryTtl(Duration.ofDays(7)) // 7일 유지
+                        .entryTtl(Duration.ofDays(30))
                         .disableCachingNullValues()); // null 캐싱 방지
 
 
         // 2. 식단 데이터 캐시 (하루 단위로 갱신)
-        cacheConfigurations.put("dietList",
-                RedisCacheConfiguration.defaultCacheConfig()
-                        .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer())) // Key Serializer
-                        .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())) // Value Serializer
-                        .entryTtl(Duration.ofHours(12)) // 12시간 유지
-                        .disableCachingNullValues());
+//        cacheConfigurations.put("dietList",
+//                RedisCacheConfiguration.defaultCacheConfig()
+//                        .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer())) // Key Serializer
+//                        .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())) // Value Serializer
+//                        .entryTtl(Duration.ofHours(12))
+//                        .disableCachingNullValues());
 
-        // 3. 캠퍼스 이름별 캠퍼스 id 캐시 (불변 데이터, 7일 유지)
+        // 3. 캠퍼스 이름 캐시 (불변 데이터, 30일 유지)
         cacheConfigurations.put("campusName",
                 RedisCacheConfiguration.defaultCacheConfig()
                         .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer())) // Key Serializer
                         .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())) // Value Serializer
-                        .entryTtl(Duration.ofDays(7)) // 7일 유지
+                        .entryTtl(Duration.ofDays(30))
                         .disableCachingNullValues()); // null 캐싱 방지
 
-        // 3. 식당별 식당 id 캐시 (불변 데이터, 7일 유지)
+        // 3. 식당 id 캐시 (불변 데이터, 30일 유지)
         cacheConfigurations.put("cafeteriaId",
                 RedisCacheConfiguration.defaultCacheConfig()
                         .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer())) // Key Serializer
                         .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())) // Value Serializer
-                        .entryTtl(Duration.ofDays(7)) // 7일 유지
+                        .entryTtl(Duration.ofDays(30))
+                        .disableCachingNullValues()); // null 캐싱 방지
+
+        // 4. 캠퍼스 id 캐시 (불변 데이터, 30일 유지)
+        cacheConfigurations.put("campusId",
+                RedisCacheConfiguration.defaultCacheConfig()
+                        .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer())) // Key Serializer
+                        .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())) // Value Serializer
+                        .entryTtl(Duration.ofDays(30))
+                        .disableCachingNullValues()); // null 캐싱 방지
+
+        // 5. 식당 url 캐시 (불변 데이터, 30일 유지)
+        cacheConfigurations.put("cafeteriaUrl",
+                RedisCacheConfiguration.defaultCacheConfig()
+                        .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer())) // Key Serializer
+                        .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())) // Value Serializer
+                        .entryTtl(Duration.ofDays(30))
                         .disableCachingNullValues()); // null 캐싱 방지
 
 
@@ -60,4 +76,5 @@ public class RedisCacheManager {
                 .withInitialCacheConfigurations(cacheConfigurations) // 캐시별 설정 적용
                 .build();
     }
+
 }

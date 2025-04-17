@@ -5,6 +5,7 @@ import com.example.Jinus.dto.request.DetailParamsItemFieldDto;
 import com.example.Jinus.dto.request.RequestDto;
 import com.example.Jinus.service.v2.userInfo.UserServiceV2;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -14,6 +15,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DietParameterServiceV2 {
 
     private final UserServiceV2 userServiceV2;
