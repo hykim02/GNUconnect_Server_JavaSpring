@@ -1,12 +1,11 @@
 package com.example.Jinus.service.v2.userInfo;
 
 import com.example.Jinus.repository.v2.userInfo.UserRepositoryV2;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
 
@@ -39,4 +38,12 @@ public class UserServiceV2 {
         return parentDepartmentMap.getOrDefault(departmentId, departmentId);
     }
 
+    // hikariCP test
+    @Transactional
+    public void selectCampusIdTest(String userId) throws InterruptedException {
+        log.info("selectCampusIdTest 시작 - userId: {}", userId);
+        Thread.sleep(2500); // 커넥션을 5초간 점유 (풀 점유 시 타임아웃 유도)
+        userRepositoryV2.findCampusIdById(userId);
+        log.info("selectCampusIdTest 종료 - userId: {}", userId);
+    }
 }
