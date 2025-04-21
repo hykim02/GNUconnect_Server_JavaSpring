@@ -55,6 +55,9 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	// 테스트 코드에서 Lombok 사용할 경우 필요
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
 	compileOnly 'javax:javaee-api:8.0.1'
 
 	// 테스트를 위한 h2 설정
