@@ -1,6 +1,5 @@
 package com.example.Jinus.service.userInfo;
 
-import com.example.Jinus.service.v2.userInfo.UserServiceV2;
 import com.zaxxer.hikari.HikariDataSource;
 import com.zaxxer.hikari.HikariPoolMXBean;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +20,7 @@ import java.util.concurrent.Executors;
 public class UserServiceHikariCPTest {
 
     @Autowired
-    private UserServiceV2 userService;
+    private UserService userService;
 
     @Autowired
     private DataSource dataSource;
