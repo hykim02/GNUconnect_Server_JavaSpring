@@ -15,10 +15,10 @@ import java.util.List;
 public class CampusService {
     private final CampusRepository campusRepositoryV2;
 
-//    @Cacheable(
-//            value = "campusId",
-//            key = "#p0",
-//            cacheManager = "contentCacheManager")
+    @Cacheable(
+            value = "campusId",
+            key = "#p0",
+            cacheManager = "contentCacheManager")
     // 사용자의 campusId 받아 캠퍼스 이름 찾기
     public String getUserCampusName(int campusId) {
         return campusRepositoryV2.findCampusNameByCampusId(campusId);
@@ -29,10 +29,10 @@ public class CampusService {
         return campusRepositoryV2.findCampusList();
     }
 
-//    @Cacheable(
-//            value = "campusName",
-//            key = "#p0",
-//            cacheManager = "contentCacheManager")
+    @Cacheable(
+            value = "campusName",
+            key = "#p0",
+            cacheManager = "contentCacheManager")
     // 캠퍼스 이름으로 id 찾기
     public int getCampusId(String campusName) {
         return campusRepositoryV2.findCampusIdByName(campusName);

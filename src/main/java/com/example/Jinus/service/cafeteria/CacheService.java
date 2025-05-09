@@ -55,10 +55,10 @@ public class CacheService {
 
 
     // Redis에서 조회 (없으면 DB에서 가져옴)
-//    @Cacheable(
-//            value = "cafeteriaList",
-//            key = "#p0",
-//            cacheManager = "contentCacheManager")
+    @Cacheable(
+            value = "cafeteriaList",
+            key = "#p0",
+            cacheManager = "contentCacheManager")
     public List<CafeteriaDto> getCafeteriaList(int campusId) {
         return cafeteriaRepositoryV2.findCafeteriaListByCampusId(campusId);
     }
