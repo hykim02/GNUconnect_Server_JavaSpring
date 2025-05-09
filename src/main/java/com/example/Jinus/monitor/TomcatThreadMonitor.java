@@ -1,5 +1,6 @@
 package com.example.Jinus.monitor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.connector.Connector;
 import org.apache.coyote.ProtocolHandler;
 import org.apache.coyote.AbstractProtocol;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.Executor;
 
 @Component
+@Slf4j
 public class TomcatThreadMonitor {
 
     private final ServletWebServerApplicationContext context;
@@ -20,7 +22,7 @@ public class TomcatThreadMonitor {
         this.context = context;
     }
 
-    @Scheduled(fixedRate = 1000) // 10초마다 출력
+    @Scheduled(fixedRateString = "${monitor.pool.status.rate.ms:60000}") // 상태 출력 주기 (기본 1분)
     public void logTomcatThreadPoolStatus() {
         if (context.getWebServer() instanceof TomcatWebServer tomcatWebServer) {
             Connector connector = tomcatWebServer.getTomcat().getConnector();
@@ -36,10 +38,8 @@ public class TomcatThreadMonitor {
                     long taskCount = threadPoolExecutor.getTaskCount();
                     long completedTaskCount = threadPoolExecutor.getCompletedTaskCount();
 
-                    System.out.printf(
-                            "[Tomcat 스레드] MaxPoolSize: %d, PoolSize: %d, 활성: %d, TaskCount: %d, 완료: %d%n",
-                            max, poolSize, active, taskCount, completedTaskCount
-                    );
+                    log.info("[Tomcat 스레드] MaxPoolSize: {}, PoolSize: {}, 활성: {}, TaskCount: {}, 완료: {}",
+                            + max, poolSize, active, taskCount, completedTaskCount);
                 }
             }
         }
