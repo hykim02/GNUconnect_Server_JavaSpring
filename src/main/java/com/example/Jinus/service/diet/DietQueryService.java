@@ -20,7 +20,6 @@ import java.util.TreeSet;
 public class DietQueryService {
 
     private final CacheService cacheServiceV2;
-    private final DietRepository dietRepositoryV2;
 
     // 메뉴 존재 여부에 따른 반환값 처리 로직
     public String getDietResponse(HandleRequestDto parameters, int cafeteriaId) {
