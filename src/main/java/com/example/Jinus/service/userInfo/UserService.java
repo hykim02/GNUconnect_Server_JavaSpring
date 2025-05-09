@@ -39,11 +39,11 @@ public class UserService {
     }
 
     // hikariCP test
-    @Transactional
-    public void selectCampusIdTest(String userId) throws InterruptedException {
-        log.info("selectCampusIdTest 시작 - userId: {}", userId);
-        Thread.sleep(2500); // 커넥션을 5초간 점유 (풀 점유 시 타임아웃 유도)
-        userRepositoryV2.findCampusIdById(userId);
-        log.info("selectCampusIdTest 종료 - userId: {}", userId);
-    }
+//    @Transactional
+//    public void selectCampusIdTest(String userId) throws InterruptedException {
+//        log.info("selectCampusIdTest 시작 - userId: {}", userId);
+//        Thread.sleep(2500); // 커넥션을 5초간 점유 (풀 점유 시 타임아웃 유도)
+//        userRepositoryV2.findCampusIdById(userId);
+//        log.info("selectCampusIdTest 종료 - userId: {}", userId);
+//    }
 }

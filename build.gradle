@@ -47,6 +47,8 @@ dependencies {
 
 	// actuator
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'io.micrometer:micrometer-core'
+	implementation 'io.micrometer:micrometer-registry-prometheus'
 
 	implementation 'io.sentry:sentry-spring-boot-starter-jakarta:8.3.0'
 	implementation 'javax.enterprise:cdi-api:2.0'

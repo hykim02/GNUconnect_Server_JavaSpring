@@ -13,16 +13,12 @@ public class CollegeService {
 
     public CollegeService(CollegeRepository collegeRepository) {
         this.collegeRepository = collegeRepository;
-//        logger.info("CollegeService 실행");
     }
 
     public String getCollegeName(int collegeId) {
-//        logger.info("getCollegeName 실행");
         CollegeEntity collegeEntity = collegeRepository.findById(collegeId).orElse(null);
-//        logger.info("collegeEntity: {}", collegeEntity);
 
         if (collegeEntity != null) {
-//            logger.info("collegeEng: {}", collegeEntity.getCollegeEng());
             return collegeEntity.getCollegeEng(); // 학과 영어 이름 리턴(테이블 찾기 위함)
         } else {
             logger.debug("CollegeService: collge를 찾을 수 없습니다.");
@@ -37,10 +33,7 @@ public class CollegeService {
 
     // collegeId에 해당하는 campusId 찾기
     public int getCampusId(int collegeId) {
-//        logger.info("getCampusId 실행");
         int campusId = collegeRepository.findCampusId(collegeId);
-//        logger.info("campusId: {}", campusId);
-
         return campusId;
     }
 }
