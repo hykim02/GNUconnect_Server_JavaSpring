@@ -1,12 +1,15 @@
 services:
   connect-gnu-spring:
-    image: dongho18/connect-gnu-spring:latest
+    image: hykim02/gnu-connect-spring-test:latest
     pull_policy: always
-    container_name: connect-gnu-spring
+    container_name: connect-gnu-spring-test
     restart: unless-stopped
     networks:
       - connect-gnu-network
     environment:
+      - SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
+      - SENTRY_DSN=${SENTRY_DSN}
+      - ENVIRONMENT=${ENVIRONMENT}
       - spring.config.additional-location=file:/app/application.properties
       - TZ=Asia/Seoul
       - JAVA_OPTS=-Xms128m -Xmx512m -XX:+UseSerialGC -XX:+ExitOnOutOfMemoryError

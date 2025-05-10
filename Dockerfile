@@ -1,4 +1,4 @@
-FROM gradle:8.6-jdk21 as builder
+FROM gradle:8.6-jdk21 AS builder
 WORKDIR /build
 
 # 그래들 파일이 변경되었을 때만 새롭게 의존패키지 다운로드 받게함.
